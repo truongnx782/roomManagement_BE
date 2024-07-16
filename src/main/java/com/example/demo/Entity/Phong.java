@@ -1,7 +1,9 @@
 package com.example.demo.Entity;
 
+import com.example.demo.DTO.PhongDTO;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -12,6 +14,7 @@ import java.math.BigDecimal;
 @AllArgsConstructor
 @Entity
 @Table(name = "Phong")
+@Builder
 public class Phong {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -38,4 +41,35 @@ public class Phong {
 
     @Column(name = "TrangThaiThue")
     private int trangThaiThue;
+
+
+    public static PhongDTO toDTO(Phong phong) {
+        if (phong == null) {
+            return null;
+        }
+        return PhongDTO.builder()
+                .id(phong.getId())
+                .maPhong(phong.getMaPhong())
+                .tenPhong(phong.getTenPhong())
+                .dienTich(phong.getDienTich())
+                .giaThue(phong.getGiaThue())
+                .diaChi(phong.getDiaChi())
+                .trangThai(phong.getTrangThai())
+                .trangThaiThue(phong.getTrangThaiThue())
+                .build();
+    }
+
+    public static Phong toEntity(PhongDTO phongDTO) {
+        return Phong.builder()
+                .id(phongDTO.getId())
+                .maPhong(phongDTO.getMaPhong())
+                .tenPhong(phongDTO.getTenPhong())
+                .dienTich(phongDTO.getDienTich())
+                .giaThue(phongDTO.getGiaThue())
+                .diaChi(phongDTO.getDiaChi())
+                .trangThai(phongDTO.getTrangThai())
+                .trangThaiThue(phongDTO.getTrangThaiThue())
+                .build();
+    }
+
 }

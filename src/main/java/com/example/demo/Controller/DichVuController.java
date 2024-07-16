@@ -1,74 +1,74 @@
 package com.example.demo.Controller;
 
+import com.example.demo.DTO.DichVuDTO;
 import com.example.demo.Entity.DichVu;
-import com.example.demo.Repo.DichVuRepo;
+import com.example.demo.Service.DichVuService;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigInteger;
+import java.util.Map;
 import java.util.Optional;
 
 @RestController
 @CrossOrigin(origins = "http://localhost:3000")
 @RequestMapping("dich-vu")
 public class DichVuController {
-    private final DichVuRepo dichVuRepo;
+    private final DichVuService dichVuService;
 
-    public DichVuController(DichVuRepo dichVuRepo) {
-        this.dichVuRepo = dichVuRepo;
+    public DichVuController(DichVuService dichVuService) {
+        this.dichVuService = dichVuService;
     }
 
-    @GetMapping("/hien-thi")
-    public ResponseEntity<Page<DichVu>> getAllWithPagination(
-            @RequestParam("page") Optional<Integer> pageParam,
-            @RequestParam("size") int pageSizeParam) {
-        int page = pageParam.orElse(0);
-        Pageable pageable = PageRequest.of(page, pageSizeParam);
-        Page<DichVu> data = dichVuRepo.findAll(pageable);
-        return ResponseEntity.ok(data);
+    @PostMapping("/search")
+    public ResponseEntity<?> searchDichVu(@RequestBody Map<String, Object> payload) {
+        try {
+            Page<DichVuDTO> result = dichVuService.searchDichVu(payload);
+            return ResponseEntity.ok(result);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to search for DichVu: " + e.getMessage());
+        }
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<DichVu> getById(@PathVariable("id") BigInteger id) {
-        Optional<DichVu> dichVuOptional = dichVuRepo.findById(id);
-        return dichVuOptional.map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
+    public ResponseEntity<?> getById(@PathVariable("id") BigInteger id) {
+        try {
+            Optional<DichVuDTO> dichVu = dichVuService.findById(id);
+            return ResponseEntity.ok(dichVu);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Failed to retrieve DichVu: " + e.getMessage());
+        }
     }
 
     @PostMapping()
-    public ResponseEntity<DichVu> create(@RequestBody DichVu dichVu) {
-        dichVu.setMaDichVu("M");
-        dichVu.setTrangThai(1);
-        DichVu newDichVu = dichVuRepo.save(dichVu);
-        return ResponseEntity.ok(newDichVu);
+    public ResponseEntity<?> create(@RequestBody DichVuDTO dichVuDTO) {
+        try {
+            DichVuDTO newDichVu = dichVuService.createDichVu(dichVuDTO);
+            return ResponseEntity.ok(newDichVu);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Failed to create DichVu: " + e.getMessage());
+        }
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<DichVu> update(@PathVariable("id") BigInteger id, @RequestBody DichVu updatedDichVu) {
-        Optional<DichVu> dichVuOptional = dichVuRepo.findById(id);
-        if (!dichVuOptional.isPresent()) {
-            return ResponseEntity.notFound().build();
+    public ResponseEntity<?> update(@PathVariable("id") BigInteger id, @RequestBody DichVuDTO updatedDichVuDTO) {
+        try {
+            DichVuDTO existingDichVu = dichVuService.updateDichVu(id, updatedDichVuDTO);
+            return ResponseEntity.ok(existingDichVu);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Failed to update DichVu: " + e.getMessage());
         }
-        DichVu existingDichVu = dichVuOptional.get();
-        existingDichVu.setTenDichVu(updatedDichVu.getTenDichVu());
-        existingDichVu.setGiaDichVu(updatedDichVu.getGiaDichVu());
-        existingDichVu.setNgayBatDau(updatedDichVu.getNgayBatDau());
-        existingDichVu.setNgayKetThuc(updatedDichVu.getNgayKetThuc());
-        dichVuRepo.save(existingDichVu);
-        return ResponseEntity.ok(existingDichVu);
     }
 
     @PutMapping("/delete/{id}")
-    public ResponseEntity<DichVu> delete(@PathVariable("id") BigInteger id) {
-        Optional<DichVu> dichVuOptional = dichVuRepo.findById(id);
-        if (!dichVuOptional.isPresent()) {
-            return ResponseEntity.notFound().build();
+    public ResponseEntity<?> delete(@PathVariable("id") BigInteger id) {
+        try {
+            DichVuDTO existingDichVu = dichVuService.deleteDichVu(id);
+            return ResponseEntity.ok(existingDichVu);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Failed to delete DichVu: " + e.getMessage());
         }
-        DichVu existingDichVu = dichVuOptional.get();
-        existingDichVu.setTrangThai(0);
-        dichVuRepo.save(existingDichVu);
-        return ResponseEntity.ok(existingDichVu);
     }
 }
