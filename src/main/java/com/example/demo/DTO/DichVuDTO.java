@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.time.LocalDate;
 import java.util.Date;
 
@@ -15,12 +16,12 @@ import java.util.Date;
 @AllArgsConstructor
 @Builder
 public class DichVuDTO {
-    private Long id;
+    private BigInteger id;
     private String maDichVu;
     private String tenDichVu;
     private BigDecimal giaDichVu;
     private LocalDate ngayBatDau;
-    private Date ngayKetThuc;
+    private LocalDate ngayKetThuc;
     private int trangThai;
 
 }

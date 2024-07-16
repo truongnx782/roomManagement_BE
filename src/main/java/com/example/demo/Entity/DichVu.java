@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.time.LocalDate;
 import java.util.Date;
 
@@ -23,7 +24,7 @@ public class DichVu {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "Id")
-    private Long id;
+    private BigInteger id;
 
     @Column(name = "MaDichVu")
     private String maDichVu;
@@ -41,7 +42,7 @@ public class DichVu {
 
     @Column(name = "NgayKetThuc")
     @JsonFormat(pattern = "yyyy-MM-dd")
-    private Date ngayKetThuc;
+    private LocalDate ngayKetThuc;
 
     @Column(name = "TrangThai")
     private int trangThai;

@@ -8,6 +8,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
+import java.math.BigInteger;
 
 @Data
 @NoArgsConstructor
@@ -19,7 +20,7 @@ public class Phong {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "Id")
-    private Long id;
+    private BigInteger id;
 
     @Column(name = "MaPhong")
     private String maPhong;
@@ -44,9 +45,6 @@ public class Phong {
 
 
     public static PhongDTO toDTO(Phong phong) {
-        if (phong == null) {
-            return null;
-        }
         return PhongDTO.builder()
                 .id(phong.getId())
                 .maPhong(phong.getMaPhong())

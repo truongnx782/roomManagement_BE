@@ -5,6 +5,9 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.math.BigDecimal;
+import java.math.BigInteger;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -14,14 +17,14 @@ public class ChiTietThanhToan {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "Id")
-    private Long id;
+    private BigInteger id;
 
     @ManyToOne
     @JoinColumn(name = "IdDichVu")
     private DichVu dichVu;
 
     @Column(name = "SoTienPhaiTra")
-    private Long soTienPhaiTra;
+    private BigDecimal soTienPhaiTra;
 
     @Column(name = "TrangThai")
     private String trangThai;

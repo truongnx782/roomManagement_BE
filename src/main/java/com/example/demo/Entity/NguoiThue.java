@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.math.BigInteger;
 import java.util.Date;
 
 @Data
@@ -16,7 +17,7 @@ public class NguoiThue {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "Id")
-    private Long id;
+    private BigInteger id;
 
     @Column(name = "MaNguoiThue")
     private String maNguoiThue;
