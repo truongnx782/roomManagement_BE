@@ -22,7 +22,7 @@ public class ThanhToan {
 
     @ManyToOne
     @JoinColumn(name = "IdHopDong")
-    private HopDong hopDong;
+    private Contract hopDong;
 
     @Column(name = "SoTien")
     private BigDecimal soTien;

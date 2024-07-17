@@ -1,6 +1,6 @@
 package com.example.demo.Controller;
 
-import com.example.demo.DTO.PhongDTO;
+import com.example.demo.DTO.RoomDTO;
 import com.example.demo.Service.PhongService;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
@@ -24,7 +24,7 @@ public class PhongController {
     @PostMapping("/search")
     public ResponseEntity<?> searchPhong(@RequestBody Map<String, Object> payload) {
         try {
-            Page<PhongDTO> result = phongService.search(payload);
+            Page<RoomDTO> result = phongService.search(payload);
             return ResponseEntity.ok(result);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to search for Phong: " + e.getMessage());
@@ -34,7 +34,7 @@ public class PhongController {
     @GetMapping("/{id}")
     public ResponseEntity<?> getById(@PathVariable("id") BigInteger id) {
         try {
-            Optional<PhongDTO> phong = phongService.findById(id);
+            Optional<RoomDTO> phong = phongService.findById(id);
             return ResponseEntity.ok(phong);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Failed to retrieve Phong: " + e.getMessage());
@@ -42,9 +42,9 @@ public class PhongController {
     }
 
     @PostMapping()
-    public ResponseEntity<?> create(@RequestBody PhongDTO phongDTO) {
+    public ResponseEntity<?> create(@RequestBody RoomDTO phongDTO) {
         try {
-            PhongDTO newPhong = phongService.create(phongDTO);
+            RoomDTO newPhong = phongService.create(phongDTO);
             return ResponseEntity.ok(newPhong);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Failed to create Phong: " + e.getMessage());
@@ -52,9 +52,9 @@ public class PhongController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<?> update(@PathVariable("id") BigInteger id, @RequestBody PhongDTO phongDTO) {
+    public ResponseEntity<?> update(@PathVariable("id") BigInteger id, @RequestBody RoomDTO phongDTO) {
         try {
-            PhongDTO existingPhong = phongService.update(id, phongDTO);
+            RoomDTO existingPhong = phongService.update(id, phongDTO);
             return ResponseEntity.ok(existingPhong);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Failed to update Phong: " + e.getMessage());
@@ -64,7 +64,7 @@ public class PhongController {
     @PutMapping("/delete/{id}")
     public ResponseEntity<?> delete(@PathVariable("id") BigInteger id) {
         try {
-            PhongDTO existingPhong = phongService.delete(id);
+            RoomDTO existingPhong = phongService.delete(id);
             return ResponseEntity.ok(existingPhong);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Failed to delete Phong: " + e.getMessage());

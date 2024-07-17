@@ -1,7 +1,7 @@
 package com.example.demo.Service;
 
-import com.example.demo.DTO.PhongDTO;
-import com.example.demo.Entity.Phong;
+import com.example.demo.DTO.RoomDTO;
+import com.example.demo.Entity.Room;
 import com.example.demo.Repo.PhongRepo;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -20,55 +20,55 @@ public class PhongService {
         this.phongRepo = phongRepo;
     }
 
-    public Page<PhongDTO> search(Map<String, Object> payload) {
+    public Page<RoomDTO> search(Map<String, Object> payload) {
         int page = (int) payload.getOrDefault("page", 0);
         int size = (int) payload.getOrDefault("size", 5);
         String search = (String) payload.getOrDefault("search", "");
         Integer trangThai = (Integer) payload.get("trangThai");
         Pageable pageable = PageRequest.of(page, size);
-        Page<Phong> data = phongRepo.search(search, trangThai, pageable);
-        return data.map(Phong::toDTO);
+        Page<Room> data = phongRepo.search(search, trangThai, pageable);
+        return data.map(Room::toDTO);
     }
 
-    public Optional<PhongDTO> findById(BigInteger id) throws Exception {
-        Optional<Phong> optionalPhong = phongRepo.findById(id);
+    public Optional<RoomDTO> findById(BigInteger id) throws Exception {
+        Optional<Room> optionalPhong = phongRepo.findById(id);
         if (!optionalPhong.isPresent()) {
             throw new Exception("Phong not fonud");
         }
-        return optionalPhong.map(Phong::toDTO);
+        return optionalPhong.map(Room::toDTO);
     }
 
-    public PhongDTO create(PhongDTO phongDTO) {
-        Phong phong = Phong.toEntity(phongDTO);
+    public RoomDTO create(RoomDTO phongDTO) {
+        Room phong = Room.toEntity(phongDTO);
         phong.setMaPhong("M");
         phong.setTrangThai(1);
-        Phong newPhong = phongRepo.save(phong);
-        return Phong.toDTO(newPhong);
+        Room newPhong = phongRepo.save(phong);
+        return Room.toDTO(newPhong);
     }
 
-    public PhongDTO update(BigInteger id, PhongDTO phongDTO) throws Exception {
-        Optional<Phong> optionalPhong = phongRepo.findById(id);
+    public RoomDTO update(BigInteger id, RoomDTO phongDTO) throws Exception {
+        Optional<Room> optionalPhong = phongRepo.findById(id);
         if (!optionalPhong.isPresent()) {
            throw  new Exception("Phong not fonud");
         }
-        Phong existingPhong = optionalPhong.get();
+        Room existingPhong = optionalPhong.get();
         existingPhong.setTenPhong(phongDTO.getTenPhong());
         existingPhong.setDiaChi(phongDTO.getDiaChi());
         existingPhong.setDienTich(phongDTO.getDienTich());
         existingPhong.setGiaThue(phongDTO.getGiaThue());
         phongRepo.save(existingPhong);
-        return Phong.toDTO(existingPhong);
+        return Room.toDTO(existingPhong);
     }
 
-    public PhongDTO delete(BigInteger id) throws Exception {
-        Optional<Phong> optionalPhong = phongRepo.findById(id);
+    public RoomDTO delete(BigInteger id) throws Exception {
+        Optional<Room> optionalPhong = phongRepo.findById(id);
         if (!optionalPhong.isPresent()) {
             throw new Exception("Phong not fonud");
         }
-        Phong existingPhong = optionalPhong.get();
+        Room existingPhong = optionalPhong.get();
         existingPhong.setTrangThai(0);
         phongRepo.save(existingPhong);
-        return Phong.toDTO(existingPhong);
+        return Room.toDTO(existingPhong);
     }
 
 }
