@@ -13,30 +13,33 @@ import java.util.Date;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "ChiTietHopDong")
-public class ChiTietHopDong {
+@Table(name = "ContractDetail")
+public class ContractDetail {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "Id")
     private BigInteger id;
 
     @ManyToOne
-    @JoinColumn(name = "IdHopDong")
-    private HopDong hopDong;
+    @JoinColumn(name = "ContractId")
+    private Contract contract;
 
     @ManyToOne
-    @JoinColumn(name = "IdNguoiThue")
-    private NguoiThue nguoiThue;
+    @JoinColumn(name = "TenantId")
+    private Tenant tenant;
 
-    @Column(name = "NgayThamGia")
-    private Date ngayThamGia;
+    @Column(name = "JoinDate")
+    private Date joinDate;
 
-    @Column(name = "NgayRoiDi")
-    private Date ngayRoiDi;
+    @Column(name = "LeaveDate")
+    private Date leaveDate;
 
-    @Column(name = "SoTienPhaiTra")
-    private BigDecimal soTienPhaiTra;
+    @Column(name = "AmountToPay")
+    private BigDecimal amountToPay;
 
-    @Column(name = "TrangThai")
-    private int trangThai;
+    @Column(name = "CompanyId")
+    private BigInteger companyId;
+
+    @Column(name = "Status")
+    private int status;
 }

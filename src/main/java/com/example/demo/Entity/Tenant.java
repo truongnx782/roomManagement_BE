@@ -12,28 +12,31 @@ import java.util.Date;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "NguoiThue")
-public class NguoiThue {
+@Table(name = "Tenant")
+public class Tenant {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "Id")
     private BigInteger id;
 
-    @Column(name = "MaNguoiThue")
-    private String maNguoiThue;
+    @Column(name = "TenantCode")
+    private String tenantCode;
 
-    @Column(name = "TenNguoiThue")
-    private String tenNguoiThue;
+    @Column(name = "TenantName")
+    private String tenantName;
 
-    @Column(name = "SoCCCD")
-    private String soCCCD;
+    @Column(name = "IdentityNumber")
+    private String identityNumber;
 
-    @Column(name = "SoDienThoai")
-    private String soDienThoai;
+    @Column(name = "PhoneNumber")
+    private String phoneNumber;
 
-    @Column(name = "TrangThai")
-    private int trangThai;
+    @Column(name = "Status")
+    private int status;
 
-    @Column(name = "NgaySinhNguoiThue")
-    private Date ngaySinhNguoiThue;
+    @Column(name = "TenantBirthdate")
+    private Date tenantBirthdate;
+
+    @Column(name = "CompanyId")
+    private BigInteger companyId;
 }

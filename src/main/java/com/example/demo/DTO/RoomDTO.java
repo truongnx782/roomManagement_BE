@@ -1,5 +1,7 @@
 package com.example.demo.DTO;
 
+import com.example.demo.Entity.Company;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -13,14 +15,23 @@ import java.math.BigInteger;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class PhongDTO {
+public class RoomDTO {
     private BigInteger id;
-    private String maPhong;
-    private String tenPhong;
-    private String dienTich;
-    private BigDecimal giaThue;
-    private String diaChi;
-    private int trangThai;
-    private int trangThaiThue;
+
+    private String roomCode;
+
+    private String roomName;
+
+    private String area;
+
+    private BigDecimal rentPrice;
+
+    private String address;
+
+    private BigInteger companyId;
+
+    private int status;
+
+    private int rentStatus;
 
 }

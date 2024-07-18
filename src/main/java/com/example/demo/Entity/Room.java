@@ -1,6 +1,6 @@
 package com.example.demo.Entity;
 
-import com.example.demo.DTO.PhongDTO;
+import com.example.demo.DTO.RoomDTO;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -14,60 +14,64 @@ import java.math.BigInteger;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "Phong")
+@Table(name = "Room")
 @Builder
-public class Phong {
+public class Room {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "Id")
     private BigInteger id;
 
-    @Column(name = "MaPhong")
-    private String maPhong;
+    @Column(name = "RoomCode")
+    private String roomCode;
 
-    @Column(name = "TenPhong")
-    private String tenPhong;
+    @Column(name = "RoomName")
+    private String roomName;
 
-    @Column(name = "DienTich")
-    private String dienTich;
+    @Column(name = "Area")
+    private String area;
 
-    @Column(name = "GiaThue")
-    private BigDecimal giaThue;
+    @Column(name = "RentPrice")
+    private BigDecimal rentPrice;
 
-    @Column(name = "DiaChi")
-    private String diaChi;
+    @Column(name = "Address")
+    private String address;
 
-    @Column(name = "TrangThai")
-    private int trangThai;
+    @Column(name = "CompanyId")
+    private BigInteger companyId;
 
-    @Column(name = "TrangThaiThue")
-    private int trangThaiThue;
+    @Column(name = "Status")
+    private int status;
 
+    @Column(name = "RentStatus")
+    private int rentStatus;
 
-    public static PhongDTO toDTO(Phong phong) {
-        return PhongDTO.builder()
+    public static RoomDTO toDTO(Room phong) {
+        return RoomDTO.builder()
                 .id(phong.getId())
-                .maPhong(phong.getMaPhong())
-                .tenPhong(phong.getTenPhong())
-                .dienTich(phong.getDienTich())
-                .giaThue(phong.getGiaThue())
-                .diaChi(phong.getDiaChi())
-                .trangThai(phong.getTrangThai())
-                .trangThaiThue(phong.getTrangThaiThue())
+                .roomCode(phong.getRoomCode())
+                .roomName(phong.getRoomName())
+                .area(phong.getArea())
+                .rentPrice(phong.getRentPrice())
+                .address(phong.getAddress())
+                .status(phong.getStatus())
+                .rentStatus(phong.getRentStatus())
+                .companyId(phong.getCompanyId())
                 .build();
     }
 
-    public static Phong toEntity(PhongDTO phongDTO) {
-        return Phong.builder()
+    public static Room toEntity(RoomDTO phongDTO) {
+        return Room.builder()
                 .id(phongDTO.getId())
-                .maPhong(phongDTO.getMaPhong())
-                .tenPhong(phongDTO.getTenPhong())
-                .dienTich(phongDTO.getDienTich())
-                .giaThue(phongDTO.getGiaThue())
-                .diaChi(phongDTO.getDiaChi())
-                .trangThai(phongDTO.getTrangThai())
-                .trangThaiThue(phongDTO.getTrangThaiThue())
+                .roomCode(phongDTO.getRoomCode())
+                .roomName(phongDTO.getRoomName())
+                .area(phongDTO.getArea())
+                .rentPrice(phongDTO.getRentPrice())
+                .address(phongDTO.getAddress())
+                .status(phongDTO.getStatus())
+                .rentStatus(phongDTO.getRentStatus())
                 .build();
     }
+
 
 }

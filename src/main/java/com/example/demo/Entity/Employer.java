@@ -11,31 +11,34 @@ import java.math.BigInteger;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "NguoiDung")
-public class NguoiDung {
+@Table(name = "Employer")
+public class Employer {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "Id")
     private BigInteger id;
 
-    @Column(name = "MaNguoiDung")
-    private String maNguoiDung;
+    @Column(name = "UserCode")
+    private String userCode;
 
-    @Column(name = "TenDangNhap")
-    private String tenDangNhap;
+    @Column(name = "Username")
+    private String username;
 
-    @Column(name = "MatKhau")
-    private String matKhau;
+    @Column(name = "Password")
+    private String password;
 
     @Column(name = "Email")
     private String email;
 
-    @Column(name = "HoTen")
-    private String hoTen;
+    @Column(name = "FullName")
+    private String fullName;
 
-    @Column(name = "SoDienThoai")
-    private String soDienThoai;
+    @Column(name = "PhoneNumber")
+    private String phoneNumber;
 
-    @Column(name = "TrangThai")
-    private int trangThai;
+    @Column(name = "CompanyId")
+    private BigInteger companyId;
+
+    @Column(name = "Status")
+    private int status;
 }

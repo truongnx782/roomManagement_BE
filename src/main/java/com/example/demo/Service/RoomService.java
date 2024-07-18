@@ -2,7 +2,7 @@ package com.example.demo.Service;
 
 import com.example.demo.DTO.RoomDTO;
 import com.example.demo.Entity.Room;
-import com.example.demo.Repo.PhongRepo;
+import com.example.demo.Repo.RoomRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -13,62 +13,64 @@ import java.util.Map;
 import java.util.Optional;
 
 @Service
-public class PhongService {
-    private final PhongRepo phongRepo;
+public class RoomService {
+    private final RoomRepository roomRepository;
 
-    public PhongService(PhongRepo phongRepo) {
-        this.phongRepo = phongRepo;
+    public RoomService(RoomRepository roomRepository) {
+        this.roomRepository = roomRepository;
     }
 
     public Page<RoomDTO> search(Map<String, Object> payload) {
         int page = (int) payload.getOrDefault("page", 0);
         int size = (int) payload.getOrDefault("size", 5);
         String search = (String) payload.getOrDefault("search", "");
-        Integer trangThai = (Integer) payload.get("trangThai");
+        Integer status = (Integer) payload.get("status");
         Pageable pageable = PageRequest.of(page, size);
-        Page<Room> data = phongRepo.search(search, trangThai, pageable);
+        Page<Room> data = roomRepository.search(search, status, pageable);
         return data.map(Room::toDTO);
     }
 
     public Optional<RoomDTO> findById(BigInteger id) throws Exception {
-        Optional<Room> optionalPhong = phongRepo.findById(id);
-        if (!optionalPhong.isPresent()) {
-            throw new Exception("Phong not fonud");
+        Optional<Room> roomOptional = roomRepository.findById(id);
+        if (!roomOptional.isPresent()) {
+            throw new Exception("Room not found");
         }
-        return optionalPhong.map(Room::toDTO);
+        return roomOptional.map(Room::toDTO);
     }
 
-    public RoomDTO create(RoomDTO phongDTO) {
-        Room phong = Room.toEntity(phongDTO);
-        phong.setMaPhong("M");
-        phong.setTrangThai(1);
-        Room newPhong = phongRepo.save(phong);
-        return Room.toDTO(newPhong);
+    public RoomDTO create(RoomDTO roomDTO) {
+        Optional<Room> maxIdSP = roomRepository.findMaxId();
+        BigInteger maxId = maxIdSP.isPresent() ? maxIdSP.get().getId().add(BigInteger.ONE) : BigInteger.ONE;
+
+        Room room = Room.toEntity(roomDTO);
+        room.setRoomCode("R"+maxId);
+        room.setStatus(1);
+        Room newRoom = roomRepository.save(room);
+        return Room.toDTO(newRoom);
     }
 
-    public RoomDTO update(BigInteger id, RoomDTO phongDTO) throws Exception {
-        Optional<Room> optionalPhong = phongRepo.findById(id);
-        if (!optionalPhong.isPresent()) {
-           throw  new Exception("Phong not fonud");
+    public RoomDTO update(BigInteger id, RoomDTO roomDTO) throws Exception {
+        Optional<Room> roomOptional = roomRepository.findById(id);
+        if (!roomOptional.isPresent()) {
+            throw new Exception("Room not found");
         }
-        Room existingPhong = optionalPhong.get();
-        existingPhong.setTenPhong(phongDTO.getTenPhong());
-        existingPhong.setDiaChi(phongDTO.getDiaChi());
-        existingPhong.setDienTich(phongDTO.getDienTich());
-        existingPhong.setGiaThue(phongDTO.getGiaThue());
-        phongRepo.save(existingPhong);
-        return Room.toDTO(existingPhong);
+        Room existingRoom = roomOptional.get();
+        existingRoom.setRoomName(roomDTO.getRoomName());
+        existingRoom.setAddress(roomDTO.getAddress());
+        existingRoom.setArea(roomDTO.getArea());
+        existingRoom.setRentPrice(roomDTO.getRentPrice());
+        roomRepository.save(existingRoom);
+        return Room.toDTO(existingRoom);
     }
 
     public RoomDTO delete(BigInteger id) throws Exception {
-        Optional<Room> optionalPhong = phongRepo.findById(id);
-        if (!optionalPhong.isPresent()) {
-            throw new Exception("Phong not fonud");
+        Optional<Room> roomOptional = roomRepository.findById(id);
+        if (!roomOptional.isPresent()) {
+            throw new Exception("Room not found");
         }
-        Room existingPhong = optionalPhong.get();
-        existingPhong.setTrangThai(0);
-        phongRepo.save(existingPhong);
-        return Room.toDTO(existingPhong);
+        Room existingRoom = roomOptional.get();
+        existingRoom.setStatus(0); // Example logical delete operation
+        roomRepository.save(existingRoom);
+        return Room.toDTO(existingRoom);
     }
-
 }

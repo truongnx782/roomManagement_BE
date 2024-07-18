@@ -5,40 +5,43 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.math.BigDecimal;
 import java.util.Date;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "HopDong")
-public class HopDong {
+@Table(name = "Contract")
+public class Contract {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "Id")
     private BigInteger id;
 
-    @Column(name = "MaHopDong")
-    private String maHopDong;
+    @Column(name = "ContractCode")
+    private String contractCode;
 
     @ManyToOne
-    @JoinColumn(name = "IdPhong")
-    private Phong phong;
+    @JoinColumn(name = "RoomId")
+    private Room room;
 
-    @Column(name = "NgayBatDau")
-    private Date ngayBatDau;
+    @Column(name = "StartDate")
+    private Date startDate;
 
-    @Column(name = "NgayKetThuc")
-    private Date ngayKetThuc;
+    @Column(name = "EndDate")
+    private Date endDate;
 
-    @Column(name = "GiaThue")
-    private BigDecimal giaThue;
+    @Column(name = "RentPrice")
+    private BigDecimal rentPrice;
 
-    @Column(name = "DieuKhoan")
-    private String dieuKhoan;
+    @Column(name = "Terms")
+    private String terms;
 
-    @Column(name = "TrangThai")
-    private int trangThai;
+    @Column(name = "CompanyId")
+    private BigInteger companyId;
+
+    @Column(name = "Status")
+    private int status;
 }

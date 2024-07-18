@@ -1,74 +1,71 @@
 package com.example.demo.Controller;
 
 import com.example.demo.DTO.RoomDTO;
-import com.example.demo.Service.PhongService;
-import org.springframework.data.domain.Page;
+import com.example.demo.Service.RoomService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigInteger;
 import java.util.Map;
-import java.util.Optional;
-
 @RestController
 @CrossOrigin(origins = "http://localhost:3000")
-@RequestMapping("phong")
-public class PhongController {
-    private final PhongService phongService;
+@RequestMapping("/room")
+public class RoomController {
+    private final RoomService roomService;
 
-    public PhongController(PhongService phongService) {
-        this.phongService = phongService;
+    public RoomController(RoomService roomService) {
+        this.roomService = roomService;
     }
 
     @PostMapping("/search")
-    public ResponseEntity<?> searchPhong(@RequestBody Map<String, Object> payload) {
+    public ResponseEntity<?> searchRoom(@RequestBody Map<String, Object> payload) {
         try {
-            Page<RoomDTO> result = phongService.search(payload);
-            return ResponseEntity.ok(result);
+            return ResponseEntity.ok(roomService.search(payload));
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to search for Phong: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Failed to search for Room: " + e.getMessage());
         }
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<?> getById(@PathVariable("id") BigInteger id) {
         try {
-            Optional<RoomDTO> phong = phongService.findById(id);
-            return ResponseEntity.ok(phong);
+            return ResponseEntity.ok(roomService.findById(id));
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Failed to retrieve Phong: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body("Failed to retrieve Room: " + e.getMessage());
         }
     }
 
     @PostMapping()
-    public ResponseEntity<?> create(@RequestBody RoomDTO phongDTO) {
+    public ResponseEntity<?> create(@RequestBody RoomDTO roomDTO) {
         try {
-            RoomDTO newPhong = phongService.create(phongDTO);
-            return ResponseEntity.ok(newPhong);
+            return ResponseEntity.ok(roomService.create(roomDTO));
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Failed to create Phong: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body("Failed to create Room: " + e.getMessage());
         }
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<?> update(@PathVariable("id") BigInteger id, @RequestBody RoomDTO phongDTO) {
+    public ResponseEntity<?> update(@PathVariable("id") BigInteger id,
+                                    @RequestBody RoomDTO roomDTO) {
         try {
-            RoomDTO existingPhong = phongService.update(id, phongDTO);
-            return ResponseEntity.ok(existingPhong);
+            return ResponseEntity.ok(roomService.update(id, roomDTO));
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Failed to update Phong: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body("Failed to update Room: " + e.getMessage());
         }
     }
 
     @PutMapping("/delete/{id}")
     public ResponseEntity<?> delete(@PathVariable("id") BigInteger id) {
         try {
-            RoomDTO existingPhong = phongService.delete(id);
-            return ResponseEntity.ok(existingPhong);
+            return ResponseEntity.ok(roomService.delete(id));
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Failed to delete Phong: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body("Failed to delete Room: " + e.getMessage());
         }
     }
 }
-

@@ -1,5 +1,6 @@
 package com.example.demo.DTO;
 
+import jakarta.persistence.Column;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -11,10 +12,16 @@ import java.math.BigInteger;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class TienIchDTO {
+public class UtilityDTO {
     private BigInteger id;
-    private String maTienIch;
-    private String tenTienIch;
-    private int trangThai;
+
+    private String utilityCode;
+
+    private String utilityName;
+
+    private BigInteger companyId;
+
+    private int status;
+
 
 }

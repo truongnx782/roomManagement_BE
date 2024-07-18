@@ -13,35 +13,38 @@ import java.util.Date;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "ThanhToan")
-public class ThanhToan {
+@Table(name = "Payment")
+public class Payment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "Id")
     private BigInteger id;
 
     @ManyToOne
-    @JoinColumn(name = "IdHopDong")
-    private Contract hopDong;
+    @JoinColumn(name = "ContractId")
+    private Contract contract;
 
-    @Column(name = "SoTien")
-    private BigDecimal soTien;
+    @Column(name = "Amount")
+    private BigDecimal amount;
 
-    @Column(name = "NgayThanhToan")
-    private Date ngayThanhToan;
+    @Column(name = "PaymentDate")
+    private Date paymentDate;
 
-    @Column(name = "TrangThai")
-    private String trangThai;
+    @Column(name = "Status")
+    private String status;
 
-    @Column(name = "SoDienThangTruoc")
-    private Long soDienThangTruoc;
+    @Column(name = "PreviousMonthElectricity")
+    private BigInteger previousMonthElectricity;
 
-    @Column(name = "SoDienThangNay")
-    private Long soDienThangNay;
+    @Column(name = "CurrentMonthElectricity")
+    private BigInteger currentMonthElectricity;
 
-    @Column(name = "SoNuocThangTruoc")
-    private Long soNuocThangTruoc;
+    @Column(name = "PreviousMonthWater")
+    private BigInteger previousMonthWater;
 
-    @Column(name = "SoNuocThangNay")
-    private Long soNuocThangNay;
+    @Column(name = "CompanyId")
+    private BigInteger companyId;
+
+    @Column(name = "CurrentMonthWater")
+    private BigInteger currentMonthWater;
 }

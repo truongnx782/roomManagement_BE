@@ -12,24 +12,28 @@ import java.math.BigInteger;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "ChiTietThanhToan")
-public class ChiTietThanhToan {
+@Table(name = "PaymentDetail")
+public class PaymentDetail {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "Id")
     private BigInteger id;
 
     @ManyToOne
-    @JoinColumn(name = "IdDichVu")
-    private DichVu dichVu;
+    @JoinColumn(name = "ServiceId")
+    private Service service;
 
-    @Column(name = "SoTienPhaiTra")
-    private BigDecimal soTienPhaiTra;
+    @Column(name = "AmountToPay")
+    private BigDecimal amountToPay;
 
-    @Column(name = "TrangThai")
-    private String trangThai;
+    @Column(name = "CompanyId")
+    private BigInteger companyId;
+
+    @Column(name = "Status")
+    private String status;
+
 
     @ManyToOne
-    @JoinColumn(name = "IdThanhToan")
-    private ThanhToan thanhToan;
+    @JoinColumn(name = "PaymentId")
+    private Payment payment;
 }

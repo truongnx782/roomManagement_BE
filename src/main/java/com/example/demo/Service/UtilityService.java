@@ -1,7 +1,7 @@
-package com.example.demo.service;
+package com.example.demo.Service;
 
-import com.example.demo.dto.UtilityDTO;
-import com.example.demo.entity.Utility;
+import com.example.demo.DTO.UtilityDTO;
+import com.example.demo.Entity.Utility;
 import com.example.demo.repository.UtilityRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;

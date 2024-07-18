@@ -8,15 +8,19 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.math.BigInteger;
+import java.util.Optional;
 
-public interface DichVuRepo extends JpaRepository<Service, BigInteger> {
+public interface ServiceRepository extends JpaRepository<Service, BigInteger> {
 
-    @Query(value = "SELECT dv FROM Service dv WHERE " +
-            "(dv.tenDichVu LIKE %:search% OR dv.maDichVu LIKE %:search% ) " +
-            "AND (:status IS NULL OR dv.trangThai =:status) " +
-            "ORDER BY dv.id DESC")
+    @Query(value = "SELECT s FROM Service s WHERE " +
+            "(s.serviceName LIKE %:search% OR s.serviceCode LIKE %:search% ) " +
+            "AND (:status IS NULL OR s.status = :status) " +
+            "ORDER BY s.id DESC")
     Page<Service> search(@Param("search") String search,
                          @Param("status") Integer status,
                          Pageable pageable);
 
+    @Query(value = "SELECT nv FROM Service nv WHERE nv.id = (SELECT MAX(nv2.id) FROM Service nv2)")
+    Optional<Service> findMaxId();
 }
+

@@ -1,7 +1,6 @@
 package com.example.demo.Entity;
 
-import com.example.demo.DTO.PhongDTO;
-import com.example.demo.DTO.TienIchDTO;
+import com.example.demo.DTO.UtilityDTO;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -15,37 +14,42 @@ import java.math.BigInteger;
 @AllArgsConstructor
 @Entity
 @Builder
-@Table(name = "TienIch")
-public class TienIch {
+@Table(name = "Utility")
+public class Utility {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "Id")
     private BigInteger id;
 
-    @Column(name = "MaTienIch")
-    private String maTienIch;
+    @Column(name = "UtilityName")
+    private String utilityName;
 
-    @Column(name = "TenTienIch")
-    private String tenTienIch;
+    @Column(name = "Status")
+    private int status;
 
-    @Column(name = "TrangThai")
-    private int trangThai;
+    @Column(name = "UtilityCode")
+    private String utilityCode;
 
-    public static TienIchDTO toDTO(TienIch tienIch) {
-        return TienIchDTO.builder()
+    @Column(name = "CompanyId")
+    private BigInteger companyId;
+
+    public static UtilityDTO toDTO(Utility tienIch) {
+        return UtilityDTO.builder()
                 .id(tienIch.getId())
-                .maTienIch(tienIch.getMaTienIch())
-                .tenTienIch(tienIch.getTenTienIch())
-                .trangThai(tienIch.getTrangThai())
+                .utilityCode(tienIch.getUtilityCode())
+                .utilityName(tienIch.getUtilityName())
+                .status(tienIch.getStatus())
                 .build();
     }
-    public static TienIch toEntity(TienIchDTO tienIchDTO) {
-        return TienIch.builder()
+
+    public static Utility toEntity(UtilityDTO tienIchDTO) {
+        return Utility.builder()
                 .id(tienIchDTO.getId())
-                .maTienIch(tienIchDTO.getMaTienIch())
-                .tenTienIch(tienIchDTO.getTenTienIch())
-                .trangThai(tienIchDTO.getTrangThai())
+                .utilityCode(tienIchDTO.getUtilityCode())
+                .utilityName(tienIchDTO.getUtilityName())
+                .status(tienIchDTO.getStatus())
                 .build();
     }
+
 
 }

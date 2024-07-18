@@ -6,30 +6,27 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.math.BigInteger;
+import java.util.Date;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "Maintenance")
-public class Maintenance {
+@Table(name = "Company")
+public class Company {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "Id")
     private BigInteger id;
 
-    @ManyToOne
-    @JoinColumn(name = "RoomId")
-    private Room room;
+    @Column(name = "CompanyCode")
+    private String companyCode;
 
-    @Column(name = "MaintenanceRequest")
-    private String maintenanceRequest;
+    @Column(name = "CompanyName")
+    private String companyName;
 
-    @Column(name = "MaintenanceStatus")
-    private int maintenanceStatus;
-
-    @Column(name = "CompanyId")
-    private BigInteger companyId;
+    @Column(name = "Address")
+    private String address;
 
     @Column(name = "Status")
     private int status;

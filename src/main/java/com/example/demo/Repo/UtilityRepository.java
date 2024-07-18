@@ -1,4 +1,4 @@
-package com.example.demo.Repo;
+package com.example.demo.repository;
 
 import com.example.demo.Entity.Utility;
 import org.springframework.data.domain.Page;
@@ -9,11 +9,12 @@ import org.springframework.data.repository.query.Param;
 
 import java.math.BigInteger;
 
-public interface TienIchRepo extends JpaRepository<Utility, BigInteger> {
-    @Query(value = "SELECT t FROM Utility t WHERE " +
-            "(t.maTienIch LIKE %:search% OR t.tenTienIch LIKE %:search% ) " +
-            "AND (:status IS NULL OR t.trangThai =:status) " +
-            "ORDER BY t.id DESC")
+public interface UtilityRepository extends JpaRepository<Utility, BigInteger> {
+    @Query(value = "SELECT u FROM Utility u WHERE " +
+            "(u.utilityCode LIKE %:search% OR u.utilityName LIKE %:search% ) " +
+            "AND (:status IS NULL OR u.status = :status) " +
+            "ORDER BY u.id DESC")
     Page<Utility> search(@Param("search") String search,
                          @Param("status") Integer status,
-                         Pageable pageable);}
+                         Pageable pageable);
+}

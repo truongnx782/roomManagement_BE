@@ -1,5 +1,6 @@
 package com.example.demo.DTO;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -15,13 +16,21 @@ import java.util.Date;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class DichVuDTO {
+public class ServiceDTO {
     private BigInteger id;
-    private String maDichVu;
-    private String tenDichVu;
-    private BigDecimal giaDichVu;
-    private LocalDate ngayBatDau;
-    private LocalDate ngayKetThuc;
-    private int trangThai;
+
+    private String serviceName;
+
+    private LocalDate startDate;
+
+    private LocalDate endDate;
+
+    private int status;
+
+    private BigDecimal servicePrice;
+
+    private String serviceCode;
+
+    private BigInteger companyId;
 
 }
