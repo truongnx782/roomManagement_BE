@@ -1,6 +1,6 @@
-package com.example.demo.repository;
+package com.example.demo.Repo;
 
-import com.example.demo.Entity.Room;
+import com.example.demo.Entity.Customer;
 import com.example.demo.Entity.Utility;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -9,19 +9,16 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.math.BigInteger;
-import java.util.List;
 import java.util.Optional;
 
-public interface UtilityRepository extends JpaRepository<Utility, BigInteger> {
-    @Query(value = "SELECT u FROM Utility u WHERE " +
-            "(u.utilityCode LIKE %:search% OR u.utilityName LIKE %:search% ) " +
+public interface CustomerRepository extends JpaRepository<Customer, BigInteger> {
+    @Query(value = "SELECT u FROM Customer u WHERE " +
+            "(u.customerCode LIKE %:search% OR u.customerName LIKE %:search% OR  u.phoneNumber LIKE %:search%  ) " +
             "AND (:status IS NULL OR u.status = :status) " +
             "ORDER BY u.id DESC")
-    Page<Utility> search(@Param("search") String search,
+    Page<Customer> search(@Param("search") String search,
                          @Param("status") Integer status,
                          Pageable pageable);
-
-
-    @Query(value = "SELECT nv FROM Utility nv WHERE nv.id = (SELECT MAX(nv2.id) FROM Room nv2)")
-    Optional<Utility> findMaxId();
+    @Query(value = "SELECT nv FROM Customer nv WHERE nv.id = (SELECT MAX(nv2.id) FROM Room nv2)")
+    Optional<Customer> findMaxId();
 }

@@ -38,6 +38,7 @@ public class ServiceService {
     }
 
     public ServiceDTO createService(ServiceDTO serviceDTO) {
+        serviceDTO.validateServiceDTO(serviceDTO);
         Optional<Service> maxIdSP = serviceRepository.findMaxId();
         BigInteger maxId = maxIdSP.isPresent() ? maxIdSP.get().getId().add(BigInteger.ONE) : BigInteger.ONE;
 
@@ -48,17 +49,19 @@ public class ServiceService {
         return Service.toDTO(newService);
     }
 
-    public ServiceDTO updateService(BigInteger id, ServiceDTO updatedServiceDTO) throws Exception {
+    public ServiceDTO updateService(BigInteger id, ServiceDTO updatedServiceDTO) {
+        updatedServiceDTO.validateServiceDTO(updatedServiceDTO);
+
         Optional<Service> serviceOptional = serviceRepository.findById(id);
         if (!serviceOptional.isPresent()) {
-            throw new Exception("Service not found");
+            throw new IllegalArgumentException("Service not found");
         }
         Service existingService = serviceOptional.get();
         existingService.setServiceName(updatedServiceDTO.getServiceName());
         existingService.setServicePrice(updatedServiceDTO.getServicePrice());
         existingService.setStartDate(updatedServiceDTO.getStartDate());
         existingService.setEndDate(updatedServiceDTO.getEndDate());
-        serviceRepository.save(existingService);
+        existingService=serviceRepository.save(existingService);
         return Service.toDTO(existingService);
     }
 
@@ -69,7 +72,7 @@ public class ServiceService {
         }
         Service existingService = serviceOptional.get();
         existingService.setStatus(0);
-        serviceRepository.save(existingService);
+        existingService=serviceRepository.save(existingService);
         return Service.toDTO(existingService);
     }
 }

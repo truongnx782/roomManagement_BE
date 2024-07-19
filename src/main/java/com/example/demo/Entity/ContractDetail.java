@@ -26,7 +26,7 @@ public class ContractDetail {
 
     @ManyToOne
     @JoinColumn(name = "TenantId")
-    private Tenant tenant;
+    private Customer customer;
 
     @Column(name = "JoinDate")
     private Date joinDate;

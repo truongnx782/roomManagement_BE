@@ -22,5 +22,6 @@ public interface RoomRepository extends JpaRepository<Room, BigInteger> {
 
     @Query(value = "SELECT nv FROM Room nv WHERE nv.id = (SELECT MAX(nv2.id) FROM Room nv2)")
     Optional<Room> findMaxId();
+
 }
 

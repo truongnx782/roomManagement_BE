@@ -30,15 +30,17 @@ public class RoomService {
         return data.map(Room::toDTO);
     }
 
-    public Optional<RoomDTO> findById(BigInteger id) throws Exception {
+    public Optional<RoomDTO> findById(BigInteger id)  {
         Optional<Room> roomOptional = roomRepository.findById(id);
         if (!roomOptional.isPresent()) {
-            throw new Exception("Room not found");
+            throw new IllegalArgumentException("Room not found");
         }
         return roomOptional.map(Room::toDTO);
     }
 
     public RoomDTO create(RoomDTO roomDTO) {
+        roomDTO.validateRoomDTO(roomDTO);
+
         Optional<Room> maxIdSP = roomRepository.findMaxId();
         BigInteger maxId = maxIdSP.isPresent() ? maxIdSP.get().getId().add(BigInteger.ONE) : BigInteger.ONE;
 
@@ -49,17 +51,19 @@ public class RoomService {
         return Room.toDTO(newRoom);
     }
 
-    public RoomDTO update(BigInteger id, RoomDTO roomDTO) throws Exception {
+    public RoomDTO update(BigInteger id, RoomDTO roomDTO)  {
+        roomDTO.validateRoomDTO(roomDTO);
+
         Optional<Room> roomOptional = roomRepository.findById(id);
         if (!roomOptional.isPresent()) {
-            throw new Exception("Room not found");
+            throw new IllegalArgumentException("Room not found");
         }
         Room existingRoom = roomOptional.get();
         existingRoom.setRoomName(roomDTO.getRoomName());
         existingRoom.setAddress(roomDTO.getAddress());
         existingRoom.setArea(roomDTO.getArea());
         existingRoom.setRentPrice(roomDTO.getRentPrice());
-        roomRepository.save(existingRoom);
+        existingRoom=roomRepository.save(existingRoom);
         return Room.toDTO(existingRoom);
     }
 
@@ -70,7 +74,7 @@ public class RoomService {
         }
         Room existingRoom = roomOptional.get();
         existingRoom.setStatus(0); // Example logical delete operation
-        roomRepository.save(existingRoom);
+        existingRoom=roomRepository.save(existingRoom);
         return Room.toDTO(existingRoom);
     }
 }

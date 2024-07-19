@@ -34,4 +34,26 @@ public class RoomDTO {
 
     private int rentStatus;
 
+    public void validateRoomDTO(RoomDTO roomDTO) {
+        if (roomDTO.getRoomName() == null || roomDTO.getRoomName().isEmpty()) {
+            throw new IllegalArgumentException("Room name cannot be empty.");
+        }
+        if (roomDTO.getArea() == null || roomDTO.getArea().isEmpty()) {
+            throw new IllegalArgumentException("Area cannot be empty.");
+        }
+        if (roomDTO.getRentPrice() == null) {
+            throw new IllegalArgumentException("Rent price cannot be null.");
+        }
+        if (roomDTO.getAddress() == null || roomDTO.getAddress().isEmpty()) {
+            throw new IllegalArgumentException("Address cannot be empty.");
+        }
+        if (roomDTO.getStatus() < 0) {
+            throw new IllegalArgumentException("Status cannot be negative.");
+        }
+        if (roomDTO.getRentStatus() < 0) {
+            throw new IllegalArgumentException("Rent status cannot be negative.");
+        }
+    }
+
+
 }

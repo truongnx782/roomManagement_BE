@@ -1,7 +1,8 @@
 package com.example.demo.Controller;
 
+import com.example.demo.DTO.CustomerDTO;
 import com.example.demo.DTO.UtilityDTO;
-import com.example.demo.Service.UtilityService;
+import com.example.demo.Service.CustomerService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -11,71 +12,70 @@ import java.util.Map;
 
 @RestController
 @CrossOrigin(origins = "http://localhost:3000")
-@RequestMapping("/utility")
-public class UtilityController {
-    private final UtilityService utilityService;
+@RequestMapping("/customer")
+public class CustomerController {
+    private  final CustomerService customerService;
 
-    public UtilityController(UtilityService utilityService) {
-        this.utilityService = utilityService;
+    public CustomerController(CustomerService customerService) {
+        this.customerService = customerService;
     }
 
     @PostMapping("/search")
     public ResponseEntity<?> search(@RequestBody Map<String, Object> payload) {
         try {
-            return ResponseEntity.ok(utilityService.search(payload));
+            return ResponseEntity.ok(customerService.search(payload));
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to search for utilities: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to search for customer: " + e.getMessage());
         }
     }
 
     @GetMapping("")
     public ResponseEntity<?> getAll() {
         try {
-            return ResponseEntity.ok(utilityService.getAll());
+            return ResponseEntity.ok(customerService.getAll());
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to search for utilities: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to search for customer: " + e.getMessage());
         }
     }
 
     @PostMapping()
-    public ResponseEntity<?> create(@RequestBody UtilityDTO utilityDTO) {
+    public ResponseEntity<?> create(@RequestBody CustomerDTO customerDTO) {
         try {
-            return ResponseEntity.ok(utilityService.create(utilityDTO));
+            return ResponseEntity.ok(customerService.create(customerDTO));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body("Failed to create Utility: " + e.getMessage());
+                    .body("Failed to create customer: " + e.getMessage());
         }
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<?> getById(@PathVariable("id") BigInteger id) {
         try {
-            return ResponseEntity.ok(utilityService.findById(id));
+            return ResponseEntity.ok(customerService.findById(id));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body("Failed to retrieve Utility: " + e.getMessage());
+                    .body("Failed to retrieve customer: " + e.getMessage());
         }
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<?> Update(@PathVariable("id") BigInteger id,
-                                    @RequestBody UtilityDTO utilityDTO) {
+                                    @RequestBody CustomerDTO customerDTO) {
         try {
-            return ResponseEntity.ok(utilityService.update(id, utilityDTO));
+            return ResponseEntity.ok(customerService.update(id, customerDTO));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body("Failed to create Utility: " + e.getMessage());
+                    .body("Failed to create customer: " + e.getMessage());
         }
     }
 
     @PutMapping("/delete/{id}")
     public ResponseEntity<?> delete(@PathVariable("id") BigInteger id) {
         try {
-            return ResponseEntity.ok(utilityService.delete(id));
+            return ResponseEntity.ok(customerService.delete(id));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body("Failed to delete Utility: " + e.getMessage());
+                    .body("Failed to delete customer: " + e.getMessage());
         }
     }
-
 }

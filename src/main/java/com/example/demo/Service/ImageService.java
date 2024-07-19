@@ -31,20 +31,24 @@ public class ImageService {
         this.executorService = Executors.newFixedThreadPool(5);
     }
 
-    // Nén ảnh, tăng tốc độ upload
     public List<ImageDTO> create(List<MultipartFile> files, List<BigInteger> images, BigInteger roomId, Integer status) throws IOException {
         List<Image> listImage = new ArrayList<>();
         if (files != null) {
-            for (MultipartFile file : files) {
-                Map r = this.cloudinary.uploader().upload(file.getBytes(), ObjectUtils.asMap("resource_type", "auto"));
-                Image image = new Image();
-                Room room = new Room();
-                room.setId(roomId);
-                image.setRoom(room);
-                image.setUrl((String) r.get("secure_url"));
-                image.setStatus(status);
-                listImage.add(image);
-            }
+            List<Image> finalListImage = listImage;
+            files.parallelStream().forEach(file -> {
+                try {
+                    Map r = this.cloudinary.uploader().upload(file.getBytes(), ObjectUtils.asMap("resource_type", "auto"));
+                    Image image = new Image();
+                    Room room = new Room();
+                    room.setId(roomId);
+                    image.setRoom(room);
+                    image.setUrl((String) r.get("secure_url"));
+                    image.setStatus(status);
+                    finalListImage.add(image);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            });
         }
 
         List<Image> imagesRepo = imageRepositoty.findAllByRoomId(roomId);
