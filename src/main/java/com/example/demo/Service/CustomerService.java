@@ -35,12 +35,12 @@ private final CustomerRepository customerRepository;
     }
 
     public List<CustomerDTO> getAll() {
-        List<Customer> customers = customerRepository.findAll();
+        List<Customer> customers = customerRepository.findAllByOrderByIdDesc();
         return customers.stream().map(Customer::toDTO).collect(Collectors.toList());
     }
 
     public CustomerDTO create(CustomerDTO customerDTO) {
-
+        customerDTO.validate(customerDTO);
         Optional<Customer> maxIdSP = customerRepository.findMaxId();
         BigInteger maxId = maxIdSP.isPresent() ? maxIdSP.get().getId().add(BigInteger.ONE) : BigInteger.ONE;
 
@@ -52,7 +52,7 @@ private final CustomerRepository customerRepository;
     }
 
     public CustomerDTO update(BigInteger id, CustomerDTO customerDTO) {
-
+        customerDTO.validate(customerDTO);
         Optional<Customer> optionalCustomer = customerRepository.findById(id);
         if (!optionalCustomer.isPresent()) {
             throw new IllegalArgumentException("Customer not found");
@@ -74,6 +74,17 @@ private final CustomerRepository customerRepository;
         }
         Customer customer = optionalCustomer.get();
         customer.setStatus(0);
+        customer= customerRepository.save(customer);
+        return Customer.toDTO(customer);
+    }
+
+    public CustomerDTO restore(BigInteger id){
+        Optional<Customer> optionalCustomer = customerRepository.findById(id);
+        if (!optionalCustomer.isPresent()) {
+            throw new IllegalArgumentException("Customer not found");
+        }
+        Customer customer = optionalCustomer.get();
+        customer.setStatus(1);
         customer= customerRepository.save(customer);
         return Customer.toDTO(customer);
     }

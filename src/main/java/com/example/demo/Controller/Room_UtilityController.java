@@ -1,6 +1,6 @@
 package com.example.demo.Controller;
 
-import com.example.demo.DTO.CreateRoom_UtilityDTO;
+import com.example.demo.Request.Room_UtilityReq;
 import com.example.demo.Service.Room_UtilityService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -10,7 +10,6 @@ import java.math.BigInteger;
 
 
 @RestController
-@CrossOrigin(origins = "http://localhost:3000")
 @RequestMapping("/room-utility")
 public class Room_UtilityController {
     private final Room_UtilityService room_utilityService;
@@ -20,22 +19,22 @@ public class Room_UtilityController {
     }
 
     @PostMapping("/create")
-    public ResponseEntity<?> create(@RequestBody CreateRoom_UtilityDTO createRoom_utilityDTO) {
+    public ResponseEntity<?> create(@RequestBody Room_UtilityReq createRoom_utilityDTO) {
         try {
             return ResponseEntity.ok(room_utilityService.create(createRoom_utilityDTO));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body("Failed to create Room: " + e.getMessage());
+                    .body("Failed to create Room-utility: " + e.getMessage());
         }
     }
 
     @PostMapping("/update")
-    public ResponseEntity<?> update(@RequestBody CreateRoom_UtilityDTO createRoom_utilityDTO) {
+    public ResponseEntity<?> update(@RequestBody Room_UtilityReq createRoom_utilityDTO) {
         try {
             return ResponseEntity.ok(room_utilityService.update(createRoom_utilityDTO));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body("Failed to create Room: " + e.getMessage());
+                    .body("Failed to create Room-utility: " + e.getMessage());
         }
     }
 

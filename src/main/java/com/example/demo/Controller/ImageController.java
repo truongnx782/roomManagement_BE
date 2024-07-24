@@ -11,7 +11,6 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-@CrossOrigin(origins = "http://localhost:3000")
 @RequestMapping("/image")
 public class ImageController {
     private  final ImageService imageService;
@@ -26,7 +25,6 @@ public class ImageController {
             @RequestParam(value = "image",required = false) List<BigInteger> images,
             @RequestParam("room") BigInteger roomId,
             @RequestParam("status") Integer status) {
-
         try {
             return ResponseEntity.ok(imageService.create(file,images, roomId, status));
         } catch (Exception e) {
@@ -41,7 +39,7 @@ public class ImageController {
             return ResponseEntity.ok(imageService.getAllByRoomId(RoomId));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body("Failed to create Room: " + e.getMessage());
+                    .body("Failed to create Image: " + e.getMessage());
         }
     }
 }

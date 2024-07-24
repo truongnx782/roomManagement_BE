@@ -47,12 +47,6 @@ public class RoomDTO {
         if (roomDTO.getAddress() == null || roomDTO.getAddress().isEmpty()) {
             throw new IllegalArgumentException("Address cannot be empty.");
         }
-        if (roomDTO.getStatus() < 0) {
-            throw new IllegalArgumentException("Status cannot be negative.");
-        }
-        if (roomDTO.getRentStatus() < 0) {
-            throw new IllegalArgumentException("Rent status cannot be negative.");
-        }
     }
 
 

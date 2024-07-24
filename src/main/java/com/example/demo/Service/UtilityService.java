@@ -1,10 +1,7 @@
 package com.example.demo.Service;
 
-import com.example.demo.DTO.RoomDTO;
 import com.example.demo.DTO.UtilityDTO;
-import com.example.demo.Entity.Room;
 import com.example.demo.Entity.Utility;
-import com.example.demo.Util.Utuils;
 import com.example.demo.repository.UtilityRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -36,7 +33,7 @@ public class UtilityService  {
     }
 
     public List<UtilityDTO> getAll() {
-        List<Utility> utilityList = utilityRepository.findAll();
+        List<Utility> utilityList = utilityRepository.findAllByOrderByIdDesc();
         return utilityList.stream().map(Utility::toDTO).collect(Collectors.toList());
     }
 
@@ -76,6 +73,17 @@ public class UtilityService  {
         }
         Utility utility = optionalUtility.get();
         utility.setStatus(0);
+        utility=utilityRepository.save(utility);
+        return Utility.toDTO(utility);
+    }
+
+    public UtilityDTO restore(BigInteger id){
+        Optional<Utility> optionalUtility = utilityRepository.findById(id);
+        if (!optionalUtility.isPresent()) {
+            throw new IllegalArgumentException("Utility not found");
+        }
+        Utility utility = optionalUtility.get();
+        utility.setStatus(1);
         utility=utilityRepository.save(utility);
         return Utility.toDTO(utility);
     }

@@ -17,8 +17,8 @@ import java.math.BigInteger;
 @Builder
 public class Room_UtilityDTO {
     private BigInteger id;
-    private Room room;
-    private Utility utility;
+    private RoomDTO room;
+    private UtilityDTO utility;
     private BigInteger companyId;
     private int status;
 

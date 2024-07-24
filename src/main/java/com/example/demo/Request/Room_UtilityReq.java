@@ -1,4 +1,4 @@
-package com.example.demo.DTO;
+package com.example.demo.Request;
 
 import com.example.demo.Entity.Room;
 import com.example.demo.Entity.Utility;
@@ -14,7 +14,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class CreateRoom_UtilityDTO {
+public class Room_UtilityReq {
     private BigInteger id;
     private BigInteger room;
     private List<BigInteger> utilitys;

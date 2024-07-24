@@ -1,7 +1,6 @@
 package com.example.demo.Controller;
 
 import com.example.demo.DTO.CustomerDTO;
-import com.example.demo.DTO.UtilityDTO;
 import com.example.demo.Service.CustomerService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -11,7 +10,6 @@ import java.math.BigInteger;
 import java.util.Map;
 
 @RestController
-@CrossOrigin(origins = "http://localhost:3000")
 @RequestMapping("/customer")
 public class CustomerController {
     private  final CustomerService customerService;
@@ -76,6 +74,16 @@ public class CustomerController {
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body("Failed to delete customer: " + e.getMessage());
+        }
+    }
+
+    @PutMapping("/restore/{id}")
+    public ResponseEntity<?> restore(@PathVariable("id") BigInteger id) {
+        try {
+            return ResponseEntity.ok(customerService.restore(id));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body("Failed to restore customer: " + e.getMessage());
         }
     }
 }

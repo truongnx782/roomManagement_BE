@@ -42,8 +42,8 @@ public class Room_Utility {
     public static Room_UtilityDTO toDTO(Room_Utility room_utility) {
         return Room_UtilityDTO.builder()
                 .id(room_utility.getId())
-                .room(room_utility.getRoom())
-                .utility(room_utility.getUtility())
+                .room(Room.toDTO(room_utility.getRoom()))
+                .utility(Utility.toDTO(room_utility.getUtility()))
                 .status(room_utility.getStatus())
                 .build();
     }
@@ -51,8 +51,8 @@ public class Room_Utility {
     public static Room_Utility toEntity(Room_UtilityDTO room_utilityDTO) {
         return Room_Utility.builder()
                 .id(room_utilityDTO.getId())
-                .room(room_utilityDTO.getRoom())
-                .utility(room_utilityDTO.getUtility())
+                .room(Room.toEntity(room_utilityDTO.getRoom()))
+                .utility(Utility.toEntity(room_utilityDTO.getUtility()))
                 .status(room_utilityDTO.getStatus())
                 .build();
     }

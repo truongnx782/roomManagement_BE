@@ -38,7 +38,7 @@ public class Image {
     public static ImageDTO toDTO(Image image) {
         return ImageDTO.builder()
                 .id(image.getId())
-                .room(image.getRoom())
+                .room(Room.toDTO(image.getRoom()))
                 .url(image.getUrl())
                 .status(image.getStatus())
                 .companyId(image.getCompanyId())
@@ -48,7 +48,7 @@ public class Image {
     public static Image toEntity(ImageDTO ImageDTO) {
         return Image.builder()
                 .id(ImageDTO.getId())
-                .room(ImageDTO.getRoom())
+                .room(Room.toEntity(ImageDTO.getRoom()))
                 .url(ImageDTO.getUrl())
                 .status(ImageDTO.getStatus())
                 .companyId(ImageDTO.getCompanyId())

@@ -10,7 +10,6 @@ import java.math.BigInteger;
 import java.util.Map;
 
 @RestController
-@CrossOrigin(origins = "http://localhost:3000")
 @RequestMapping("/utility")
 public class UtilityController {
     private final UtilityService utilityService;
@@ -75,6 +74,16 @@ public class UtilityController {
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body("Failed to delete Utility: " + e.getMessage());
+        }
+    }
+
+    @PutMapping("/restore/{id}")
+    public ResponseEntity<?> restore(@PathVariable("id") BigInteger id) {
+        try {
+            return ResponseEntity.ok(utilityService.restore(id));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body("Failed to restore Utility: " + e.getMessage());
         }
     }
 

@@ -1,6 +1,8 @@
 package com.example.demo.Service;
 
+import com.example.demo.DTO.ContractDTO;
 import com.example.demo.DTO.RoomDTO;
+import com.example.demo.Entity.Contract;
 import com.example.demo.Entity.Room;
 import com.example.demo.Repo.RoomRepository;
 import org.springframework.data.domain.Page;
@@ -9,8 +11,10 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.math.BigInteger;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class RoomService {
@@ -29,6 +33,12 @@ public class RoomService {
         Page<Room> data = roomRepository.search(search, status, pageable);
         return data.map(Room::toDTO);
     }
+
+    public List<RoomDTO> getAll() {
+        List<Room> rooms = roomRepository.findAllByOrderByIdDesc();
+        return rooms.stream().map(Room::toDTO).collect(Collectors.toList());
+    }
+
 
     public Optional<RoomDTO> findById(BigInteger id)  {
         Optional<Room> roomOptional = roomRepository.findById(id);
@@ -67,13 +77,24 @@ public class RoomService {
         return Room.toDTO(existingRoom);
     }
 
-    public RoomDTO delete(BigInteger id) throws Exception {
+    public RoomDTO delete(BigInteger id)  {
         Optional<Room> roomOptional = roomRepository.findById(id);
         if (!roomOptional.isPresent()) {
-            throw new Exception("Room not found");
+            throw new IllegalArgumentException("Room not found");
         }
         Room existingRoom = roomOptional.get();
-        existingRoom.setStatus(0); // Example logical delete operation
+        existingRoom.setStatus(0);
+        existingRoom=roomRepository.save(existingRoom);
+        return Room.toDTO(existingRoom);
+    }
+
+    public RoomDTO restore(BigInteger id) {
+        Optional<Room> roomOptional = roomRepository.findById(id);
+        if (!roomOptional.isPresent()) {
+            throw new IllegalArgumentException("Room not found");
+        }
+        Room existingRoom = roomOptional.get();
+        existingRoom.setStatus(1);
         existingRoom=roomRepository.save(existingRoom);
         return Room.toDTO(existingRoom);
     }

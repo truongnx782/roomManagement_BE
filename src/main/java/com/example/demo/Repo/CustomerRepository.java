@@ -9,6 +9,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.math.BigInteger;
+import java.util.List;
 import java.util.Optional;
 
 public interface CustomerRepository extends JpaRepository<Customer, BigInteger> {
@@ -19,6 +20,9 @@ public interface CustomerRepository extends JpaRepository<Customer, BigInteger> 
     Page<Customer> search(@Param("search") String search,
                          @Param("status") Integer status,
                          Pageable pageable);
-    @Query(value = "SELECT nv FROM Customer nv WHERE nv.id = (SELECT MAX(nv2.id) FROM Room nv2)")
+
+    @Query(value = "SELECT nv FROM Customer nv WHERE nv.id = (SELECT MAX(nv2.id) FROM Customer nv2)")
     Optional<Customer> findMaxId();
+
+    List<Customer> findAllByOrderByIdDesc();
 }

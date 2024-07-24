@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.*;
 import java.math.BigInteger;
 import java.util.Map;
 @RestController
-@CrossOrigin(origins = "http://localhost:3000")
 @RequestMapping("/room")
 public class RoomController {
     private final RoomService roomService;
@@ -25,6 +24,15 @@ public class RoomController {
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body("Failed to search for Room: " + e.getMessage());
+        }
+    }
+
+    @GetMapping("")
+    public ResponseEntity<?> getAll() {
+        try {
+            return ResponseEntity.ok(roomService.getAll());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to search for room: " + e.getMessage());
         }
     }
 
@@ -66,6 +74,16 @@ public class RoomController {
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body("Failed to delete Room: " + e.getMessage());
+        }
+    }
+
+    @PutMapping("/restore/{id}")
+    public ResponseEntity<?> restore(@PathVariable("id") BigInteger id) {
+        try {
+            return ResponseEntity.ok(roomService.restore(id));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body("Failed to restore Room: " + e.getMessage());
         }
     }
 }

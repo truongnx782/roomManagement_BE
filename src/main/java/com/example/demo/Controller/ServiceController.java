@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.*;
 import java.math.BigInteger;
 import java.util.Map;
 @RestController
-@CrossOrigin(origins = "http://localhost:3000")
 @RequestMapping("/service")
 public class ServiceController {
     private final ServiceService serviceService;
@@ -21,7 +20,7 @@ public class ServiceController {
     @PostMapping("/search")
     public ResponseEntity<?> searchService(@RequestBody Map<String, Object> payload) {
         try {
-            return ResponseEntity.ok(serviceService.searchService(payload));
+            return ResponseEntity.ok(serviceService.search(payload));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body("Failed to search for Service: " + e.getMessage());
@@ -41,7 +40,7 @@ public class ServiceController {
     @PostMapping()
     public ResponseEntity<?> create(@RequestBody ServiceDTO serviceDTO) {
         try {
-            return ResponseEntity.ok(serviceService.createService(serviceDTO));
+            return ResponseEntity.ok(serviceService.create(serviceDTO));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body("Failed to create Service: " + e.getMessage());
@@ -52,7 +51,7 @@ public class ServiceController {
     public ResponseEntity<?> update(@PathVariable("id") BigInteger id,
                                     @RequestBody ServiceDTO updatedServiceDTO) {
         try {
-            return ResponseEntity.ok(serviceService.updateService(id, updatedServiceDTO));
+            return ResponseEntity.ok(serviceService.update(id, updatedServiceDTO));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body("Failed to update Service: " + e.getMessage());
@@ -62,7 +61,16 @@ public class ServiceController {
     @PutMapping("/delete/{id}")
     public ResponseEntity<?> delete(@PathVariable("id") BigInteger id) {
         try {
-            return ResponseEntity.ok(serviceService.deleteService(id));
+            return ResponseEntity.ok(serviceService.delete(id));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body("Failed to delete Service: " + e.getMessage());
+        }
+    }
+    @PutMapping("/restore/{id}")
+    public ResponseEntity<?> restore(@PathVariable("id") BigInteger id) {
+        try {
+            return ResponseEntity.ok(serviceService.restore(id));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body("Failed to delete Service: " + e.getMessage());

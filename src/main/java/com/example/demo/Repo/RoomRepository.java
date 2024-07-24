@@ -9,6 +9,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.math.BigInteger;
+import java.util.List;
 import java.util.Optional;
 
 public interface RoomRepository extends JpaRepository<Room, BigInteger> {
@@ -23,5 +24,6 @@ public interface RoomRepository extends JpaRepository<Room, BigInteger> {
     @Query(value = "SELECT nv FROM Room nv WHERE nv.id = (SELECT MAX(nv2.id) FROM Room nv2)")
     Optional<Room> findMaxId();
 
+    List<Room> findAllByOrderByIdDesc();
 }
 

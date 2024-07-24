@@ -96,40 +96,4 @@ public class ImageService {
                 .map(Image::toDTO)
                 .collect(Collectors.toList());
     }
-
-
-
-
-
-
-
-
-//    // nén ảnh, tăng tốc độ upload
-//    public List<Image> create(List<MultipartFile> files, BigInteger roomId, Integer status) {
-//        List<Image> listImage = new ArrayList<>();
-//        files.forEach(file -> executorService.execute(() -> {
-//            try {
-//                byte[] compressedImage = compressImage(file.getBytes());
-//                Map uploadResult = cloudinary.uploader().upload(compressedImage, ObjectUtils.asMap("resource_type", "auto"));
-//                Image image = new Image();
-//                Room room = new Room();
-//                room.setId(roomId);
-//                image.setRoom(room);
-//                image.setUrl((String) uploadResult.get("secure_url"));
-//                image.setStatus(status);
-//                synchronized (listImage) {
-//                    listImage.add(image);
-//                }
-//            } catch (IOException e) {
-//                e.printStackTrace();
-//            }
-//        }));
-//        executorService.shutdown();
-//        return imageRepositoty.saveAll(listImage);
-//    }
-//
-//    private byte[] compressImage(byte[] imageData) {
-//        // Triển khai logic nén ảnh ở đây, sử dụng ImageIO và BufferedImage
-//        return imageData; // Đang trả về dữ liệu ảnh chưa nén, cần triển khai nén thực tế
-//    }
 }

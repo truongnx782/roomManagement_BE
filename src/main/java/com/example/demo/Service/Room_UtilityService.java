@@ -1,11 +1,11 @@
 package com.example.demo.Service;
 
-import com.example.demo.DTO.CreateRoom_UtilityDTO;
 import com.example.demo.DTO.Room_UtilityDTO;
 import com.example.demo.Entity.Room;
 import com.example.demo.Entity.Room_Utility;
 import com.example.demo.Entity.Utility;
 import com.example.demo.Repo.Room_UtilityRepository;
+import com.example.demo.Request.Room_UtilityReq;
 import org.springframework.stereotype.Service;
 
 import java.math.BigInteger;
@@ -21,7 +21,7 @@ public class Room_UtilityService {
         this.room_utilityRepository = room_utilityRepository;
     }
 
-    public List<Room_UtilityDTO> create(CreateRoom_UtilityDTO createRoom_utilityDTO) {
+    public List<Room_UtilityDTO> create(Room_UtilityReq createRoom_utilityDTO) {
         List<Room_Utility> room_utilitys = new ArrayList<>();
 
         for (int i = 0; i < createRoom_utilityDTO.getUtilitys().size(); i++) {
@@ -52,7 +52,7 @@ public class Room_UtilityService {
 
     }
 
-    public List<Room_UtilityDTO>  update(CreateRoom_UtilityDTO createRoom_utilityDTO) {
+    public List<Room_UtilityDTO>  update(Room_UtilityReq createRoom_utilityDTO) {
         room_utilityRepository.deleteByRoomId(createRoom_utilityDTO.getRoom());
 
         List<Room_Utility> room_utilitys = new ArrayList<>();

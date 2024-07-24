@@ -24,4 +24,6 @@ public interface UtilityRepository extends JpaRepository<Utility, BigInteger> {
 
     @Query(value = "SELECT nv FROM Utility nv WHERE nv.id = (SELECT MAX(nv2.id) FROM Room nv2)")
     Optional<Utility> findMaxId();
+
+    List<Utility> findAllByOrderByIdDesc();
 }

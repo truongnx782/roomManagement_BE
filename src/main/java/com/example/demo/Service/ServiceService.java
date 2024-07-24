@@ -19,7 +19,7 @@ public class ServiceService {
         this.serviceRepository = serviceRepository;
     }
 
-    public Page<ServiceDTO> searchService(Map<String, Object> payload) {
+    public Page<ServiceDTO> search(Map<String, Object> payload) {
         int page = (int) payload.getOrDefault("page", 0);
         int size = (int) payload.getOrDefault("size", 5);
         String search = (String) payload.getOrDefault("search", "");
@@ -37,7 +37,7 @@ public class ServiceService {
         return serviceOptional.map(Service::toDTO);
     }
 
-    public ServiceDTO createService(ServiceDTO serviceDTO) {
+    public ServiceDTO create(ServiceDTO serviceDTO) {
         serviceDTO.validateServiceDTO(serviceDTO);
         Optional<Service> maxIdSP = serviceRepository.findMaxId();
         BigInteger maxId = maxIdSP.isPresent() ? maxIdSP.get().getId().add(BigInteger.ONE) : BigInteger.ONE;
@@ -49,7 +49,7 @@ public class ServiceService {
         return Service.toDTO(newService);
     }
 
-    public ServiceDTO updateService(BigInteger id, ServiceDTO updatedServiceDTO) {
+    public ServiceDTO update(BigInteger id, ServiceDTO updatedServiceDTO) {
         updatedServiceDTO.validateServiceDTO(updatedServiceDTO);
 
         Optional<Service> serviceOptional = serviceRepository.findById(id);
@@ -65,13 +65,24 @@ public class ServiceService {
         return Service.toDTO(existingService);
     }
 
-    public ServiceDTO deleteService(BigInteger id) throws Exception {
+    public ServiceDTO delete(BigInteger id) throws Exception {
         Optional<Service> serviceOptional = serviceRepository.findById(id);
         if (!serviceOptional.isPresent()) {
             throw new Exception("Service not found");
         }
         Service existingService = serviceOptional.get();
         existingService.setStatus(0);
+        existingService=serviceRepository.save(existingService);
+        return Service.toDTO(existingService);
+    }
+
+    public ServiceDTO restore(BigInteger id) {
+        Optional<Service> serviceOptional = serviceRepository.findById(id);
+        if (!serviceOptional.isPresent()) {
+            throw new IllegalArgumentException("Service not found");
+        }
+        Service existingService = serviceOptional.get();
+        existingService.setStatus(1);
         existingService=serviceRepository.save(existingService);
         return Service.toDTO(existingService);
     }
