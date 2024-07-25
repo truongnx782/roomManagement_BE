@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.math.BigInteger;
+import java.util.List;
 import java.util.Optional;
 
 public interface ServiceRepository extends JpaRepository<Service, BigInteger> {
@@ -22,5 +23,7 @@ public interface ServiceRepository extends JpaRepository<Service, BigInteger> {
 
     @Query(value = "SELECT nv FROM Service nv WHERE nv.id = (SELECT MAX(nv2.id) FROM Service nv2)")
     Optional<Service> findMaxId();
+
+    List<Service> findAllByOrderByIdDesc();
 }
 

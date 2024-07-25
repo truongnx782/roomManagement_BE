@@ -1,21 +1,20 @@
 package com.example.demo.Service;
 
 import com.example.demo.DTO.*;
-import com.example.demo.Entity.Contract;
-import com.example.demo.Entity.ContractDetail;
-import com.example.demo.Entity.Customer;
-import com.example.demo.Entity.Room;
+import com.example.demo.Entity.*;
 import com.example.demo.Repo.ContractDetailRepository;
 import com.example.demo.Repo.ContractRepository;
 import com.example.demo.Repo.CustomerRepository;
-import com.example.demo.Request.ContractReq;
+import com.example.demo.Repo.PaymentRepository;
 import com.example.demo.Util.Utils;
+import jdk.jshell.execution.Util;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.math.BigInteger;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -27,11 +26,13 @@ public class ContractService {
     private final ContractRepository contractRepository;
     private final ContractDetailRepository contractDetailRepository;
     private final CustomerRepository customerRepository;
+    private final PaymentRepository paymentRepository;
 
-    public ContractService(ContractRepository contractRepository,ContractDetailRepository contractDetailRepository, CustomerRepository customerRepository) {
+    public ContractService(ContractRepository contractRepository, ContractDetailRepository contractDetailRepository, CustomerRepository customerRepository, PaymentRepository paymentRepository) {
         this.contractRepository = contractRepository;
         this.contractDetailRepository = contractDetailRepository;
         this.customerRepository = customerRepository;
+        this.paymentRepository = paymentRepository;
     }
 
     public Page<ContractDTO> search(Map<String, Object> payload) {
@@ -68,6 +69,7 @@ public class ContractService {
     }
 
     public ContractDTO create(ContractDTO contractDTO) {
+        contractDTO.validateContractTO(contractDTO);
         ContractDTO result = new ContractDTO();
 
         Optional<Contract> maxIdSP = contractRepository.findMaxId();
@@ -90,12 +92,26 @@ public class ContractService {
             contractDetails.add(contractDetail);
         }
         contractDetailRepository.saveAll(contractDetails);
-
         result.setCustomerIds(contractDTO.getCustomerIds());
+
+        //tạo payment
+        Payment payment = new Payment();
+        payment.setContract(contract);
+        LocalDate startDate = contractDTO.getStartDate();
+        LocalDate nextMonthDate = startDate.plusMonths(1);
+        payment.setPaymentCode("TT - "+ startDate);
+        payment.setPaymentDate(nextMonthDate);
+        payment.setPaymentStatus(Utils.UNPAID);
+        payment.setStatus(Utils.ACTIVE);
+        System.out.println(payment);
+        paymentRepository.save(payment);
+
         return result;
     }
 
     public ContractDTO update(BigInteger id, ContractDTO contractDTO) {
+        contractDTO.validateContractTO(contractDTO);
+
         ContractDTO result = new ContractDTO();
 
         Optional<Contract>optionalContract = contractRepository.findById(id);
@@ -124,8 +140,18 @@ public class ContractService {
         }
         contractDetailRepository.saveAll(contractDetails);
 
-        result.setCustomerIds(contractDTO.getCustomerIds());
+        Optional<Payment> optionalPayment =paymentRepository.findByContractId(contract.getId());
+        if (!optionalPayment.isPresent()) {
+            throw new IllegalArgumentException("Payment not found");
+        }
+        Payment payment = optionalPayment.get();
+        LocalDate startDate = contractDTO.getStartDate();
+        LocalDate nextMonthDate = startDate.plusMonths(1);
+        payment.setPaymentCode("TT - "+ startDate);
+        payment.setPaymentDate(nextMonthDate);
+        paymentRepository.save(payment);
 
+        result.setCustomerIds(contractDTO.getCustomerIds());
         return result;
     }
 

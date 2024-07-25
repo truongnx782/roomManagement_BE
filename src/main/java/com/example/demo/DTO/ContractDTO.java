@@ -26,4 +26,20 @@ public class ContractDTO {
     private int status;
     private List<BigInteger> customerIds;
 
+    public void validateContractTO(ContractDTO contractDTO) {
+        if (contractDTO.getRoom() == null) {
+            throw new IllegalArgumentException("Room name cannot be empty.");
+        }
+        if ( contractDTO.getStartDate() == null ) {
+            throw new IllegalArgumentException("Start Date cannot be empty.");
+        }
+        if (contractDTO.getCustomerIds() == null|| contractDTO.getCustomerIds().size()==0) {
+            throw new IllegalArgumentException("Customer cannot be empty.");
+        }
+        if (contractDTO.getEndDate() != null && contractDTO.getEndDate().isBefore(contractDTO.getStartDate())) {
+            throw new IllegalArgumentException("End date cannot be before start date.");
+        }
+
+    }
+
 }

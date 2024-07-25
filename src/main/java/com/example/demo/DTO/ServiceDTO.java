@@ -43,9 +43,9 @@ public class ServiceDTO {
         if (serviceDTO.getServicePrice() == null) {
             throw new IllegalArgumentException("Service price cannot be null.");
         }
-        if (serviceDTO.getStartDate().isBefore(LocalDate.now())) {
-            throw new IllegalArgumentException("Start date cannot be in the past.");
-        }
+//        if (serviceDTO.getStartDate().isBefore(LocalDate.now())) {
+//            throw new IllegalArgumentException("Start date cannot be in the past.");
+//        }
         if (serviceDTO.getEndDate() != null && serviceDTO.getEndDate().isBefore(serviceDTO.getStartDate())) {
             throw new IllegalArgumentException("End date cannot be before start date.");
         }

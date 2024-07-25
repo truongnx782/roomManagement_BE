@@ -30,7 +30,7 @@ public class PaymentDetail {
     private BigInteger companyId;
 
     @Column(name = "Status")
-    private String status;
+    private Integer status;
 
 
     @ManyToOne

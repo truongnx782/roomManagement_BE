@@ -76,4 +76,13 @@ public class ServiceController {
                     .body("Failed to delete Service: " + e.getMessage());
         }
     }
+
+    @GetMapping("")
+    public ResponseEntity<?> getAll() {
+        try {
+            return ResponseEntity.ok(serviceService.getAll());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to search for Service: " + e.getMessage());
+        }
+    }
 }
