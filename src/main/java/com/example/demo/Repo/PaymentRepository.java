@@ -17,10 +17,10 @@ public interface PaymentRepository extends JpaRepository<Payment, BigInteger> {
             " u.contract.room.roomCode LIKE %:search% or" +
             " cd.customer.phoneNumber LIKE %:search% or " +
             " cd.customer.customerName LIKE %:search% ) " +
-            "AND (:status IS NULL OR u.status = :status) " +
+            "AND (:paymentStatus IS NULL OR u.paymentStatus = :paymentStatus) " +
             "ORDER BY u.id DESC")
     Page<Payment> search(@Param("search") String search,
-                          @Param("status") Integer status,
+                          @Param("paymentStatus") Integer paymentStatus,
                           Pageable pageable);
 
     @Query(value = "select  p from Payment  p where p.contract.id=:id")

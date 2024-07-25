@@ -18,10 +18,21 @@ public class PaymentController {
     public PaymentController(PaymentService paymentService) {
         this.paymentService = paymentService;
     }
+
     @PostMapping("/search")
     public ResponseEntity<?> search(@RequestBody Map<String, Object> payload) {
         try {
             return ResponseEntity.ok(paymentService.search(payload));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to search for payment: " + e.getMessage());
+        }
+    }
+
+    @PostMapping("/payment-status")
+    public ResponseEntity<?> updatePaymentStatus(@RequestBody Map<String, Object> payload) {
+        try {
+            return ResponseEntity.ok(paymentService.updatePaymentStatus(payload));
         } catch (Exception e) {
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to search for payment: " + e.getMessage());
