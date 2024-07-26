@@ -1,9 +1,6 @@
 package com.example.demo.Controller;
 
 import com.example.demo.DTO.ContractDTO;
-import com.example.demo.DTO.CustomerDTO;
-import com.example.demo.DTO.ServiceDTO;
-import com.example.demo.Request.ContractReq;
 import com.example.demo.Service.ContractService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -26,7 +23,9 @@ public class ContractController {
         try {
             return ResponseEntity.ok(contractService.search(payload));
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to search for contract: " + e.getMessage());
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Failed to search for contract: " + e.getMessage());
         }
     }
 
@@ -69,6 +68,7 @@ public class ContractController {
         try {
             return ResponseEntity.ok(contractService.delete(id));
         } catch (Exception e) {
+            e.printStackTrace();
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body("Failed to delete contract: " + e.getMessage());
         }
@@ -79,6 +79,7 @@ public class ContractController {
         try {
             return ResponseEntity.ok(contractService.restore(id));
         } catch (Exception e) {
+            e.printStackTrace();
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body("Failed to restore contract: " + e.getMessage());
         }

@@ -22,6 +22,7 @@ public class RoomController {
         try {
             return ResponseEntity.ok(roomService.search(payload));
         } catch (Exception e) {
+            e.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body("Failed to search for Room: " + e.getMessage());
         }
@@ -32,7 +33,9 @@ public class RoomController {
         try {
             return ResponseEntity.ok(roomService.getAll());
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to search for room: " + e.getMessage());
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Failed to search for room: " + e.getMessage());
         }
     }
 
@@ -41,6 +44,7 @@ public class RoomController {
         try {
             return ResponseEntity.ok(roomService.findById(id));
         } catch (Exception e) {
+            e.printStackTrace();
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body("Failed to retrieve Room: " + e.getMessage());
         }
@@ -51,6 +55,7 @@ public class RoomController {
         try {
             return ResponseEntity.ok(roomService.create(roomDTO));
         } catch (Exception e) {
+            e.printStackTrace();
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body("Failed to create Room: " + e.getMessage());
         }
@@ -62,6 +67,7 @@ public class RoomController {
         try {
             return ResponseEntity.ok(roomService.update(id, roomDTO));
         } catch (Exception e) {
+            e.printStackTrace();
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body("Failed to update Room: " + e.getMessage());
         }
@@ -72,6 +78,7 @@ public class RoomController {
         try {
             return ResponseEntity.ok(roomService.delete(id));
         } catch (Exception e) {
+            e.printStackTrace();
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body("Failed to delete Room: " + e.getMessage());
         }
@@ -82,6 +89,7 @@ public class RoomController {
         try {
             return ResponseEntity.ok(roomService.restore(id));
         } catch (Exception e) {
+            e.printStackTrace();
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body("Failed to restore Room: " + e.getMessage());
         }

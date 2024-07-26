@@ -25,7 +25,8 @@ public class PaymentController {
             return ResponseEntity.ok(paymentService.search(payload));
         } catch (Exception e) {
             e.printStackTrace();
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to search for payment: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Failed to search for payment: " + e.getMessage());
         }
     }
 
@@ -35,7 +36,8 @@ public class PaymentController {
             return ResponseEntity.ok(paymentService.updatePaymentStatus(payload));
         } catch (Exception e) {
             e.printStackTrace();
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to search for payment: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Failed to search for payment: " + e.getMessage());
         }
     }
 }

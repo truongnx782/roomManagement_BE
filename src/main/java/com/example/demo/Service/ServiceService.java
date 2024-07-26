@@ -27,7 +27,7 @@ public class ServiceService {
         int page = (int) payload.getOrDefault("page", 0);
         int size = (int) payload.getOrDefault("size", 5);
         String search = (String) payload.getOrDefault("search", "");
-        Integer status = (Integer) payload.get("status");
+        Integer status = (Integer) payload.getOrDefault("status",null);
         Pageable pageable = PageRequest.of(page, size);
         Page<Service> data = serviceRepository.search(search, status, pageable);
         return data.map(Service::toDTO);
@@ -93,6 +93,7 @@ public class ServiceService {
 
     public List<ServiceDTO> getAll() {
         List<Service> serviceList = serviceRepository.findAllByOrderByIdDesc();
+        PaymentService.autoCreatePayment();
         return serviceList.stream().map(Service::toDTO).collect(Collectors.toList());
     }
 }

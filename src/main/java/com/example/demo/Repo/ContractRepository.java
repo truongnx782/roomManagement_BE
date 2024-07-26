@@ -2,6 +2,7 @@ package com.example.demo.Repo;
 
 import com.example.demo.Entity.Contract;
 import com.example.demo.Entity.Customer;
+import com.example.demo.Entity.Room;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -22,4 +23,7 @@ public interface ContractRepository extends JpaRepository<Contract, BigInteger> 
 
     @Query(value = "SELECT nv FROM Contract nv WHERE nv.id = (SELECT MAX(nv2.id) FROM Contract nv2)")
     Optional<Contract> findMaxId();
+
+    @Query(value = "select c.room from Contract  c where c.id=:id")
+    Optional<Room> findRoomByContractId(@Param("id") BigInteger id);
 }

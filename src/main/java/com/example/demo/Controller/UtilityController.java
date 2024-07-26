@@ -23,7 +23,9 @@ public class UtilityController {
         try {
             return ResponseEntity.ok(utilityService.search(payload));
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to search for utilities: " + e.getMessage());
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Failed to search for utilities: " + e.getMessage());
         }
     }
 
@@ -32,7 +34,9 @@ public class UtilityController {
         try {
             return ResponseEntity.ok(utilityService.getAll());
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to search for utilities: " + e.getMessage());
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Failed to search for utilities: " + e.getMessage());
         }
     }
 
@@ -41,6 +45,7 @@ public class UtilityController {
         try {
             return ResponseEntity.ok(utilityService.create(utilityDTO));
         } catch (Exception e) {
+            e.printStackTrace();
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body("Failed to create Utility: " + e.getMessage());
         }
@@ -51,6 +56,7 @@ public class UtilityController {
         try {
             return ResponseEntity.ok(utilityService.findById(id));
         } catch (Exception e) {
+            e.printStackTrace();
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body("Failed to retrieve Utility: " + e.getMessage());
         }
@@ -62,6 +68,7 @@ public class UtilityController {
         try {
             return ResponseEntity.ok(utilityService.update(id, utilityDTO));
         } catch (Exception e) {
+            e.printStackTrace();
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body("Failed to create Utility: " + e.getMessage());
         }
@@ -72,6 +79,7 @@ public class UtilityController {
         try {
             return ResponseEntity.ok(utilityService.delete(id));
         } catch (Exception e) {
+            e.printStackTrace();
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body("Failed to delete Utility: " + e.getMessage());
         }
@@ -82,6 +90,7 @@ public class UtilityController {
         try {
             return ResponseEntity.ok(utilityService.restore(id));
         } catch (Exception e) {
+            e.printStackTrace();
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body("Failed to restore Utility: " + e.getMessage());
         }

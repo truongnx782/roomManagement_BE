@@ -9,6 +9,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.math.BigInteger;
+import java.util.List;
 import java.util.Optional;
 
 public interface PaymentRepository extends JpaRepository<Payment, BigInteger> {
@@ -17,12 +18,15 @@ public interface PaymentRepository extends JpaRepository<Payment, BigInteger> {
             " u.contract.room.roomCode LIKE %:search% or" +
             " cd.customer.phoneNumber LIKE %:search% or " +
             " cd.customer.customerName LIKE %:search% ) " +
-            "AND (:paymentStatus IS NULL OR u.paymentStatus = :paymentStatus) " +
+            "AND (:paymentStatus IS NULL OR u.paymentStatus = :paymentStatus)  AND u.status=1" +
             "ORDER BY u.id DESC")
     Page<Payment> search(@Param("search") String search,
                           @Param("paymentStatus") Integer paymentStatus,
                           Pageable pageable);
 
     @Query(value = "select  p from Payment  p where p.contract.id=:id")
-    Optional<Payment> findByContractId(@Param("id") BigInteger id);
+    List<Payment> findAllByContractId(@Param("id") BigInteger id);
+
+    @Query("SELECT p FROM Payment p WHERE p.paymentDate = (SELECT MAX(p2.paymentDate) FROM Payment p2 WHERE p2.contract.id = p.contract.id AND p2.status = 1) AND p.status = 1 order by p.id asc ")
+    List<Payment> findPaymentsWithMaxDatePerContract();
 }

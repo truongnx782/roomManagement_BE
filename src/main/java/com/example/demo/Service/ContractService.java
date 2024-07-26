@@ -2,12 +2,8 @@ package com.example.demo.Service;
 
 import com.example.demo.DTO.*;
 import com.example.demo.Entity.*;
-import com.example.demo.Repo.ContractDetailRepository;
-import com.example.demo.Repo.ContractRepository;
-import com.example.demo.Repo.CustomerRepository;
-import com.example.demo.Repo.PaymentRepository;
+import com.example.demo.Repo.*;
 import com.example.demo.Util.Utils;
-import jdk.jshell.execution.Util;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -25,21 +21,27 @@ import java.util.stream.Collectors;
 public class ContractService {
     private final ContractRepository contractRepository;
     private final ContractDetailRepository contractDetailRepository;
-    private final CustomerRepository customerRepository;
+    private final PaymentDetailRepository paymentDetailRepository;
     private final PaymentRepository paymentRepository;
+    private  final RoomRepository roomRepository;
 
-    public ContractService(ContractRepository contractRepository, ContractDetailRepository contractDetailRepository, CustomerRepository customerRepository, PaymentRepository paymentRepository) {
+    public ContractService(ContractRepository contractRepository,
+                           ContractDetailRepository contractDetailRepository,
+                           PaymentDetailRepository paymentDetailRepository,
+                           PaymentRepository paymentRepository,
+                           RoomRepository roomRepository) {
         this.contractRepository = contractRepository;
         this.contractDetailRepository = contractDetailRepository;
-        this.customerRepository = customerRepository;
+        this.paymentDetailRepository = paymentDetailRepository;
         this.paymentRepository = paymentRepository;
+        this.roomRepository = roomRepository;
     }
 
     public Page<ContractDTO> search(Map<String, Object> payload) {
         int page = (int) payload.getOrDefault("page", 0);
         int size = (int) payload.getOrDefault("size", 5);
         String search = (String) payload.getOrDefault("search", "");
-        Integer status = (Integer) payload.get("status");
+        Integer status = (Integer) payload.getOrDefault("status",null);
         Pageable pageable = PageRequest.of(page, size);
         Page<Contract> data = contractRepository.search(search, status, pageable);
         System.out.println(data);
@@ -52,8 +54,19 @@ public class ContractService {
             throw new IllegalArgumentException("contract not found");
         }
         Contract contract = optionalContract.get();
-        contract.setStatus(0);
+        contract.setStatus(Utils.IN_ACTIVE);
+        List<ContractDetail> contractDetails = contractDetailRepository.findByContractId(id);
+        List<Payment> payments = paymentRepository.findAllByContractId(id);
+        List<BigInteger> paymentIds = payments.stream().map(payment -> payment.getId()).collect(Collectors.toList());
+        List<PaymentDetail> paymentDetails = paymentDetailRepository.findAllByPaymentIds(paymentIds);
+        contractDetails.forEach(x->x.setStatus(Utils.IN_ACTIVE));
+        paymentDetails.forEach(x->x.setStatus(Utils.IN_ACTIVE));
+        payments.forEach(x->x.setStatus(Utils.IN_ACTIVE));
+
         contract=contractRepository.save(contract);
+        paymentDetailRepository.saveAll(paymentDetails);
+        paymentRepository.saveAll(payments);
+        contractDetailRepository.saveAll(contractDetails);
         return Contract.toDTO(contract);
     }
 
@@ -63,14 +76,31 @@ public class ContractService {
             throw new IllegalArgumentException("contract not found");
         }
         Contract contract = optionalContract.get();
-        contract.setStatus(1);
+        contract.setStatus(Utils.ACTIVE);
+        List<ContractDetail> contractDetails = contractDetailRepository.findByContractId(id);
+        List<Payment> payments = paymentRepository.findAllByContractId(id);
+        List<BigInteger> paymentIds = payments.stream().map(payment -> payment.getId()).collect(Collectors.toList());
+        List<PaymentDetail> paymentDetails = paymentDetailRepository.findAllByPaymentIds(paymentIds);
+        contractDetails.forEach(x->x.setStatus(Utils.ACTIVE));
+        paymentDetails.forEach(x->x.setStatus(Utils.ACTIVE));
+        payments.forEach(x->x.setStatus(Utils.ACTIVE));
+
         contract=contractRepository.save(contract);
+        paymentDetailRepository.saveAll(paymentDetails);
+        paymentRepository.saveAll(payments);
+        contractDetailRepository.saveAll(contractDetails);
         return Contract.toDTO(contract);
     }
 
     public ContractDTO create(ContractDTO contractDTO) {
         contractDTO.validateContractTO(contractDTO);
         ContractDTO result = new ContractDTO();
+
+        Optional<Room> room = roomRepository.findById(contractDTO.getRoom().getId());
+        if(room.isPresent()){
+            room.get().setRentStatus(Utils.ACTIVE);
+            roomRepository.save(room.get());
+        }
 
         Optional<Contract> maxIdSP = contractRepository.findMaxId();
         BigInteger maxId = maxIdSP.isPresent() ? maxIdSP.get().getId().add(BigInteger.ONE) : BigInteger.ONE;
@@ -109,10 +139,22 @@ public class ContractService {
         return result;
     }
 
-    public ContractDTO update(BigInteger id, ContractDTO contractDTO) {
+    public Object update(BigInteger id, ContractDTO contractDTO) {
         contractDTO.validateContractTO(contractDTO);
-
         ContractDTO result = new ContractDTO();
+
+        Optional<Room> optionalRoom = contractRepository.findRoomByContractId(id);
+        if(optionalRoom.get().getId()!=contractDTO.getRoom().getId()){
+            optionalRoom.get().setRentStatus(Utils.IN_ACTIVE);
+            roomRepository.save(optionalRoom.get());
+
+            Optional<Room> room = roomRepository.findById(contractDTO.getRoom().getId());
+            if(room.isPresent()){
+                room.get().setRentStatus(Utils.ACTIVE);
+                roomRepository.save(room.get());
+            }
+        }
+
 
         Optional<Contract>optionalContract = contractRepository.findById(id);
         if (!optionalContract.isPresent()) {
@@ -140,18 +182,22 @@ public class ContractService {
         }
         contractDetailRepository.saveAll(contractDetails);
 
-        Optional<Payment> optionalPayment =paymentRepository.findByContractId(contract.getId());
-        if (!optionalPayment.isPresent()) {
+        List<Payment> paymentList =paymentRepository.findAllByContractId(contract.getId());
+        if (paymentList.isEmpty()) {
             throw new IllegalArgumentException("Payment not found");
         }
-        Payment payment = optionalPayment.get();
-        LocalDate startDate = contractDTO.getStartDate();
-        LocalDate nextMonthDate = startDate.plusMonths(1);
-        payment.setPaymentCode("TT - "+ startDate);
-        payment.setPaymentDate(nextMonthDate);
-        paymentRepository.save(payment);
-
-        result.setCustomerIds(contractDTO.getCustomerIds());
+        if(paymentList.size()>1){
+            return false;
+        }
+        else {
+            Payment payment = paymentList.get(0);
+            LocalDate startDate = contractDTO.getStartDate();
+            LocalDate nextMonthDate = startDate.plusMonths(1);
+            payment.setPaymentCode("TT - " + startDate);
+            payment.setPaymentDate(nextMonthDate);
+            paymentRepository.save(payment);
+            result.setCustomerIds(contractDTO.getCustomerIds());
+        }
         return result;
     }
 

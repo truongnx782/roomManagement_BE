@@ -26,7 +26,7 @@ public class UtilityService  {
         int page = (int) payload.getOrDefault("page", 0);
         int size = (int) payload.getOrDefault("size", 5);
         String search = (String) payload.getOrDefault("search", "");
-        Integer status = (Integer) payload.get("status");
+        Integer status = (Integer) payload.getOrDefault("status",null);
         Pageable pageable = PageRequest.of(page, size);
         Page<Utility> data = utilityRepository.search(search, status, pageable);
         return data.map(Utility::toDTO);

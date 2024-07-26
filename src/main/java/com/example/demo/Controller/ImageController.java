@@ -28,6 +28,7 @@ public class ImageController {
         try {
             return ResponseEntity.ok(imageService.create(file,images, roomId, status));
         } catch (Exception e) {
+            e.printStackTrace();
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body("Failed to retrieve Image: " + e.getMessage());
         }
@@ -38,6 +39,7 @@ public class ImageController {
         try {
             return ResponseEntity.ok(imageService.getAllByRoomId(RoomId));
         } catch (Exception e) {
+            e.printStackTrace();
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body("Failed to create Image: " + e.getMessage());
         }

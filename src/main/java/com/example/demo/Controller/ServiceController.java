@@ -32,6 +32,7 @@ public class ServiceController {
         try {
             return ResponseEntity.ok(serviceService.findById(id));
         } catch (Exception e) {
+            e.printStackTrace();
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body("Failed to retrieve Service: " + e.getMessage());
         }
@@ -42,6 +43,7 @@ public class ServiceController {
         try {
             return ResponseEntity.ok(serviceService.create(serviceDTO));
         } catch (Exception e) {
+            e.printStackTrace();
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body("Failed to create Service: " + e.getMessage());
         }
@@ -53,6 +55,7 @@ public class ServiceController {
         try {
             return ResponseEntity.ok(serviceService.update(id, updatedServiceDTO));
         } catch (Exception e) {
+            e.printStackTrace();
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body("Failed to update Service: " + e.getMessage());
         }
@@ -63,6 +66,7 @@ public class ServiceController {
         try {
             return ResponseEntity.ok(serviceService.delete(id));
         } catch (Exception e) {
+            e.printStackTrace();
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body("Failed to delete Service: " + e.getMessage());
         }
@@ -72,6 +76,7 @@ public class ServiceController {
         try {
             return ResponseEntity.ok(serviceService.restore(id));
         } catch (Exception e) {
+            e.printStackTrace();
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body("Failed to delete Service: " + e.getMessage());
         }
@@ -82,7 +87,9 @@ public class ServiceController {
         try {
             return ResponseEntity.ok(serviceService.getAll());
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to search for Service: " + e.getMessage());
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Failed to search for Service: " + e.getMessage());
         }
     }
 }

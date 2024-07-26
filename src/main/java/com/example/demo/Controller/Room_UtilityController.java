@@ -23,6 +23,7 @@ public class Room_UtilityController {
         try {
             return ResponseEntity.ok(room_utilityService.create(createRoom_utilityDTO));
         } catch (Exception e) {
+            e.printStackTrace();
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body("Failed to create Room-utility: " + e.getMessage());
         }
@@ -33,6 +34,7 @@ public class Room_UtilityController {
         try {
             return ResponseEntity.ok(room_utilityService.update(createRoom_utilityDTO));
         } catch (Exception e) {
+            e.printStackTrace();
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body("Failed to create Room-utility: " + e.getMessage());
         }
@@ -43,6 +45,7 @@ public class Room_UtilityController {
         try {
             return ResponseEntity.ok(room_utilityService.getUtilityIdByRoomId(RoomId));
         } catch (Exception e) {
+            e.printStackTrace();
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body("Failed to create Room: " + e.getMessage());
         }

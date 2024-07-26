@@ -23,7 +23,9 @@ public class CustomerController {
         try {
             return ResponseEntity.ok(customerService.search(payload));
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to search for customer: " + e.getMessage());
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Failed to search for customer: " + e.getMessage());
         }
     }
 
@@ -32,7 +34,9 @@ public class CustomerController {
         try {
             return ResponseEntity.ok(customerService.getAll());
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to search for customer: " + e.getMessage());
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Failed to search for customer: " + e.getMessage());
         }
     }
 
@@ -41,6 +45,7 @@ public class CustomerController {
         try {
             return ResponseEntity.ok(customerService.create(customerDTO));
         } catch (Exception e) {
+            e.printStackTrace();
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body("Failed to create customer: " + e.getMessage());
         }
@@ -51,6 +56,7 @@ public class CustomerController {
         try {
             return ResponseEntity.ok(customerService.findById(id));
         } catch (Exception e) {
+            e.printStackTrace();
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body("Failed to retrieve customer: " + e.getMessage());
         }
@@ -62,6 +68,7 @@ public class CustomerController {
         try {
             return ResponseEntity.ok(customerService.update(id, customerDTO));
         } catch (Exception e) {
+            e.printStackTrace();
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body("Failed to create customer: " + e.getMessage());
         }
@@ -72,6 +79,7 @@ public class CustomerController {
         try {
             return ResponseEntity.ok(customerService.delete(id));
         } catch (Exception e) {
+            e.printStackTrace();
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body("Failed to delete customer: " + e.getMessage());
         }
@@ -82,6 +90,7 @@ public class CustomerController {
         try {
             return ResponseEntity.ok(customerService.restore(id));
         } catch (Exception e) {
+            e.printStackTrace();
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body("Failed to restore customer: " + e.getMessage());
         }
