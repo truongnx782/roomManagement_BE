@@ -1,6 +1,7 @@
 package com.example.demo.DTO;
 
 import com.example.demo.Entity.Room;
+import jakarta.persistence.Column;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -21,6 +22,7 @@ public class ContractDTO {
     private RoomDTO room;
     private LocalDate startDate;
     private LocalDate endDate;
+    private BigDecimal rentPrice;
     private String terms;
     private BigInteger companyId;
     private int status;

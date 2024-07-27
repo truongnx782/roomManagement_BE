@@ -1,7 +1,6 @@
 package com.example.demo.Entity;
 
 import com.example.demo.DTO.ContractDTO;
-import com.example.demo.Request.ContractReq;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -12,7 +11,6 @@ import lombok.NoArgsConstructor;
 import java.math.BigInteger;
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.Date;
 
 @Data
 @NoArgsConstructor
@@ -42,6 +40,8 @@ public class Contract {
 
     private LocalDate endDate;
 
+    @Column(name = "RentPrice")
+    private BigDecimal rentPrice;
 
     @Column(name = "Terms")
     private String terms;
@@ -59,6 +59,7 @@ public class Contract {
                 .room(Room.toDTO(contract.getRoom()))
                 .startDate(contract.getStartDate())
                 .endDate(contract.getEndDate())
+                .rentPrice(contract.getRentPrice())
                 .terms(contract.getTerms())
                 .companyId(contract.getCompanyId())
                 .status(contract.getStatus())
@@ -72,21 +73,10 @@ public class Contract {
                 .room(Room.toEntity(contractDTO.getRoom()))
                 .startDate(contractDTO.getStartDate())
                 .endDate(contractDTO.getEndDate())
+                .rentPrice(contractDTO.getRentPrice())
                 .terms(contractDTO.getTerms())
                 .companyId(contractDTO.getCompanyId())
                 .status(contractDTO.getStatus())
-                .build();
-    }
-    public static Contract toEntity(ContractReq contractReq){
-        return Contract.builder()
-                .id(contractReq.getId())
-                .contractCode(contractReq.getContractCode())
-                .room(Room.toEntity(contractReq.getRoom()))
-                .startDate(contractReq.getStartDate())
-                .endDate(contractReq.getEndDate())
-                .terms(contractReq.getTerms())
-                .companyId(contractReq.getCompanyId())
-                .status(contractReq.getStatus())
                 .build();
     }
 }

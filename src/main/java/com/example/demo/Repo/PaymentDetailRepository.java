@@ -10,7 +10,10 @@ import java.util.List;
 import java.util.Map;
 
 public interface PaymentDetailRepository extends JpaRepository<PaymentDetail, BigInteger> {
-    @Query(value = "select  s.id as id,p.amountToPay/s.servicePrice as value ,p.amountToPay as amount from PaymentDetail p left join Service s on p.service.id=s.id where p.payment.id=:id")
+//    @Query(value = "select  s.id as id,p.amountToPay/s.servicePrice as value ,p.amountToPay as amount" +
+//            " from PaymentDetail p left join Service s on p.service.id=s.id where p.payment.id=:id")
+@Query(value = "select  s.id as id,p.amountToPay as value "+
+        " from PaymentDetail p left join Service s on p.service.id=s.id where p.payment.id=:id")
     List<Map<String, Object>> findByPaymentId(@Param("id") BigInteger id);
 
 

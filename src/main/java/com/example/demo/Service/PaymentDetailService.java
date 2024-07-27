@@ -29,6 +29,14 @@ public class PaymentDetailService {
         Map<String,Object> objectMap = new HashMap<>();
         objectMap.put("ids",ids);
         objectMap.put("paymentId",id);
+        BigDecimal sum = BigDecimal.ZERO;
+        for (Map<String,Object> map: ids) {
+            BigDecimal value = (BigDecimal) map.get("value");
+            if(value!= null){
+                sum=sum.add((BigDecimal) map.get("value"));
+            }
+        }
+        objectMap.put("sum",sum);
         return objectMap;
     }
 

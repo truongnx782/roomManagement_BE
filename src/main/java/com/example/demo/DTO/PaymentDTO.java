@@ -32,6 +32,8 @@ public class PaymentDTO {
 
     private BigInteger previousMonthWater;
 
+    private BigDecimal rentPrice;
+
     private Integer paymentStatus;
 
     private BigInteger companyId;
