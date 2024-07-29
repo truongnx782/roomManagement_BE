@@ -43,18 +43,35 @@ public class PaymentDetailService {
     public Object createList(Map<String, Object> payload) {
         BigInteger paymentId = BigInteger.valueOf(((Number) payload.get("paymentId")).longValue());
         List<Map<String,Object>> ids = (List<Map<String, Object>>) payload.get("ids");
-
+        List<PaymentDetail> paymentDetails = new ArrayList<>();
+        if (paymentId==null) {
+            throw new IllegalArgumentException("Payment not found");
+        }
         List<PaymentDetail> paymentDetailList = paymentDetailRepository.findAllByPaymentId(paymentId);
-        if( ! paymentDetailList.isEmpty()){
-            System.out.println("aaaaaaaaaaaa");
-            System.out.println("update");
-            System.out.println(paymentDetailList);
-            return "update";
+
+        if (!paymentDetailList.isEmpty()) {
+            for (Map<String, Object> objectMap : ids) {
+                paymentDetailRepository.deleteAllByPaymentId(paymentId);
+                if((Integer) objectMap.get("value")!=0){
+                    PaymentDetail paymentDetail = new PaymentDetail();
+                    Payment payment = new Payment();
+                    payment.setId(paymentId);
+                    paymentDetail.setPayment(payment);
+                    com.example.demo.Entity.Service service = new com.example.demo.Entity.Service();
+                    service.setId(BigInteger.valueOf(((Number) objectMap.get("id")).longValue()));
+                    BigDecimal value = new BigDecimal((BigInteger.valueOf(((Number) objectMap.get("value")).longValue())));
+                    paymentDetail.setService(service);
+                    paymentDetail.setAmountToPay(value);
+                    paymentDetail.setStatus(Utils.ACTIVE);
+                    paymentDetails.add(paymentDetail);
+                }
+            }
+            paymentDetails = paymentDetailRepository.saveAll(paymentDetails);
+            return paymentDetails;
+//            return "update";
         }
 
         List<ServiceDTO> serviceDTOS = serviceService.getAll();
-
-        List<PaymentDetail> paymentDetails = new ArrayList<>();
         for (Map<String,Object> objectMap: ids) {
             if(objectMap.get("value")!= null){
                 PaymentDetail paymentDetail = new PaymentDetail();

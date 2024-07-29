@@ -32,7 +32,6 @@ public class PaymentDetail {
     @Column(name = "Status")
     private Integer status;
 
-
     @ManyToOne
     @JoinColumn(name = "PaymentId")
     private Payment payment;

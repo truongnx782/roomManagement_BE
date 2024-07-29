@@ -1,7 +1,9 @@
 package com.example.demo.Entity;
 
+import com.example.demo.DTO.MaintenanceDTO;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -11,6 +13,7 @@ import java.math.BigInteger;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
+@Builder
 @Table(name = "Maintenance")
 public class Maintenance {
     @Id
@@ -33,4 +36,26 @@ public class Maintenance {
 
     @Column(name = "Status")
     private int status;
+
+    public static  Maintenance toEntity(MaintenanceDTO maintenanceDTO){
+        return Maintenance.builder()
+                .id(maintenanceDTO.getId())
+                .room(Room.toEntity(maintenanceDTO.getRoom()))
+                .maintenanceRequest(maintenanceDTO.getMaintenanceRequest())
+                .maintenanceStatus(maintenanceDTO.getMaintenanceStatus())
+                .companyId(maintenanceDTO.getCompanyId())
+                .status(maintenanceDTO.getStatus())
+                .build();
+    }
+
+    public static  MaintenanceDTO toDTO(Maintenance maintenance){
+        return MaintenanceDTO.builder()
+                .id(maintenance.getId())
+                .room(Room.toDTO(maintenance.getRoom()))
+                .maintenanceRequest(maintenance.getMaintenanceRequest())
+                .maintenanceStatus(maintenance.getMaintenanceStatus())
+                .companyId(maintenance.getCompanyId())
+                .status(maintenance.getStatus())
+                .build();
+    }
 }
