@@ -9,6 +9,8 @@ import java.math.BigInteger;
 import java.util.Map;
 
 @RestController
+@CrossOrigin(origins = "*",maxAge = 3600)
+
 @RequestMapping("/payment-detail")
 public class PaymentDetailController {
     private final PaymentDetailService paymentDetailService;

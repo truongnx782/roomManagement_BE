@@ -27,6 +27,7 @@ public interface PaymentRepository extends JpaRepository<Payment, BigInteger> {
     @Query(value = "select  p from Payment  p where p.contract.id=:id")
     List<Payment> findAllByContractId(@Param("id") BigInteger id);
 
-    @Query("SELECT p FROM Payment p WHERE p.paymentDate = (SELECT MAX(p2.paymentDate) FROM Payment p2 WHERE p2.contract.id = p.contract.id AND p2.status = 1) AND p.status = 1 order by p.id asc ")
+    @Query("SELECT p FROM Payment p WHERE p.paymentDate = (SELECT MAX(p2.paymentDate) FROM Payment p2 " +
+            "WHERE p2.contract.id = p.contract.id AND p2.status = 1) AND p.status = 1 order by p.id asc ")
     List<Payment> findPaymentsWithMaxDatePerContract();
 }

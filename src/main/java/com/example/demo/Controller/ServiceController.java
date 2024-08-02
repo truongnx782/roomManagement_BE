@@ -10,6 +10,8 @@ import java.math.BigInteger;
 import java.util.Map;
 @RestController
 @RequestMapping("/service")
+@CrossOrigin(origins = "*",maxAge = 3600)
+
 public class ServiceController {
     private final ServiceService serviceService;
 

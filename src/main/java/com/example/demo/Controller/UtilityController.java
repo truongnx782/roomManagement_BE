@@ -11,6 +11,8 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/utility")
+@CrossOrigin(origins = "*",maxAge = 3600)
+
 public class UtilityController {
     private final UtilityService utilityService;
 

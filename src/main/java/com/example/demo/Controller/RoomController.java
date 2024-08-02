@@ -10,6 +10,8 @@ import java.math.BigInteger;
 import java.util.Map;
 @RestController
 @RequestMapping("/room")
+@CrossOrigin(origins = "*",maxAge = 3600)
+
 public class RoomController {
     private final RoomService roomService;
 

@@ -2,8 +2,11 @@ package com.example.demo.Controller;
 
 import com.example.demo.DTO.ContractDTO;
 import com.example.demo.Service.ContractService;
+import com.example.demo.security.jwt.JwtUtils;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigInteger;
@@ -11,7 +14,9 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/contract")
+//@CrossOrigin(origins = "*", maxAge = 3600)
 public class ContractController {
+
     private final ContractService contractService;
 
     public ContractController(ContractService contractService) {
@@ -19,8 +24,10 @@ public class ContractController {
     }
 
     @PostMapping("/search")
-    public ResponseEntity<?> search(@RequestBody Map<String, Object> payload) {
+//    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<?> search(@RequestHeader("cid")String cid,@RequestBody Map<String, Object> payload) {
         try {
+            System.out.println(cid);
             return ResponseEntity.ok(contractService.search(payload));
         } catch (Exception e) {
             e.printStackTrace();
@@ -28,6 +35,7 @@ public class ContractController {
                     .body("Failed to search for contract: " + e.getMessage());
         }
     }
+
 
     @PostMapping()
     public ResponseEntity<?> create(@RequestBody ContractDTO contractDTO) {
@@ -41,7 +49,7 @@ public class ContractController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<?> getById(@PathVariable("id") BigInteger id) {
+    public ResponseEntity<?> getById( @PathVariable("id") BigInteger id) {
         try {
             return ResponseEntity.ok(contractService.findById(id));
         } catch (Exception e) {
@@ -52,7 +60,7 @@ public class ContractController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<?> update(@PathVariable("id") BigInteger id,
+    public ResponseEntity<?> update( @PathVariable("id") BigInteger id,
                                     @RequestBody ContractDTO contractDTO) {
         try {
             return ResponseEntity.ok(contractService.update(id, contractDTO));
@@ -64,7 +72,7 @@ public class ContractController {
     }
 
     @PutMapping("/delete/{id}")
-    public ResponseEntity<?> delete(@PathVariable("id") BigInteger id) {
+    public ResponseEntity<?> delete( @PathVariable("id") BigInteger id) {
         try {
             return ResponseEntity.ok(contractService.delete(id));
         } catch (Exception e) {

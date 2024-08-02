@@ -11,6 +11,7 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/customer")
+@CrossOrigin(origins = "*",maxAge = 3600)
 public class CustomerController {
     private  final CustomerService customerService;
 

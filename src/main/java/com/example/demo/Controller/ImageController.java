@@ -12,6 +12,8 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/image")
+@CrossOrigin(origins = "*",maxAge = 3600)
+
 public class ImageController {
     private  final ImageService imageService;
 
