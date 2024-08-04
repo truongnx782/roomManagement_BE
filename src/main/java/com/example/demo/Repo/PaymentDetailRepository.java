@@ -12,20 +12,23 @@ import java.util.List;
 import java.util.Map;
 
 public interface PaymentDetailRepository extends JpaRepository<PaymentDetail, BigInteger> {
-//    @Query(value = "select  s.id as id,p.amountToPay/s.servicePrice as value ,p.amountToPay as amount" +
-//            " from PaymentDetail p left join Service s on p.service.id=s.id where p.payment.id=:id")
+
 @Query(value = "select  s.id as id,p.amountToPay as value "+
-        " from PaymentDetail p left join Service s on p.service.id=s.id where p.payment.id=:id")
-    List<Map<String, Object>> findByPaymentId(@Param("id") BigInteger id);
+        " from PaymentDetail p left join Service s on p.service.id=s.id " +
+        "where p.payment.id=:id and p.companyId=:cid and s.companyId=:cid")
+    List<Map<String, Object>> findByPaymentIdAndCpmpanyId(@Param("id") BigInteger id,
+                                                          @Param("cid") BigInteger cid);
 
-    @Query("select p from PaymentDetail p where p.payment.id in :ids")
-    List<PaymentDetail> findAllByPaymentIds(@Param("ids") List<BigInteger> ids);
+    @Query("select p from PaymentDetail p where p.payment.id in :ids and p.companyId=:cid")
+    List<PaymentDetail> findAllByPaymentIdsAndCompanyId(@Param("ids") List<BigInteger> ids,
+                                                        @Param("cid") BigInteger cid);
 
-    @Query(value = "select  p from PaymentDetail p where p.payment.id=:id")
-    List<PaymentDetail> findAllByPaymentId(@Param("id") BigInteger id);
+    @Query(value = "select  p from PaymentDetail p where p.payment.id=:id and p.companyId=:cid")
+    List<PaymentDetail> findAllByPaymentIdAndCompanyId(@Param("id") BigInteger id,BigInteger cid );
 
     @Modifying
     @Transactional
-    @Query("DELETE FROM PaymentDetail c WHERE c.payment.id = :id")
-    void deleteAllByPaymentId(@Param("id") BigInteger id);
+    @Query("DELETE FROM PaymentDetail c WHERE c.payment.id = :id and c.companyId=:cid")
+    void deleteAllByPaymentIdAndCompanyId(@Param("id") BigInteger id,
+                                          @Param("cid") BigInteger cid);
 }

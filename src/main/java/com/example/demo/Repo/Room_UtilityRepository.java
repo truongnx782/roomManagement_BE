@@ -22,6 +22,7 @@ public interface Room_UtilityRepository  extends JpaRepository<Room_Utility, Big
 
     @Modifying
     @Transactional
-    @Query("DELETE FROM Room_Utility r WHERE r.room.id = :roomId")
-    void deleteByRoomId(@Param("roomId") BigInteger roomId);
+    @Query("DELETE FROM Room_Utility r WHERE r.room.id = :roomId AND r.companyId=:cid")
+    void deleteByRoomIdAndCompanyId(@Param("roomId") BigInteger roomId,
+                                    @Param("cid") BigInteger cid);
 }

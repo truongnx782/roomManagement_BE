@@ -11,8 +11,6 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/utility")
-@CrossOrigin(origins = "*",maxAge = 3600)
-
 public class UtilityController {
     private final UtilityService utilityService;
 
@@ -21,9 +19,10 @@ public class UtilityController {
     }
 
     @PostMapping("/search")
-    public ResponseEntity<?> search(@RequestBody Map<String, Object> payload) {
+    public ResponseEntity<?> search(@RequestHeader("cid")BigInteger cid,
+                                    @RequestBody Map<String, Object> payload) {
         try {
-            return ResponseEntity.ok(utilityService.search(payload));
+            return ResponseEntity.ok(utilityService.search(payload,cid));
         } catch (Exception e) {
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
@@ -32,9 +31,9 @@ public class UtilityController {
     }
 
     @GetMapping("")
-    public ResponseEntity<?> getAll() {
+    public ResponseEntity<?> getAll(@RequestHeader("cid")BigInteger cid) {
         try {
-            return ResponseEntity.ok(utilityService.getAll());
+            return ResponseEntity.ok(utilityService.getAll(cid));
         } catch (Exception e) {
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
@@ -43,9 +42,10 @@ public class UtilityController {
     }
 
     @PostMapping()
-    public ResponseEntity<?> create(@RequestBody UtilityDTO utilityDTO) {
+    public ResponseEntity<?> create(@RequestHeader("cid")BigInteger cid,
+                                    @RequestBody UtilityDTO utilityDTO) {
         try {
-            return ResponseEntity.ok(utilityService.create(utilityDTO));
+            return ResponseEntity.ok(utilityService.create(utilityDTO,cid));
         } catch (Exception e) {
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
@@ -54,9 +54,10 @@ public class UtilityController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<?> getById(@PathVariable("id") BigInteger id) {
+    public ResponseEntity<?> getById(@RequestHeader("cid")BigInteger cid,
+                                     @PathVariable("id") BigInteger id) {
         try {
-            return ResponseEntity.ok(utilityService.findById(id));
+            return ResponseEntity.ok(utilityService.findById(id,cid));
         } catch (Exception e) {
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
@@ -65,10 +66,11 @@ public class UtilityController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<?> Update(@PathVariable("id") BigInteger id,
+    public ResponseEntity<?> Update(@RequestHeader("cid")BigInteger cid,
+                                    @PathVariable("id") BigInteger id,
                                     @RequestBody UtilityDTO utilityDTO) {
         try {
-            return ResponseEntity.ok(utilityService.update(id, utilityDTO));
+            return ResponseEntity.ok(utilityService.update(id, utilityDTO,cid));
         } catch (Exception e) {
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
@@ -77,9 +79,10 @@ public class UtilityController {
     }
 
     @PutMapping("/delete/{id}")
-    public ResponseEntity<?> delete(@PathVariable("id") BigInteger id) {
+    public ResponseEntity<?> delete(@RequestHeader("cid")BigInteger cid,
+                                    @PathVariable("id") BigInteger id) {
         try {
-            return ResponseEntity.ok(utilityService.delete(id));
+            return ResponseEntity.ok(utilityService.delete(id,cid));
         } catch (Exception e) {
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
@@ -88,9 +91,10 @@ public class UtilityController {
     }
 
     @PutMapping("/restore/{id}")
-    public ResponseEntity<?> restore(@PathVariable("id") BigInteger id) {
+    public ResponseEntity<?> restore(@RequestHeader("cid")BigInteger cid,
+                                     @PathVariable("id") BigInteger id) {
         try {
-            return ResponseEntity.ok(utilityService.restore(id));
+            return ResponseEntity.ok(utilityService.restore(id,cid));
         } catch (Exception e) {
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)

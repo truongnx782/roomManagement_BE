@@ -14,13 +14,12 @@ import java.util.Optional;
 public interface MaintenanceRepository extends JpaRepository<Maintenance, BigInteger> {
     @Query(value = "SELECT u FROM Maintenance u WHERE " +
             "(u.room.roomCode LIKE %:search% OR u.room.roomName LIKE %:search% ) " +
-            "AND (:status IS NULL OR u.status = :status) " +
+            "AND (:status IS NULL OR u.status = :status) AND u.companyId=:cid " +
             "ORDER BY u.id DESC")
     Page<Maintenance> search(@Param("search") String search,
-                         @Param("status") Integer status,
-                         Pageable pageable);
+                             @Param("status") Integer status,
+                             @Param("cid") BigInteger cid,
+                             Pageable pageable);
 
-
-
-
+    Optional<Maintenance> findByIdAndCompanyId(BigInteger id, BigInteger cid);
 }

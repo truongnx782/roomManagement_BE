@@ -11,8 +11,6 @@ import java.math.BigInteger;
 
 @RestController
 @RequestMapping("/room-utility")
-@CrossOrigin(origins = "*",maxAge = 3600)
-
 public class Room_UtilityController {
     private final Room_UtilityService room_utilityService;
 
@@ -21,9 +19,10 @@ public class Room_UtilityController {
     }
 
     @PostMapping("/create")
-    public ResponseEntity<?> create(@RequestBody Room_UtilityReq createRoom_utilityDTO) {
+    public ResponseEntity<?> create(@RequestHeader("cid")BigInteger cid,
+                                    @RequestBody Room_UtilityReq createRoom_utilityDTO) {
         try {
-            return ResponseEntity.ok(room_utilityService.create(createRoom_utilityDTO));
+            return ResponseEntity.ok(room_utilityService.create(createRoom_utilityDTO,cid));
         } catch (Exception e) {
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
@@ -32,9 +31,10 @@ public class Room_UtilityController {
     }
 
     @PostMapping("/update")
-    public ResponseEntity<?> update(@RequestBody Room_UtilityReq createRoom_utilityDTO) {
+    public ResponseEntity<?> update(@RequestHeader("cid")BigInteger cid,
+                                    @RequestBody Room_UtilityReq createRoom_utilityDTO) {
         try {
-            return ResponseEntity.ok(room_utilityService.update(createRoom_utilityDTO));
+            return ResponseEntity.ok(room_utilityService.update(createRoom_utilityDTO,cid));
         } catch (Exception e) {
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)

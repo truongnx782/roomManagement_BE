@@ -10,8 +10,6 @@ import java.math.BigInteger;
 import java.util.Map;
 @RestController
 @RequestMapping("/room")
-@CrossOrigin(origins = "*",maxAge = 3600)
-
 public class RoomController {
     private final RoomService roomService;
 
@@ -20,9 +18,10 @@ public class RoomController {
     }
 
     @PostMapping("/search")
-    public ResponseEntity<?> searchRoom(@RequestBody Map<String, Object> payload) {
+    public ResponseEntity<?> searchRoom(@RequestHeader("cid")BigInteger cid,
+                                        @RequestBody Map<String, Object> payload) {
         try {
-            return ResponseEntity.ok(roomService.search(payload));
+            return ResponseEntity.ok(roomService.search(payload,cid));
         } catch (Exception e) {
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
@@ -31,9 +30,9 @@ public class RoomController {
     }
 
     @GetMapping("")
-    public ResponseEntity<?> getAll() {
+    public ResponseEntity<?> getAll(@RequestHeader("cid")BigInteger cid) {
         try {
-            return ResponseEntity.ok(roomService.getAll());
+            return ResponseEntity.ok(roomService.getAll(cid));
         } catch (Exception e) {
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
@@ -42,9 +41,10 @@ public class RoomController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<?> getById(@PathVariable("id") BigInteger id) {
+    public ResponseEntity<?> getById(@RequestHeader("cid")BigInteger cid,
+                                     @PathVariable("id") BigInteger id) {
         try {
-            return ResponseEntity.ok(roomService.findById(id));
+            return ResponseEntity.ok(roomService.findById(id,cid));
         } catch (Exception e) {
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
@@ -53,9 +53,10 @@ public class RoomController {
     }
 
     @PostMapping()
-    public ResponseEntity<?> create(@RequestBody RoomDTO roomDTO) {
+    public ResponseEntity<?> create(@RequestHeader("cid")BigInteger cid,
+                                    @RequestBody RoomDTO roomDTO) {
         try {
-            return ResponseEntity.ok(roomService.create(roomDTO));
+            return ResponseEntity.ok(roomService.create(roomDTO,cid));
         } catch (Exception e) {
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
@@ -64,10 +65,11 @@ public class RoomController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<?> update(@PathVariable("id") BigInteger id,
+    public ResponseEntity<?> update(@RequestHeader("cid")BigInteger cid,
+                                    @PathVariable("id") BigInteger id,
                                     @RequestBody RoomDTO roomDTO) {
         try {
-            return ResponseEntity.ok(roomService.update(id, roomDTO));
+            return ResponseEntity.ok(roomService.update(id, roomDTO,cid));
         } catch (Exception e) {
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
@@ -76,9 +78,10 @@ public class RoomController {
     }
 
     @PutMapping("/delete/{id}")
-    public ResponseEntity<?> delete(@PathVariable("id") BigInteger id) {
+    public ResponseEntity<?> delete(@RequestHeader("cid")BigInteger cid,
+                                    @PathVariable("id") BigInteger id) {
         try {
-            return ResponseEntity.ok(roomService.delete(id));
+            return ResponseEntity.ok(roomService.delete(id,cid));
         } catch (Exception e) {
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
@@ -87,9 +90,10 @@ public class RoomController {
     }
 
     @PutMapping("/restore/{id}")
-    public ResponseEntity<?> restore(@PathVariable("id") BigInteger id) {
+    public ResponseEntity<?> restore(@RequestHeader("cid")BigInteger cid,
+                                     @PathVariable("id") BigInteger id) {
         try {
-            return ResponseEntity.ok(roomService.restore(id));
+            return ResponseEntity.ok(roomService.restore(id,cid));
         } catch (Exception e) {
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)

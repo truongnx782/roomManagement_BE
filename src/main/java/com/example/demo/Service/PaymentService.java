@@ -28,21 +28,21 @@ public class PaymentService {
         this.paymentRepository = paymentRepository;
     }
 
-    public Page<PaymentDTO> search(Map<String, Object> payload) {
+    public Page<PaymentDTO> search(Map<String, Object> payload, BigInteger cid) {
         int page = (int) payload.getOrDefault("page", 0);
         int size = (int) payload.getOrDefault("size", 5);
         String search = (String) payload.getOrDefault("search", "");
         Integer paymentStatus = (Integer) payload.getOrDefault("paymentStatus",null);
         Pageable pageable = PageRequest.of(page, size);
-        Page<Payment> data = paymentRepository.search(search, paymentStatus, pageable);
+        Page<Payment> data = paymentRepository.search(search, paymentStatus,cid, pageable);
 
         return data.map(Payment::toDTO);
     }
 
-    public PaymentDTO updatePaymentStatus(Map<String, Object> payload) {
+    public PaymentDTO updatePaymentStatus(Map<String, Object> payload, BigInteger cid) {
         Integer paymentStatus = (Integer) payload.get("checked");
         BigInteger paymentId = BigInteger.valueOf(((Number) payload.get("id")).longValue());
-        Optional<Payment> optionalPayment = paymentRepository.findById(paymentId);
+        Optional<Payment> optionalPayment = paymentRepository.findByIdAndCompanyId(paymentId,cid);
         if (!optionalPayment.isPresent()) {
             throw new IllegalArgumentException("contract not found");
         }
@@ -53,9 +53,9 @@ public class PaymentService {
     }
 
 //    @Scheduled(fixedDelay = 10000)
-    public static void autoCreatePayment(){
+    public static void autoCreatePayment(BigInteger cid){
         System.out.println("check nè");
-        List<Payment> paymentList = paymentRepository.findPaymentsWithMaxDatePerContract();
+        List<Payment> paymentList = paymentRepository.findPaymentsWithMaxDatePerContractByCpmpanyId(cid);
         List<Payment> paymentSave= new ArrayList<>();
         LocalDate localDate = LocalDate.now();
         for (Payment payment: paymentList) {
@@ -70,6 +70,7 @@ public class PaymentService {
                 p.setPaymentDate(nextMonthDate);
                 p.setPaymentStatus(Utils.UNPAID);
                 p.setStatus(Utils.ACTIVE);
+                p.setCompanyId(cid);
                 paymentSave.add(p);
                 System.out.println("Payment date is before the current date minus 3 days.");
             }

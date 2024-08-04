@@ -11,7 +11,6 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/customer")
-@CrossOrigin(origins = "*",maxAge = 3600)
 public class CustomerController {
     private  final CustomerService customerService;
 
@@ -20,9 +19,10 @@ public class CustomerController {
     }
 
     @PostMapping("/search")
-    public ResponseEntity<?> search(@RequestBody Map<String, Object> payload) {
+    public ResponseEntity<?> search(@RequestHeader("cid")BigInteger cid,
+                                    @RequestBody Map<String, Object> payload) {
         try {
-            return ResponseEntity.ok(customerService.search(payload));
+            return ResponseEntity.ok(customerService.search(payload,cid));
         } catch (Exception e) {
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
@@ -31,9 +31,9 @@ public class CustomerController {
     }
 
     @GetMapping("")
-    public ResponseEntity<?> getAll() {
+    public ResponseEntity<?> getAll(@RequestHeader("cid")BigInteger cid) {
         try {
-            return ResponseEntity.ok(customerService.getAll());
+            return ResponseEntity.ok(customerService.getAll(cid));
         } catch (Exception e) {
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
@@ -42,9 +42,10 @@ public class CustomerController {
     }
 
     @PostMapping()
-    public ResponseEntity<?> create(@RequestBody CustomerDTO customerDTO) {
+    public ResponseEntity<?> create(@RequestHeader("cid")BigInteger cid,
+                                    @RequestBody CustomerDTO customerDTO) {
         try {
-            return ResponseEntity.ok(customerService.create(customerDTO));
+            return ResponseEntity.ok(customerService.create(customerDTO,cid));
         } catch (Exception e) {
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
@@ -53,9 +54,9 @@ public class CustomerController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<?> getById(@PathVariable("id") BigInteger id) {
+    public ResponseEntity<?> getById(@RequestHeader("cid")BigInteger cid,@PathVariable("id") BigInteger id) {
         try {
-            return ResponseEntity.ok(customerService.findById(id));
+            return ResponseEntity.ok(customerService.findById(id,cid));
         } catch (Exception e) {
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
@@ -64,10 +65,11 @@ public class CustomerController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<?> Update(@PathVariable("id") BigInteger id,
+    public ResponseEntity<?> Update(@RequestHeader("cid")BigInteger cid,
+                                    @PathVariable("id") BigInteger id,
                                     @RequestBody CustomerDTO customerDTO) {
         try {
-            return ResponseEntity.ok(customerService.update(id, customerDTO));
+            return ResponseEntity.ok(customerService.update(id, customerDTO,cid));
         } catch (Exception e) {
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)

@@ -19,9 +19,10 @@ public class PaymentDetailController {
         this.paymentDetailService = paymentDetailService;
     }
     @GetMapping("/paymentId/{id}")
-    public ResponseEntity<?> getByPaymentId(@PathVariable("id") BigInteger id) {
+    public ResponseEntity<?> getByPaymentId(@RequestHeader("cid")BigInteger cid,
+                                            @PathVariable("id") BigInteger id) {
         try {
-            return ResponseEntity.ok(paymentDetailService.getByPaymentId(id));
+            return ResponseEntity.ok(paymentDetailService.getByPaymentId(id,cid));
         } catch (Exception e) {
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
@@ -30,9 +31,10 @@ public class PaymentDetailController {
     }
 
     @PostMapping("/create-list")
-    public ResponseEntity<?> createList(@RequestBody Map<String,Object> payload)  {
+    public ResponseEntity<?> createList(@RequestHeader("cid")BigInteger cid,
+                                        @RequestBody Map<String,Object> payload)  {
         try {
-            return ResponseEntity.ok(paymentDetailService.createList(payload));
+            return ResponseEntity.ok(paymentDetailService.createList(payload,cid));
         } catch (Exception e) {
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)

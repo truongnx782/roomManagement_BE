@@ -16,14 +16,19 @@ public interface ServiceRepository extends JpaRepository<Service, BigInteger> {
     @Query(value = "SELECT s FROM Service s WHERE " +
             "(s.serviceName LIKE %:search% OR s.serviceCode LIKE %:search% ) " +
             "AND (:status IS NULL OR s.status = :status) " +
+            "AND s.companyId=:cid " +
             "ORDER BY s.id DESC")
     Page<Service> search(@Param("search") String search,
                          @Param("status") Integer status,
-                         Pageable pageable);
+                         @Param("cid") BigInteger cid, Pageable pageable);
 
-    @Query(value = "SELECT nv FROM Service nv WHERE nv.id = (SELECT MAX(nv2.id) FROM Service nv2)")
-    Optional<Service> findMaxId();
+    @Query(value = "SELECT nv FROM Service nv WHERE " +
+            " nv.id = (SELECT MAX(nv2.id) FROM Service nv2 where " +
+            " nv2.companyId=:cid) AND nv.companyId=:cid")
+    Optional<Service> findMaxId(@Param("cid") BigInteger cid);
 
-    List<Service> findAllByOrderByIdDesc();
+    List<Service> findAllByCompanyIdOrderByIdDesc(BigInteger cid);
+
+    Optional<Service> findByIdAndCompanyId(BigInteger id, BigInteger cid);
 }
 

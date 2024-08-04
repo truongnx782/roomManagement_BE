@@ -7,12 +7,11 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.math.BigInteger;
-
 @Data
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
 @Entity
-@Table(name= "Role")
+@Table(name = "Role")
 public class Role {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -20,7 +19,9 @@ public class Role {
     private BigInteger id;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "name")
+    @Column(name = "Name")
     private ERole name;
-}
 
+    @Column(name = "Status")
+    private Integer status;
+}

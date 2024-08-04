@@ -24,8 +24,8 @@ public class PaymentDetailService {
         this.paymentDetailRepository = paymentDetailRepository;
     }
 
-    public Object getByPaymentId(BigInteger id) {
-        List<Map<String,Object> >ids =  paymentDetailRepository.findByPaymentId(id);
+    public Object getByPaymentId(BigInteger id, BigInteger cid) {
+        List<Map<String,Object> >ids =  paymentDetailRepository.findByPaymentIdAndCpmpanyId(id,cid);
         Map<String,Object> objectMap = new HashMap<>();
         objectMap.put("ids",ids);
         objectMap.put("paymentId",id);
@@ -40,18 +40,18 @@ public class PaymentDetailService {
         return objectMap;
     }
 
-    public Object createList(Map<String, Object> payload) {
+    public Object createList(Map<String, Object> payload, BigInteger cid) {
         BigInteger paymentId = BigInteger.valueOf(((Number) payload.get("paymentId")).longValue());
         List<Map<String,Object>> ids = (List<Map<String, Object>>) payload.get("ids");
         List<PaymentDetail> paymentDetails = new ArrayList<>();
         if (paymentId==null) {
             throw new IllegalArgumentException("Payment not found");
         }
-        List<PaymentDetail> paymentDetailList = paymentDetailRepository.findAllByPaymentId(paymentId);
+        List<PaymentDetail> paymentDetailList = paymentDetailRepository.findAllByPaymentIdAndCompanyId(paymentId,cid);
 
         if (!paymentDetailList.isEmpty()) {
             for (Map<String, Object> objectMap : ids) {
-                paymentDetailRepository.deleteAllByPaymentId(paymentId);
+                paymentDetailRepository.deleteAllByPaymentIdAndCompanyId(paymentId,cid);
                 if((Integer) objectMap.get("value")!=0){
                     PaymentDetail paymentDetail = new PaymentDetail();
                     Payment payment = new Payment();
@@ -63,15 +63,15 @@ public class PaymentDetailService {
                     paymentDetail.setService(service);
                     paymentDetail.setAmountToPay(value);
                     paymentDetail.setStatus(Utils.ACTIVE);
+                    paymentDetail.setCompanyId(cid);
                     paymentDetails.add(paymentDetail);
                 }
             }
             paymentDetails = paymentDetailRepository.saveAll(paymentDetails);
             return paymentDetails;
-//            return "update";
         }
 
-        List<ServiceDTO> serviceDTOS = serviceService.getAll();
+        List<ServiceDTO> serviceDTOS = serviceService.getAll(cid);
         for (Map<String,Object> objectMap: ids) {
             if(objectMap.get("value")!= null){
                 PaymentDetail paymentDetail = new PaymentDetail();
@@ -89,6 +89,7 @@ public class PaymentDetailService {
                         .orElse(BigDecimal.ZERO);
                 paymentDetail.setAmountToPay(heSo.multiply(value));
                 paymentDetail.setStatus(Utils.ACTIVE);
+                paymentDetail.setCompanyId(cid);
                 paymentDetails.add(paymentDetail);
             }
         }

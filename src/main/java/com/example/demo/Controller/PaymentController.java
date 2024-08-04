@@ -5,6 +5,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.math.BigInteger;
 import java.util.Map;
 
 @RestController
@@ -19,9 +20,10 @@ public class PaymentController {
     }
 
     @PostMapping("/search")
-    public ResponseEntity<?> search(@RequestBody Map<String, Object> payload) {
+    public ResponseEntity<?> search(@RequestHeader("cid") BigInteger cid,
+                                    @RequestBody Map<String, Object> payload) {
         try {
-            return ResponseEntity.ok(paymentService.search(payload));
+            return ResponseEntity.ok(paymentService.search(payload,cid));
         } catch (Exception e) {
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
@@ -30,9 +32,10 @@ public class PaymentController {
     }
 
     @PostMapping("/payment-status")
-    public ResponseEntity<?> updatePaymentStatus(@RequestBody Map<String, Object> payload) {
+    public ResponseEntity<?> updatePaymentStatus(@RequestHeader("cid")BigInteger cid,
+                                                 @RequestBody Map<String, Object> payload) {
         try {
-            return ResponseEntity.ok(paymentService.updatePaymentStatus(payload));
+            return ResponseEntity.ok(paymentService.updatePaymentStatus(payload,cid));
         } catch (Exception e) {
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)

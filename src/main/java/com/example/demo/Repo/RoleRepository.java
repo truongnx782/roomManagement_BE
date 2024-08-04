@@ -9,5 +9,4 @@ import java.util.Optional;
 
 public interface RoleRepository extends JpaRepository<Role, BigInteger> {
     Optional<Role> findByName(ERole name);
-
 }

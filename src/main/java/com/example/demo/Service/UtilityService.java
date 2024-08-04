@@ -2,7 +2,7 @@ package com.example.demo.Service;
 
 import com.example.demo.DTO.UtilityDTO;
 import com.example.demo.Entity.Utility;
-import com.example.demo.repository.UtilityRepository;
+import com.example.demo.Repo.UtilityRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -22,40 +22,41 @@ public class UtilityService  {
         this.utilityRepository = utilityRepository;
     }
 
-    public Page<UtilityDTO> search(Map<String, Object> payload) {
+    public Page<UtilityDTO> search(Map<String, Object> payload, BigInteger cid) {
         int page = (int) payload.getOrDefault("page", 0);
         int size = (int) payload.getOrDefault("size", 5);
         String search = (String) payload.getOrDefault("search", "");
         Integer status = (Integer) payload.getOrDefault("status",null);
         Pageable pageable = PageRequest.of(page, size);
-        Page<Utility> data = utilityRepository.search(search, status, pageable);
+        Page<Utility> data = utilityRepository.search(search, status,cid, pageable);
         return data.map(Utility::toDTO);
     }
 
-    public List<UtilityDTO> getAll() {
-        List<Utility> utilityList = utilityRepository.findAllByOrderByIdDesc();
+    public List<UtilityDTO> getAll(BigInteger cid) {
+        List<Utility> utilityList = utilityRepository.findAllByCompanyIdOrderByIdDesc(cid);
         return utilityList.stream().map(Utility::toDTO).collect(Collectors.toList());
     }
 
-    public UtilityDTO create(UtilityDTO utilityDTO) {
+    public UtilityDTO create(UtilityDTO utilityDTO, BigInteger cid) {
         if (utilityDTO.getUtilityName() == null || utilityDTO.getUtilityName().isEmpty()) {
             throw new IllegalArgumentException(" name cannot be empty.");
         }
-        Optional<Utility> maxIdSP = utilityRepository.findMaxId();
+        Optional<Utility> maxIdSP = utilityRepository.findMaxId(cid);
         BigInteger maxId = maxIdSP.isPresent() ? maxIdSP.get().getId().add(BigInteger.ONE) : BigInteger.ONE;
 
         Utility utility = Utility.toEntity(utilityDTO);
         utility.setUtilityCode("U"+maxId);
         utility.setStatus(1);
+        utility.setCompanyId(cid);
         Utility newUtility = utilityRepository.save(utility);
         return Utility.toDTO(newUtility);
     }
 
-    public UtilityDTO update(BigInteger id, UtilityDTO utilityDTO) {
+    public UtilityDTO update(BigInteger id, UtilityDTO utilityDTO, BigInteger cid) {
         if (utilityDTO.getUtilityName() == null || utilityDTO.getUtilityName().isEmpty()) {
             throw new IllegalArgumentException(" name cannot be empty.");
         }
-            Optional<Utility> optionalUtility = utilityRepository.findById(id);
+            Optional<Utility> optionalUtility = utilityRepository.findByIdAndCompanyId(id,cid);
             if (!optionalUtility.isPresent()) {
                 throw new IllegalArgumentException("Utility not found");
             }
@@ -66,8 +67,8 @@ public class UtilityService  {
             return Utility.toDTO(utility);
         }
 
-    public UtilityDTO delete(BigInteger id){
-        Optional<Utility> optionalUtility = utilityRepository.findById(id);
+    public UtilityDTO delete(BigInteger id, BigInteger cid){
+        Optional<Utility> optionalUtility = utilityRepository.findByIdAndCompanyId(id,cid);
         if (!optionalUtility.isPresent()) {
             throw new IllegalArgumentException("Utility not found");
         }
@@ -77,8 +78,8 @@ public class UtilityService  {
         return Utility.toDTO(utility);
     }
 
-    public UtilityDTO restore(BigInteger id){
-        Optional<Utility> optionalUtility = utilityRepository.findById(id);
+    public UtilityDTO restore(BigInteger id, BigInteger cid){
+        Optional<Utility> optionalUtility = utilityRepository.findByIdAndCompanyId(id, cid);
         if (!optionalUtility.isPresent()) {
             throw new IllegalArgumentException("Utility not found");
         }
@@ -88,11 +89,13 @@ public class UtilityService  {
         return Utility.toDTO(utility);
     }
 
-    public UtilityDTO findById(BigInteger id) {
-        Optional<Utility> optionalUtility = utilityRepository.findById(id);
+    public UtilityDTO findById(BigInteger id, BigInteger cid) {
+        Optional<Utility> optionalUtility = utilityRepository.findByIdAndCompanyId(id,cid);
         if (!optionalUtility.isPresent()) {
             throw new IllegalArgumentException("Utility not found");
         }
         return Utility.toDTO(optionalUtility.get());
     }
+
+
 }

@@ -5,6 +5,7 @@ import com.example.demo.DTO.UtilityDTO;
 import com.example.demo.Entity.Customer;
 import com.example.demo.Entity.Utility;
 import com.example.demo.Repo.CustomerRepository;
+import com.example.demo.Util.Utils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -24,36 +25,37 @@ private final CustomerRepository customerRepository;
         this.customerRepository = customerRepository;
     }
 
-    public Page<CustomerDTO> search(Map<String, Object> payload) {
+    public Page<CustomerDTO> search(Map<String, Object> payload, BigInteger cid) {
         int page = (int) payload.getOrDefault("page", 0);
         int size = (int) payload.getOrDefault("size", 5);
         String search = (String) payload.getOrDefault("search", "");
         Integer status = (Integer) payload.getOrDefault("status",null);
         Pageable pageable = PageRequest.of(page, size);
-        Page<Customer> data = customerRepository.search(search, status, pageable);
+        Page<Customer> data = customerRepository.search(search, status,cid, pageable);
         return data.map(Customer::toDTO);
     }
 
-    public List<CustomerDTO> getAll() {
-        List<Customer> customers = customerRepository.findAllByOrderByIdDesc();
+    public List<CustomerDTO> getAll(BigInteger cid) {
+        List<Customer> customers = customerRepository.findAllByCompanyIdOrderByIdDesc(cid);
         return customers.stream().map(Customer::toDTO).collect(Collectors.toList());
     }
 
-    public CustomerDTO create(CustomerDTO customerDTO) {
+    public CustomerDTO create(CustomerDTO customerDTO, BigInteger cid) {
         customerDTO.validate(customerDTO);
-        Optional<Customer> maxIdSP = customerRepository.findMaxId();
+        Optional<Customer> maxIdSP = customerRepository.findMaxIdByCompanyId(cid);
         BigInteger maxId = maxIdSP.isPresent() ? maxIdSP.get().getId().add(BigInteger.ONE) : BigInteger.ONE;
 
         Customer customer = Customer.toEntity(customerDTO);
         customer.setCustomerCode("C"+maxId);
-        customer.setStatus(1);
+        customer.setStatus(Utils.ACTIVE);
+        customer.setCompanyId(cid);
         Customer newCustomer = customerRepository.save(customer);
         return Customer.toDTO(newCustomer);
     }
 
-    public CustomerDTO update(BigInteger id, CustomerDTO customerDTO) {
+    public CustomerDTO update(BigInteger id, CustomerDTO customerDTO, BigInteger cid) {
         customerDTO.validate(customerDTO);
-        Optional<Customer> optionalCustomer = customerRepository.findById(id);
+        Optional<Customer> optionalCustomer = customerRepository.findByIdAndCompanyId(id,cid);
         if (!optionalCustomer.isPresent()) {
             throw new IllegalArgumentException("Customer not found");
         }
@@ -89,8 +91,8 @@ private final CustomerRepository customerRepository;
         return Customer.toDTO(customer);
     }
 
-    public CustomerDTO findById(BigInteger id) {
-        Optional<Customer> optionalCustomer = customerRepository.findById(id);
+    public CustomerDTO findById(BigInteger id,BigInteger cid) {
+        Optional<Customer> optionalCustomer = customerRepository.findByIdAndCompanyId(id,cid);
         if (!optionalCustomer.isPresent()) {
             throw new IllegalArgumentException("Customer not found");
         }

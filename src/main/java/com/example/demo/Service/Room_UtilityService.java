@@ -6,6 +6,7 @@ import com.example.demo.Entity.Room_Utility;
 import com.example.demo.Entity.Utility;
 import com.example.demo.Repo.Room_UtilityRepository;
 import com.example.demo.Request.Room_UtilityReq;
+import com.example.demo.Util.Utils;
 import org.springframework.stereotype.Service;
 
 import java.math.BigInteger;
@@ -21,7 +22,7 @@ public class Room_UtilityService {
         this.room_utilityRepository = room_utilityRepository;
     }
 
-    public List<Room_UtilityDTO> create(Room_UtilityReq createRoom_utilityDTO) {
+    public List<Room_UtilityDTO> create(Room_UtilityReq createRoom_utilityDTO, BigInteger cid) {
         List<Room_Utility> room_utilitys = new ArrayList<>();
 
         for (int i = 0; i < createRoom_utilityDTO.getUtilitys().size(); i++) {
@@ -34,8 +35,8 @@ public class Room_UtilityService {
 
             newRoomUtility.setRoom(room);
             newRoomUtility.setUtility(utility);
-            newRoomUtility.setStatus(1);
-
+            newRoomUtility.setStatus(Utils.ACTIVE);
+            newRoomUtility.setCompanyId(cid);
             room_utilitys.add(newRoomUtility);
         }
         room_utilitys = room_utilityRepository.saveAll(room_utilitys);
@@ -52,8 +53,8 @@ public class Room_UtilityService {
 
     }
 
-    public List<Room_UtilityDTO>  update(Room_UtilityReq createRoom_utilityDTO) {
-        room_utilityRepository.deleteByRoomId(createRoom_utilityDTO.getRoom());
+    public List<Room_UtilityDTO>  update(Room_UtilityReq createRoom_utilityDTO, BigInteger cid) {
+        room_utilityRepository.deleteByRoomIdAndCompanyId(createRoom_utilityDTO.getRoom(),cid);
 
         List<Room_Utility> room_utilitys = new ArrayList<>();
         for (int i = 0; i < createRoom_utilityDTO.getUtilitys().size(); i++) {
@@ -66,8 +67,8 @@ public class Room_UtilityService {
 
             newRoomUtility.setRoom(room);
             newRoomUtility.setUtility(utility);
-            newRoomUtility.setStatus(1);
-
+            newRoomUtility.setStatus(Utils.ACTIVE);
+            newRoomUtility.setCompanyId(cid);
             room_utilitys.add(newRoomUtility);
         }
         room_utilitys = room_utilityRepository.saveAll(room_utilitys);

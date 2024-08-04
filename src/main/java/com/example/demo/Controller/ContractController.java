@@ -2,8 +2,7 @@ package com.example.demo.Controller;
 
 import com.example.demo.DTO.ContractDTO;
 import com.example.demo.Service.ContractService;
-import com.example.demo.security.jwt.JwtUtils;
-import org.springframework.http.HttpHeaders;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -14,7 +13,6 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/contract")
-//@CrossOrigin(origins = "*", maxAge = 3600)
 public class ContractController {
 
     private final ContractService contractService;
@@ -25,10 +23,10 @@ public class ContractController {
 
     @PostMapping("/search")
 //    @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<?> search(@RequestHeader("cid")String cid,@RequestBody Map<String, Object> payload) {
+    public ResponseEntity<?> search(@RequestHeader("cid")String cid,
+                                    @RequestBody Map<String, Object> payload) {
         try {
-            System.out.println(cid);
-            return ResponseEntity.ok(contractService.search(payload));
+            return ResponseEntity.ok(contractService.search(payload,cid));
         } catch (Exception e) {
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
@@ -38,9 +36,10 @@ public class ContractController {
 
 
     @PostMapping()
-    public ResponseEntity<?> create(@RequestBody ContractDTO contractDTO) {
+    public ResponseEntity<?> create(@RequestHeader("cid")BigInteger cid,
+                                    @RequestBody ContractDTO contractDTO) {
         try {
-            return ResponseEntity.ok(contractService.create(contractDTO));
+            return ResponseEntity.ok(contractService.create(contractDTO,cid));
         } catch (Exception e) {
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
@@ -49,9 +48,10 @@ public class ContractController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<?> getById( @PathVariable("id") BigInteger id) {
+    public ResponseEntity<?> getById( @RequestHeader("cid")BigInteger cid,
+                                      @PathVariable("id") BigInteger id) {
         try {
-            return ResponseEntity.ok(contractService.findById(id));
+            return ResponseEntity.ok(contractService.findById(id,cid));
         } catch (Exception e) {
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
@@ -60,10 +60,11 @@ public class ContractController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<?> update( @PathVariable("id") BigInteger id,
+    public ResponseEntity<?> update(@RequestHeader("cid")BigInteger cid,
+                                    @PathVariable("id") BigInteger id,
                                     @RequestBody ContractDTO contractDTO) {
         try {
-            return ResponseEntity.ok(contractService.update(id, contractDTO));
+            return ResponseEntity.ok(contractService.update(id, contractDTO,cid));
         } catch (Exception e) {
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
@@ -72,9 +73,10 @@ public class ContractController {
     }
 
     @PutMapping("/delete/{id}")
-    public ResponseEntity<?> delete( @PathVariable("id") BigInteger id) {
+    public ResponseEntity<?> delete(@RequestHeader("cid")BigInteger cid,
+                                    @PathVariable("id") BigInteger id) {
         try {
-            return ResponseEntity.ok(contractService.delete(id));
+            return ResponseEntity.ok(contractService.delete(id,cid));
         } catch (Exception e) {
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
@@ -83,9 +85,10 @@ public class ContractController {
     }
 
     @PutMapping("/restore/{id}")
-    public ResponseEntity<?> restore(@PathVariable("id") BigInteger id) {
+    public ResponseEntity<?> restore(@RequestHeader("cid")BigInteger cid,
+                                     @PathVariable("id") BigInteger id) {
         try {
-            return ResponseEntity.ok(contractService.restore(id));
+            return ResponseEntity.ok(contractService.restore(id,cid));
         } catch (Exception e) {
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)

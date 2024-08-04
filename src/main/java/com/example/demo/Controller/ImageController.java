@@ -8,7 +8,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.math.BigInteger;
 import java.util.List;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/image")
@@ -23,12 +22,13 @@ public class ImageController {
 
     @PostMapping("/create")
     public ResponseEntity<?> create(
+            @RequestHeader("cid")BigInteger cid,
             @RequestParam(value = "file",required = false) List<MultipartFile> file,
             @RequestParam(value = "image",required = false) List<BigInteger> images,
             @RequestParam("room") BigInteger roomId,
             @RequestParam("status") Integer status) {
         try {
-            return ResponseEntity.ok(imageService.create(file,images, roomId, status));
+            return ResponseEntity.ok(imageService.create(file,images, roomId, status,cid));
         } catch (Exception e) {
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
@@ -37,9 +37,10 @@ public class ImageController {
     }
 
     @GetMapping("/get-by-room-id/{id}")
-    public ResponseEntity<?> getAllByRoomId(@PathVariable("id") BigInteger RoomId) {
+    public ResponseEntity<?> getAllByRoomId(@RequestHeader("cid")BigInteger cid,
+                                            @PathVariable("id") BigInteger RoomId) {
         try {
-            return ResponseEntity.ok(imageService.getAllByRoomId(RoomId));
+            return ResponseEntity.ok(imageService.getAllByRoomId(RoomId,cid));
         } catch (Exception e) {
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)

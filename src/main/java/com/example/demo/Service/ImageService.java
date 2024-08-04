@@ -31,7 +31,7 @@ public class ImageService {
         this.executorService = Executors.newFixedThreadPool(5);
     }
 
-    public List<ImageDTO> create(List<MultipartFile> files, List<BigInteger> images, BigInteger roomId, Integer status) throws IOException {
+    public List<ImageDTO> create(List<MultipartFile> files, List<BigInteger> images, BigInteger roomId, Integer status, BigInteger cid) throws IOException {
         List<Image> listImage = new ArrayList<>();
         if (files != null) {
             List<Image> finalListImage = listImage;
@@ -44,6 +44,7 @@ public class ImageService {
                     image.setRoom(room);
                     image.setUrl((String) r.get("secure_url"));
                     image.setStatus(status);
+                    image.setCompanyId(cid);
                     finalListImage.add(image);
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -51,7 +52,7 @@ public class ImageService {
             });
         }
 
-        List<Image> imagesRepo = imageRepositoty.findAllByRoomId(roomId);
+        List<Image> imagesRepo = imageRepositoty.findAllByRoomIdAndCompanyId(roomId,cid);
         List<BigInteger> imageRemove;
 
         if (images == null) {
@@ -77,7 +78,7 @@ public class ImageService {
                 });
 
         // Xóa ảnh khỏi repository
-        imageRepositoty.deleteAllById(imageRemove);
+        imageRepositoty.deleteAllByIdAndCompanyId(imageRemove,cid);
 
         listImage = imageRepositoty.saveAll(listImage);
         return listImage.stream()
@@ -90,8 +91,8 @@ public class ImageService {
         cloudinary.uploader().destroy(publicId, ObjectUtils.emptyMap());
     }
 
-    public List<ImageDTO> getAllByRoomId(BigInteger roomId) {
-        List<Image> images = imageRepositoty.findAllByRoomId(roomId);
+    public List<ImageDTO> getAllByRoomId( BigInteger roomId,BigInteger cid) {
+        List<Image> images = imageRepositoty.findAllByRoomIdAndCompanyId(roomId,cid);
         return images.stream()
                 .map(Image::toDTO)
                 .collect(Collectors.toList());
