@@ -1,9 +1,11 @@
 package com.example.demo.Controller;
 
+import com.example.demo.DTO.RootDTO;
 import com.example.demo.DtoSecurity.*;
 //import com.example.demo.Entity.ChucVu;
 //import com.example.demo.Entity.TaiKhoan;
 //import com.example.demo.Repo.ChucVuRepository;
+import com.example.demo.Entity.User;
 import com.example.demo.Repo.CompanyRepository;
 //import com.example.demo.Repo.TaiKhoanRepository;
 import com.example.demo.Service.AuthenticationService;
@@ -13,9 +15,12 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.web.bind.annotation.*;
 
 import java.text.ParseException;
+import java.util.Map;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -95,7 +100,12 @@ public class AuthenticationController {
 
 //    @GetMapping("/login-google")
 //    public ResponseEntity<?> handleGoogleLoginSuccess(OAuth2AuthenticationToken authentication) {
-//        Root root = toPerson(authentication.getPrincipal().getAttributes());
+//
+//
+//        RootDTO root = toPerson(authentication.getPrincipal().getAttributes());
+//        Optional<User> user =
+//
+//
 //        TaiKhoan taiKhoan = new TaiKhoan();
 //        Company company = new Company();
 //        company.setStatus(Utils.ACTIVE);
@@ -120,11 +130,11 @@ public class AuthenticationController {
 //
 //        return ResponseEntity.ok(authenticate2(authenticationRequest));
 //    }
-//    public Root toPerson(Map<String, Object>objectMap){
+//    public RootDTO toPerson(Map<String, Object> objectMap){
 //        if(objectMap== null){
 //            return null;
 //        }
-//        Root root = new Root();
+//        RootDTO root = new RootDTO();
 //        root.setEmail((String) objectMap.get("email"));
 //        root.setName((String) objectMap.get("name"));
 //        root.setPicture((String) objectMap.get("picture"));

@@ -21,35 +21,17 @@ public class Room_UtilityController {
     @PostMapping("/create")
     public ResponseEntity<?> create(@RequestHeader("cid")BigInteger cid,
                                     @RequestBody Room_UtilityReq createRoom_utilityDTO) {
-        try {
             return ResponseEntity.ok(room_utilityService.create(createRoom_utilityDTO,cid));
-        } catch (Exception e) {
-            e.printStackTrace();
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body("Failed to create Room-utility: " + e.getMessage());
-        }
     }
 
     @PostMapping("/update")
     public ResponseEntity<?> update(@RequestHeader("cid")BigInteger cid,
                                     @RequestBody Room_UtilityReq createRoom_utilityDTO) {
-        try {
             return ResponseEntity.ok(room_utilityService.update(createRoom_utilityDTO,cid));
-        } catch (Exception e) {
-            e.printStackTrace();
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body("Failed to create Room-utility: " + e.getMessage());
-        }
     }
 
     @GetMapping("/get-utility-id-by-room-id/{id}")
     public ResponseEntity<?> getUtilityIdByRoomId(@PathVariable("id") BigInteger RoomId) {
-        try {
             return ResponseEntity.ok(room_utilityService.getUtilityIdByRoomId(RoomId));
-        } catch (Exception e) {
-            e.printStackTrace();
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body("Failed to create Room: " + e.getMessage());
-        }
     }
 }

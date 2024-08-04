@@ -36,8 +36,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(request -> request
                         .requestMatchers(HttpMethod.POST, PUBLIC_ENDPOINTS)
                         .permitAll()
-                        .requestMatchers("/contract/**").hasRole("ADMIN") // Chỉ cho phép ADMIN truy cập các endpoint /contract
-
+//                        .requestMatchers("/contract/**").hasRole("ADMIN") // Chỉ cho phép ADMIN truy cập các endpoint /contract
                         .anyRequest()
                         .authenticated())
                 .oauth2Login(oauth2 -> oauth2
