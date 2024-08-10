@@ -11,4 +11,8 @@ import java.util.Optional;
 
 public interface UserRepository extends JpaRepository<User, BigInteger> {
     Optional<User> findByUsername(String username);
+
+    Optional<User> findByUsernameAndStatus(String username, Integer active);
+
+    List<User> findAllByStatus(Integer waitForConfirmation);
 }

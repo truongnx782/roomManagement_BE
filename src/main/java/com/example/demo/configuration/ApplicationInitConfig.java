@@ -1,13 +1,13 @@
 package com.example.demo.configuration;
 
-
-
 import com.example.demo.Entity.Company;
 import com.example.demo.Entity.Role;
 import com.example.demo.Entity.User;
+import com.example.demo.Entity.User_Role;
 import com.example.demo.Repo.CompanyRepository;
 import com.example.demo.Repo.RoleRepository;
 import com.example.demo.Repo.UserRepository;
+import com.example.demo.Repo.User_RoleRepository;
 import com.example.demo.Util.ERole;
 import com.example.demo.Util.Utils;
 import lombok.AccessLevel;
@@ -19,9 +19,6 @@ import org.springframework.boot.ApplicationRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.crypto.password.PasswordEncoder;
-
-import java.util.Date;
-import java.util.HashSet;
 import java.util.Optional;
 
 @Configuration
@@ -30,10 +27,8 @@ import java.util.Optional;
 @Slf4j
 public class ApplicationInitConfig {
 
-    // Đối tượng PasswordEncoder được sử dụng để mã hóa mật khẩu
     PasswordEncoder passwordEncoder;
 
-    // Tên đăng nhập và mật khẩu mặc định cho người dùng admin
     @NonFinal
     static final String ADMIN_USER_NAME = "admin";
     @NonFinal
@@ -42,7 +37,7 @@ public class ApplicationInitConfig {
     @Bean
     ApplicationRunner applicationRunner(UserRepository userRepository,
                                         RoleRepository roleRepository,
-
+                                        User_RoleRepository user_roleRepository,
                                         CompanyRepository companyRepository) {
         log.info("Initializing application.....");
         return args -> {
@@ -62,14 +57,12 @@ public class ApplicationInitConfig {
                 if (roleRepository.findByName(ERole.ROLE_ADMIN).isEmpty()){
                     Role role = new  Role();
                     role.setName(ERole.ROLE_ADMIN);
-                    role.setStatus(Utils.ACTIVE);
                     roleRepository.save(role); // Lưu vai trò vào cơ sở dữ liệu
                     log.warn("ADMIN Role has been created!"); // Ghi log thông báo vai trò ADMIN đã được tạo
                 }
                 if (roleRepository.findByName(ERole.ROLE_USER).isEmpty()){
                     Role role = new  Role();
                     role.setName(ERole.ROLE_USER);
-                    role.setStatus(Utils.ACTIVE);
                     roleRepository.save(role); // Lưu vai trò vào cơ sở dữ liệu
                     log.warn("ADMIN Role has been created!"); // Ghi log thông báo vai trò ADMIN đã được tạo
                 }
@@ -85,12 +78,12 @@ public class ApplicationInitConfig {
                         .build();
                user= userRepository.save(user);
 
-//                User_Role user_role = new User_Role();
-//                user_role.setUserId(user);
-//                user_role.setRoleId(role.get());
-//                user_role.setCompanyId(company.get().getId());
-//                user_role.setStatus(Utils.ACTIVE);
-//                user_roleRepository.save(user_role);
+                User_Role user_role = new User_Role();
+                user_role.setUserId(user);
+                user_role.setRoleId(role.get());
+                user_role.setCompanyId(company.get().getId());
+                user_role.setStatus(Utils.ACTIVE);
+                user_roleRepository.save(user_role);
 
                 log.warn("admin user has been created with default password: admin, please change it"); // Ghi log thông báo người dùng admin đã được tạo với mật khẩu mặc định
             }

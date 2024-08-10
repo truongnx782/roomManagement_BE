@@ -52,9 +52,8 @@ public class PaymentService {
         return Payment.toDTO(payment);
     }
 
-//    @Scheduled(fixedDelay = 10000)
+    @Scheduled(fixedDelay = 300000)
     public static void autoCreatePayment(BigInteger cid){
-        System.out.println("check nè");
         List<Payment> paymentList = paymentRepository.findPaymentsWithMaxDatePerContractByCpmpanyId(cid);
         List<Payment> paymentSave= new ArrayList<>();
         LocalDate localDate = LocalDate.now();

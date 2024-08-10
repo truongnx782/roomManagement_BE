@@ -15,16 +15,18 @@ import org.springframework.security.oauth2.server.resource.authentication.JwtGra
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
-import org.springframework.web.filter.CorsFilter;
+import org.springframework.web.cors.CorsConfigurationSource;
 
 @Configuration
 @EnableWebSecurity
-@EnableGlobalMethodSecurity(prePostEnabled = true) // Bật hỗ trợ @PreAuthorize và @Secured
-
+@EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SecurityConfig {
 
+    // Các endpoint không yêu cầu xác thực
     private final String[] PUBLIC_ENDPOINTS = {
-            "api/auth/**", "/api/users/check-username", "/api/users/create"
+            "/api/auth/**", // Bao gồm api/auth/login-google
+            "/api/users/check-username",
+            "/api/users/create"
     };
 
     @Autowired
@@ -33,61 +35,42 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
         httpSecurity
-                .authorizeHttpRequests(request -> request
-                        .requestMatchers(HttpMethod.POST, PUBLIC_ENDPOINTS)
-                        .permitAll()
-//                        .requestMatchers("/contract/**").hasRole("ADMIN") // Chỉ cho phép ADMIN truy cập các endpoint /contract
-                        .anyRequest()
-                        .authenticated())
-                .oauth2Login(oauth2 -> oauth2
-                        .defaultSuccessUrl("/api/auth/login-google")
-                        .loginPage("/oauth2/authorization/google")) // URL để bắt đầu quy trình OAuth2
+                .csrf(AbstractHttpConfigurer::disable) // Vô hiệu hóa CSRF nếu không cần
+                .cors(cors -> cors.configurationSource(corsConfigurationSource())) // Cấu hình CORS
+                .authorizeHttpRequests(authorize -> authorize
+                        .requestMatchers("/api/auth/**").permitAll() // Cho phép tất cả các yêu cầu đến /api/auth/**
+                        .anyRequest().authenticated()) // Các yêu cầu khác cần xác thực
                 .oauth2ResourceServer(oauth2 -> oauth2
                         .jwt(jwtConfigurer -> jwtConfigurer
                                 .decoder(customJwtDecoder)
                                 .jwtAuthenticationConverter(jwtAuthenticationConverter()))
-                        .authenticationEntryPoint(new JwtAuthenticationEntryPoint()))
-                .csrf(AbstractHttpConfigurer::disable);
+                        .authenticationEntryPoint(new JwtAuthenticationEntryPoint())); // Điểm vào khi xác thực JWT bị lỗi
 
         return httpSecurity.build();
     }
 
+
     @Bean
-    public CorsFilter corsFilter() {
+    public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration corsConfiguration = new CorsConfiguration();
         corsConfiguration.addAllowedOrigin("http://localhost:3000");
         corsConfiguration.addAllowedMethod("*");
         corsConfiguration.addAllowedHeader("*");
         corsConfiguration.setAllowCredentials(true); // Cho phép gửi cookie
 
-        corsConfiguration.addExposedHeader("token"); // Cho phép tiêu đề tùy chỉnh
-        corsConfiguration.addExposedHeader("cid"); // Cho phép tiêu đề tùy chỉnh
+        corsConfiguration.addExposedHeader("token");
+        corsConfiguration.addExposedHeader("cid");
 
-        UrlBasedCorsConfigurationSource urlBasedCorsConfigurationSource = new UrlBasedCorsConfigurationSource();
-        urlBasedCorsConfigurationSource.registerCorsConfiguration("/**", corsConfiguration);
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", corsConfiguration);
 
-        return new CorsFilter(urlBasedCorsConfigurationSource);
+        return source;
     }
-
-
-
-//    @Bean
-//    JwtAuthenticationConverter jwtAuthenticationConverter() {
-//        JwtGrantedAuthoritiesConverter jwtGrantedAuthoritiesConverter = new JwtGrantedAuthoritiesConverter();
-//        jwtGrantedAuthoritiesConverter.setAuthorityPrefix("");
-//
-//        JwtAuthenticationConverter jwtAuthenticationConverter = new JwtAuthenticationConverter();
-//        jwtAuthenticationConverter.setJwtGrantedAuthoritiesConverter(jwtGrantedAuthoritiesConverter);
-//
-//        return jwtAuthenticationConverter;
-//    }
 
     @Bean
     JwtAuthenticationConverter jwtAuthenticationConverter() {
         JwtGrantedAuthoritiesConverter jwtGrantedAuthoritiesConverter = new JwtGrantedAuthoritiesConverter();
-        jwtGrantedAuthoritiesConverter.setAuthorityPrefix("");
-//        jwtGrantedAuthoritiesConverter.setAuthorityPrefix("ROLE_"); // Prefix khớp với vai trò trong JWT
-//        jwtGrantedAuthoritiesConverter.setAuthoritiesClaimName("roles"); // Tên claim chứa vai trò trong JWT
+        jwtGrantedAuthoritiesConverter.setAuthorityPrefix(""); // Không dùng prefix cho vai trò
 
         JwtAuthenticationConverter jwtAuthenticationConverter = new JwtAuthenticationConverter();
         jwtAuthenticationConverter.setJwtGrantedAuthoritiesConverter(jwtGrantedAuthoritiesConverter);

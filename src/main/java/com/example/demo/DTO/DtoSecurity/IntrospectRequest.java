@@ -1,16 +1,13 @@
-package com.example.demo.DtoSecurity;
+package com.example.demo.DTO.DtoSecurity;
 
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
-import java.math.BigInteger;
-
 @Data
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class AuthenticationResponse {
+public class IntrospectRequest {
     String token;
-    BigInteger cid;
 }

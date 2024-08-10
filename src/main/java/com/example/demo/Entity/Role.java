@@ -21,7 +21,4 @@ public class Role {
     @Enumerated(EnumType.STRING)
     @Column(name = "Name")
     private ERole name;
-
-    @Column(name = "Status")
-    private Integer status;
 }

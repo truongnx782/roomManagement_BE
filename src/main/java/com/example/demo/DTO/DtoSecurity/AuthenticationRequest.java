@@ -1,13 +1,14 @@
-package com.example.demo.DtoSecurity;
+package com.example.demo.DTO.DtoSecurity;
 
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
 @Data
-@NoArgsConstructor
 @AllArgsConstructor
+@NoArgsConstructor
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class IntrospectResponse {
-    boolean valid;
+public class AuthenticationRequest {
+    String username;
+    String password;
 }

@@ -1,6 +1,6 @@
 package com.example.demo.configuration;
 
-import com.example.demo.DtoSecurity.ApiResponse;
+import com.example.demo.DTO.DtoSecurity.ApiResponse;
 import com.example.demo.exception.ErrorCode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.ServletException;

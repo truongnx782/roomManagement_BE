@@ -1,4 +1,4 @@
-package com.example.demo.DtoSecurity;
+package com.example.demo.DTO.DtoSecurity;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;

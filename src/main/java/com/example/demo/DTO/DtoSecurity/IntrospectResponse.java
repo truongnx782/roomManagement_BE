@@ -1,4 +1,4 @@
-package com.example.demo.DtoSecurity;
+package com.example.demo.DTO.DtoSecurity;
 
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -8,6 +8,6 @@ import lombok.experimental.FieldDefaults;
 @AllArgsConstructor
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class LogoutRequest {
-    String token;
+public class IntrospectResponse {
+    boolean valid;
 }
