@@ -36,15 +36,15 @@ public class Customer {
     @Column(name = "PhoneNumber")
     private String phoneNumber;
 
-    @Column(name = "Status")
-    private int status;
-
     @Column(name = "Birthdate")
     @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDate birthdate;
 
     @Column(name = "CompanyId")
     private BigInteger companyId;
+
+    @Column(name = "Status")
+    private int status;
 
     public static CustomerDTO toDTO(Customer customer) {
         return CustomerDTO.builder()

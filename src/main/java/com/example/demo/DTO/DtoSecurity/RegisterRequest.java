@@ -15,7 +15,6 @@ import lombok.experimental.FieldDefaults;
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class RegisterRequest {
-
     @NotEmpty(message = "Email is required")
     @Email(message = "Email should be valid")
     String email;

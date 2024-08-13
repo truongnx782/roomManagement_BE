@@ -31,5 +31,8 @@ public interface RoomRepository extends JpaRepository<Room, BigInteger> {
     List<Room> findAllByCompanyIdOrderByIdDesc(BigInteger cid);
 
     Optional<Room> findByIdAndCompanyId(BigInteger id, BigInteger cid);
+
+
+    Optional<Room> findByRoomNameAndCompanyId(String roomName, BigInteger cid);
 }
 

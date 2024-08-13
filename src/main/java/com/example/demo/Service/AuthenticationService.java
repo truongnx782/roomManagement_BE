@@ -6,6 +6,7 @@ import com.example.demo.Entity.*;
 import com.example.demo.Repo.*;
 import com.example.demo.Util.ERole;
 import com.example.demo.Util.Utils;
+import com.example.demo.configuration.CustomJwtDecoder;
 import com.example.demo.exception.AppException;
 import com.example.demo.exception.ErrorCode;
 import com.nimbusds.jose.*;
@@ -13,14 +14,18 @@ import com.nimbusds.jose.crypto.MACSigner;
 import com.nimbusds.jose.crypto.MACVerifier;
 import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.SignedJWT;
+import jakarta.mail.MessagingException;
+import jakarta.mail.internet.MimeMessage;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.experimental.NonFinal;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -37,28 +42,23 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 @Slf4j
-@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class AuthenticationService {
-    UserRepository userRepository;
-    InvalidatedTokenRepository invalidatedTokenRepository;
-    RoleRepository roleRepository;
-    CompanyRepository companyRepository;
-    User_RoleRepository user_roleRepository;
-    JavaMailSender javaMailSender;
-    Map<String, String> otpCache = new ConcurrentHashMap<>();
+    private final UserRepository userRepository;
+    private final InvalidatedTokenRepository invalidatedTokenRepository;
+    private final RoleRepository roleRepository;
+    private final CompanyRepository companyRepository;
+    private final User_RoleRepository user_roleRepository;
+    private final JavaMailSender javaMailSender;
+    private final Map<String, String> otpCache = new ConcurrentHashMap<>();
 
-
-    @NonFinal
     @Value("${jwt.signerKey}")
-    protected String SIGNER_KEY;
+    private String SIGNER_KEY;
 
-    @NonFinal
     @Value("${jwt.valid-duration}")
-    protected long VALID_DURATION;
+    private long VALID_DURATION;
 
-    @NonFinal
     @Value("${jwt.refreshable-duration}")
-    protected long REFRESHABLE_DURATION;
+    private long REFRESHABLE_DURATION;
 
     public IntrospectResponse introspect(IntrospectRequest request) throws JOSEException, ParseException {
         var token = request.getToken();
@@ -78,14 +78,11 @@ public class AuthenticationService {
 
         PasswordEncoder passwordEncoder = new BCryptPasswordEncoder(10);
 
-
         boolean authenticated = passwordEncoder.matches(request.getPassword(), taiKhoan.getPassword());
 
         if (!authenticated) throw new AppException(ErrorCode.UNAUTHENTICATED);
 
         var token = generateToken(taiKhoan);
-
-        System.out.println(taiKhoan);
 
         return AuthenticationResponse.builder().token(token).cid(taiKhoan.getCompanyId()).build();
     }
@@ -106,26 +103,6 @@ public class AuthenticationService {
         }
     }
 
-    public AuthenticationResponse refreshToken(RefreshRequest request) throws ParseException, JOSEException {
-        var signedJWT = verifyToken(request.getToken(), true);
-
-        var jit = signedJWT.getJWTClaimsSet().getJWTID();
-        var expiryTime = signedJWT.getJWTClaimsSet().getExpirationTime();
-
-        InvalidatedToken invalidatedToken =
-                InvalidatedToken.builder().id(jit).expiryTime(expiryTime).build();
-
-        invalidatedTokenRepository.save(invalidatedToken);
-
-        var username = signedJWT.getJWTClaimsSet().getSubject();
-
-        var taiKhoan =
-                userRepository.findByUsername(username).orElseThrow(() -> new AppException(ErrorCode.UNAUTHENTICATED));
-
-        var token = generateToken(taiKhoan);
-
-        return AuthenticationResponse.builder().token(token).cid(taiKhoan.getCompanyId()).build();
-    }
 
     private String generateToken(User user) {
         JWSHeader header = new JWSHeader(JWSAlgorithm.HS512);
@@ -219,19 +196,16 @@ public class AuthenticationService {
 
     }
 
-    public void register(RegisterRequest request) {
+    public void register(RegisterRequest request) throws MessagingException {
         Optional<User> user = userRepository.findByUsername(request.getEmail());
         if (user.isPresent()) {
             throw new IllegalArgumentException("Email already exists");
         } else {
+
             PasswordEncoder passwordEncoder = new BCryptPasswordEncoder(10);
             Random random = new Random();
             int randomNumber = random.nextInt(9000) + 1000;
-            User u = new User();
-            u.setUsername(request.getEmail());
-            u.setPassword(passwordEncoder.encode(request.getPassword()) + "_" + randomNumber);
-            u.setStatus(Utils.WAIT_FOR_CONFIRMATION);
-            userRepository.save(u);
+            otpCache.put(request.getEmail(), String.valueOf(randomNumber));
 
             // Xây dựng URL với các tham số
             String url = UriComponentsBuilder.fromHttpUrl("http://localhost:8080/api/auth/confirm-register")
@@ -240,19 +214,39 @@ public class AuthenticationService {
                     .queryParam("otp", randomNumber)
                     .toUriString();
 
-            SimpleMailMessage msg = new SimpleMailMessage();
-            msg.setTo(request.getEmail());
-            msg.setSubject("Xác nhận đăng ký");
-            msg.setText("XÁC NHẬN: " + url);
-            javaMailSender.send(msg);
+            MimeMessage message = javaMailSender.createMimeMessage();
+            MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
+
+            helper.setTo(request.getEmail());
+            helper.setSubject("Xác nhận đăng kí tài khảon");
+
+            // HTML content with the icon as a clickable link
+            String htmlContent = "<html>"
+                    + "<body>"
+                    + "<p style=\"display: inline; margin-right: 10px;\">XÁC NHẬN:</p>"
+                    + "<a href=\"" + url + "\" style=\"display: inline;\">"
+                    + "<img src=\"https://media.istockphoto.com/id/1080145334/vector/icon-quality.jpg?s=612x612&w=0&k=20&c=8BbbL_TXaH0oxnjiqWKrQSiqUlBC1S4E9HCRc1ZtNGs=\" alt=\"Confirm Password\" style=\"width:50px;height:50px;\">"
+                    + "</a>"
+                    + "</body>"
+                    + "</html>";
+
+            helper.setText(htmlContent, true);
+            javaMailSender.send(message);
         }
     }
 
-    public void confirmRegister(String email, String otp) {
-        Optional<User> user = userRepository.findByUsername(email);
-        if (!user.get().getPassword().contains(otp)) {
-            throw new IllegalArgumentException("invalid");
+    public void confirmRegister(String email,String password, String otp) {
+        String storedOtp = otpCache.get(email);
+        if (storedOtp == null || !storedOtp.equals(otp)) {
+            throw new IllegalArgumentException("Invalid OTP");
         }
+
+        Optional<User> user = userRepository.findByUsername(email);
+        if (user.isPresent()) {
+            throw new IllegalArgumentException("Email already exists");
+        }
+        User u = new User();
+
         Optional<Role> role = roleRepository.findByName(ERole.ROLE_ADMIN);
         Company company = new Company();
         company.setCompanyCode("COMPANY_" + email);
@@ -260,20 +254,22 @@ public class AuthenticationService {
         company.setStatus(Utils.ACTIVE);
         company = companyRepository.save(company);
 
-        user.get().setCompanyId(company.getId());
-        user.get().setStatus(Utils.ACTIVE);
-        user.get().setPassword(user.get().getPassword().split("_")[0]);
-        userRepository.save(user.get());
+        u.setUsername(email);
+        u.setStatus(Utils.ACTIVE);
+        u.setPassword(password);
+        u.setCompanyId(company.getId());
+        u=userRepository.save(u);
 
         User_Role user_role = new User_Role();
         user_role.setRoleId(role.get());
-        user_role.setUserId(user.get());
+        user_role.setUserId(u);
+        user_role.setCompanyId(company.getId());
+        user_role.setStatus(Utils.ACTIVE);
         user_roleRepository.save(user_role);
     }
 
 
-
-    public void forgotPassword(Map<String, Object> payload) {
+    public void forgotPassword(Map<String, Object> payload) throws MessagingException {
         PasswordEncoder passwordEncoder = new BCryptPasswordEncoder(10);
         Random random = new Random();
         int randomNumber = random.nextInt(9000) + 1000;
@@ -301,18 +297,28 @@ public class AuthenticationService {
                 .queryParam("otp", randomNumber)
                 .toUriString();
 
-        SimpleMailMessage msg = new SimpleMailMessage();
-        msg.setTo(email);
-        msg.setSubject("Xác nhận đổi mật khẩu mới");
-        msg.setText("XÁC NHẬN: " + url);
-        javaMailSender.send(msg);
+        MimeMessage message = javaMailSender.createMimeMessage();
+        MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
 
+        helper.setTo(email);
+        helper.setSubject("Xác nhận đổi mật khẩu mới");
+
+        // HTML content with the icon as a clickable link
+        String htmlContent = "<html>"
+                + "<body>"
+                + "<p style=\"display: inline; margin-right: 10px;\">XÁC NHẬN:</p>"
+                + "<a href=\"" + url + "\" style=\"display: inline;\">"
+                + "<img src=\"https://media.istockphoto.com/id/1080145334/vector/icon-quality.jpg?s=612x612&w=0&k=20&c=8BbbL_TXaH0oxnjiqWKrQSiqUlBC1S4E9HCRc1ZtNGs=\" alt=\"Confirm Password\" style=\"width:50px;height:50px;\">"
+                + "</a>"
+                + "</body>"
+                + "</html>";
+
+        helper.setText(htmlContent, true);
+        javaMailSender.send(message);
     }
 
     public void confirmForgotPassword(String email, String password, String otp) {
-        PasswordEncoder passwordEncoder = new BCryptPasswordEncoder(10);
         String storedOtp = otpCache.get(email);
-
         if (storedOtp == null || !storedOtp.equals(otp)) {
             throw new IllegalArgumentException("Invalid OTP");
         }
@@ -327,12 +333,101 @@ public class AuthenticationService {
         otpCache.remove(email);
     }
 
+
+
+    public Map<String, Object> validateToken(String token) throws ParseException, JOSEException {
+        if (token == null || token.isEmpty()) {
+            throw new IllegalArgumentException("Invalid token");
+        }
+        // Remove the "Bearer " prefix if present
+        if (token.startsWith("Bearer ")) {
+            token = token.substring(7);
+        }
+
+        // Verify and parse the token
+        SignedJWT signedJWT = SignedJWT.parse(token);
+        JWSVerifier verifier = new MACVerifier(SIGNER_KEY.getBytes());
+
+        if (!signedJWT.verify(verifier)) {
+            throw new AppException(ErrorCode.UNAUTHORIZED);
+        }
+
+        // Get 'sub' from JWT claims set
+        String username = signedJWT.getJWTClaimsSet().getSubject();
+
+        Optional<User> userOptional = userRepository.findByUsername(username);
+
+        if (userOptional.isEmpty()) {
+            throw new AppException(ErrorCode.ACCOUNT_NOT_EXISTED);
+        }
+
+        User user = userOptional.get();
+
+        // Create map to return token and cid
+        Map<String, Object> response = new HashMap<>();
+        response.put("token", token);
+        response.put("cid", user.getCompanyId().toString());
+
+        return response;
+    }
+
+//    public AuthenticationResponse refreshToken(String request) throws ParseException, JOSEException {
+//        var signedJWT = verifyToken(request, true);
+//
+//        var jit = signedJWT.getJWTClaimsSet().getJWTID();
+//        var expiryTime = signedJWT.getJWTClaimsSet().getExpirationTime();
+//
+//        InvalidatedToken invalidatedToken =
+//                InvalidatedToken.builder().id(jit).expiryTime(expiryTime).build();
+//
+//        invalidatedTokenRepository.save(invalidatedToken);
+//
+//        var username = signedJWT.getJWTClaimsSet().getSubject();
+//
+//        var taiKhoan =
+//                userRepository.findByUsername(username).orElseThrow(() -> new AppException(ErrorCode.UNAUTHENTICATED));
+//
+//        var token = generateToken(taiKhoan);
+//
+//        return AuthenticationResponse.builder().token(token).cid(taiKhoan.getCompanyId()).build();
+//    }
+
+public AuthenticationResponse refreshToken(String token) throws ParseException, JOSEException {
+    if (token == null || token.isEmpty()) {
+        throw new IllegalArgumentException("Invalid token");
+    }
+
+    // Remove the "Bearer " prefix if present
+    if (token.startsWith("Bearer ")) {
+        token = token.substring(7);
+    }
+
+    // Verify and parse the token
+    SignedJWT signedJWT = SignedJWT.parse(token);
+
+    // Verify the token and check its expiration
+    verifyToken(token, true);
+
+    // Generate a new token
+    User user = userRepository.findByUsername(signedJWT.getJWTClaimsSet().getSubject())
+            .orElseThrow(() -> new AppException(ErrorCode.ACCOUNT_NOT_EXISTED));
+
+    // Generate a new token with updated expiration
+    String newToken = generateToken(user);
+
+    return AuthenticationResponse.builder()
+            .token(newToken)
+            .cid(user.getCompanyId())
+            .build();
+}
+
+
+
     @Scheduled(fixedDelay = 300000)
     public void autoDeleteUser() {
-        List<User> users = userRepository.findAllByStatus(Utils.WAIT_FOR_CONFIRMATION);
-        userRepository.deleteAll(users);
         otpCache.clear();
     }
+
 
 //    private String buildScope(TaiKhoan taiKhoan) {
 //        StringJoiner stringJoiner = new StringJoiner(" ");

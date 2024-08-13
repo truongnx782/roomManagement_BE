@@ -4,7 +4,9 @@ import com.example.demo.DTO.RoomDTO;
 import com.example.demo.Service.RoomService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.math.BigInteger;
 import java.util.Map;
 
@@ -57,5 +59,23 @@ public class RoomController {
     public ResponseEntity<?> restore(@RequestHeader("cid") BigInteger cid,
                                      @PathVariable("id") BigInteger id) {
         return ResponseEntity.ok(roomService.restore(id, cid));
+    }
+
+    @PostMapping("/upload")
+    public ResponseEntity<?> uploadFile(@RequestHeader("cid")BigInteger cid,
+                                        @RequestParam("file") MultipartFile file) throws IOException {
+        return ResponseEntity.ok(roomService.importExcel(file,cid));
+    }
+
+    @GetMapping("/template")
+    public ResponseEntity<?> downloadTemplate() {
+        return ResponseEntity.ok(roomService.exportTemplate());
+
+    }
+
+    @PostMapping("/export")
+    public ResponseEntity<?> export(@RequestHeader("cid") BigInteger cid,
+                                    @RequestBody Map<String, Object> payload) {
+        return ResponseEntity.ok(roomService.exportData(payload, cid));
     }
 }

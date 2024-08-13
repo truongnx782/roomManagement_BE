@@ -4,7 +4,9 @@ import com.example.demo.DTO.CustomerDTO;
 import com.example.demo.Service.CustomerService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.math.BigInteger;
 import java.util.Map;
 
@@ -55,5 +57,23 @@ public class CustomerController {
     @PutMapping("/restore/{id}")
     public ResponseEntity<?> restore(@PathVariable("id") BigInteger id) {
         return ResponseEntity.ok(customerService.restore(id));
+    }
+
+    @PostMapping("/upload")
+    public ResponseEntity<?> uploadFile(@RequestHeader("cid")BigInteger cid,
+                                        @RequestParam("file") MultipartFile file) throws IOException {
+        return ResponseEntity.ok(customerService.importExcel(file,cid));
+    }
+
+    @GetMapping("/template")
+    public ResponseEntity<?> downloadTemplate() {
+        return ResponseEntity.ok(customerService.exportTemplate());
+
+    }
+
+    @PostMapping("/export")
+    public ResponseEntity<?> export(@RequestHeader("cid") BigInteger cid,
+                                    @RequestBody Map<String, Object> payload) {
+        return ResponseEntity.ok(customerService.exportData(payload, cid));
     }
 }

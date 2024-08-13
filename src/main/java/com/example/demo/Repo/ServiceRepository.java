@@ -25,7 +25,7 @@ public interface ServiceRepository extends JpaRepository<Service, BigInteger> {
     @Query(value = "SELECT nv FROM Service nv WHERE " +
             " nv.id = (SELECT MAX(nv2.id) FROM Service nv2 where " +
             " nv2.companyId=:cid) AND nv.companyId=:cid")
-    Optional<Service> findMaxId(@Param("cid") BigInteger cid);
+    Optional<Service> findMaxIdByCompanyId(@Param("cid") BigInteger cid);
 
     List<Service> findAllByCompanyIdOrderByIdDesc(BigInteger cid);
 

@@ -26,9 +26,11 @@ public interface UtilityRepository extends JpaRepository<Utility, BigInteger> {
     @Query(value = "SELECT nv FROM Utility nv WHERE " +
             "nv.id = (SELECT MAX(nv2.id) FROM Utility nv2 where nv2.companyId=:cid) " +
             "AND nv.companyId=:cid" )
-    Optional<Utility> findMaxId(@Param("cid") BigInteger cid);
+    Optional<Utility> findMaxIdByCompanyId(@Param("cid") BigInteger cid);
 
     List<Utility> findAllByCompanyIdOrderByIdDesc(BigInteger cid);
 
     Optional<Utility> findByIdAndCompanyId(BigInteger id, BigInteger cid);
+
+    Optional<Utility> findByUtilityNameAndCompanyId(String utilityName, BigInteger companyId);
 }

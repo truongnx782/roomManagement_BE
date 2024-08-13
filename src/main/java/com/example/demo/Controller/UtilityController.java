@@ -4,9 +4,10 @@ import com.example.demo.DTO.UtilityDTO;
 import com.example.demo.Service.UtilityService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
+import org.springframework.web.multipart.MultipartFile;
 import java.math.BigInteger;
 import java.util.Map;
+import java.io.IOException;
 
 @RestController
 @RequestMapping("/utility")
@@ -58,4 +59,23 @@ public class UtilityController {
                                      @PathVariable("id") BigInteger id) {
         return ResponseEntity.ok(utilityService.restore(id, cid));
     }
+
+    @PostMapping("/upload")
+    public ResponseEntity<?> uploadFile(@RequestHeader("cid")BigInteger cid,
+                                        @RequestParam("file") MultipartFile file) throws IOException {
+        return ResponseEntity.ok(utilityService.importExcel(file,cid));
+    }
+
+    @GetMapping("/template")
+    public ResponseEntity<?> downloadTemplate() {
+        return ResponseEntity.ok(utilityService.exportTemplate());
+
+    }
+
+    @PostMapping("/export")
+    public ResponseEntity<?> export(@RequestHeader("cid") BigInteger cid,
+                                    @RequestBody Map<String, Object> payload) {
+        return ResponseEntity.ok(utilityService.exportData(payload, cid));
+    }
+
 }
