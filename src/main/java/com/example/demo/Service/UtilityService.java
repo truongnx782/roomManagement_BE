@@ -155,6 +155,10 @@ public class UtilityService {
                 throw new IllegalArgumentException("Tên tiện ích bị trùng: " + duplicateNames);
             }
             return savedUtilities.stream().map(Utility::toDTO).collect(Collectors.toList());
+        } catch (IllegalArgumentException e) {
+            throw e;
+        } catch (Exception e) {
+            throw new IllegalArgumentException("Dữ liệu không đúng định dạng!", e);
         }
     }
 

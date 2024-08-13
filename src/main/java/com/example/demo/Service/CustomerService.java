@@ -2,7 +2,6 @@ package com.example.demo.Service;
 
 import com.example.demo.DTO.CustomerDTO;
 import com.example.demo.Entity.Customer;
-import com.example.demo.Entity.Room;
 import com.example.demo.Repo.CustomerRepository;
 import com.example.demo.Util.Excel;
 import com.example.demo.Util.Utils;
@@ -17,10 +16,8 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.time.LocalDate;
-import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.*;
@@ -137,7 +134,7 @@ public class CustomerService {
                 boolean isDuplicate = !uniqueRows.add(rowData) || existingCustomers.stream()
                         .anyMatch(r -> r.getCustomerName().equals(column1) &&
                                 r.getIdentityNumber().equals(column2) &&
-                                r.getPhoneNumber().equals(column3) );
+                                r.getPhoneNumber().equals(column3));
 
                 if (isDuplicate) {
                     duplicateRows.add(rowData);
@@ -164,7 +161,7 @@ public class CustomerService {
                 maxId = maxId.add(BigInteger.ONE);
             }
 
-            List<Customer> result=customerRepository.saveAll(customerList);
+            List<Customer> result = customerRepository.saveAll(customerList);
 
 
             if (!duplicateRows.isEmpty()) {
@@ -174,6 +171,11 @@ public class CustomerService {
             return result.stream()
                     .map(Customer::toDTO)
                     .collect(Collectors.toList());
+
+        } catch (IllegalArgumentException e) {
+            throw e;
+        } catch (Exception e) {
+            throw new IllegalArgumentException("Dữ liệu không đúng định dạng!", e);
         }
     }
 
@@ -231,7 +233,7 @@ public class CustomerService {
                 row.createCell(0).setCellValue(r.getCustomerCode());
                 row.createCell(1).setCellValue(r.getCustomerName());
                 row.createCell(2).setCellValue(r.getIdentityNumber());
-                row.createCell(3).setCellValue( r.getPhoneNumber());
+                row.createCell(3).setCellValue(r.getPhoneNumber());
                 row.createCell(4).setCellValue(r.getBirthdate());
                 row.createCell(5).setCellValue(r.getStatus());
             }

@@ -1,10 +1,7 @@
 package com.example.demo.Service;
 
 import com.example.demo.DTO.ServiceDTO;
-import com.example.demo.DTO.UtilityDTO;
-import com.example.demo.Entity.Customer;
 import com.example.demo.Entity.Service;
-import com.example.demo.Entity.Utility;
 import com.example.demo.Repo.ServiceRepository;
 import com.example.demo.Util.Excel;
 import com.example.demo.Util.Utils;
@@ -38,14 +35,14 @@ public class ServiceService {
         int page = (int) payload.getOrDefault("page", 0);
         int size = (int) payload.getOrDefault("size", 5);
         String search = (String) payload.getOrDefault("search", "");
-        Integer status = (Integer) payload.getOrDefault("status",null);
+        Integer status = (Integer) payload.getOrDefault("status", null);
         Pageable pageable = PageRequest.of(page, size);
-        Page<Service> data = serviceRepository.search(search, status,cid, pageable);
+        Page<Service> data = serviceRepository.search(search, status, cid, pageable);
         return data.map(Service::toDTO);
     }
 
     public Optional<ServiceDTO> findById(BigInteger id, BigInteger cid) throws Exception {
-        Optional<Service> serviceOptional = serviceRepository.findByIdAndCompanyId(id,cid);
+        Optional<Service> serviceOptional = serviceRepository.findByIdAndCompanyId(id, cid);
         if (!serviceOptional.isPresent()) {
             throw new Exception("Service not found");
         }
@@ -58,7 +55,7 @@ public class ServiceService {
         BigInteger maxId = maxIdSP.isPresent() ? maxIdSP.get().getId().add(BigInteger.ONE) : BigInteger.ONE;
 
         Service service = Service.toEntity(serviceDTO);
-        service.setServiceCode("S"+maxId);
+        service.setServiceCode("S" + maxId);
         service.setStatus(Utils.ACTIVE);
         service.setCompanyId(cid);
         Service newService = serviceRepository.save(service);
@@ -68,7 +65,7 @@ public class ServiceService {
     public ServiceDTO update(BigInteger id, ServiceDTO updatedServiceDTO, BigInteger cid) {
         updatedServiceDTO.validateServiceDTO(updatedServiceDTO);
 
-        Optional<Service> serviceOptional = serviceRepository.findByIdAndCompanyId(id,cid);
+        Optional<Service> serviceOptional = serviceRepository.findByIdAndCompanyId(id, cid);
         if (!serviceOptional.isPresent()) {
             throw new IllegalArgumentException("Service not found");
         }
@@ -77,29 +74,29 @@ public class ServiceService {
         existingService.setServicePrice(updatedServiceDTO.getServicePrice());
         existingService.setStartDate(updatedServiceDTO.getStartDate());
         existingService.setEndDate(updatedServiceDTO.getEndDate());
-        existingService=serviceRepository.save(existingService);
+        existingService = serviceRepository.save(existingService);
         return Service.toDTO(existingService);
     }
 
     public ServiceDTO delete(BigInteger id, BigInteger cid) throws Exception {
-        Optional<Service> serviceOptional = serviceRepository.findByIdAndCompanyId(id,cid);
+        Optional<Service> serviceOptional = serviceRepository.findByIdAndCompanyId(id, cid);
         if (!serviceOptional.isPresent()) {
             throw new Exception("Service not found");
         }
         Service existingService = serviceOptional.get();
         existingService.setStatus(Utils.IN_ACTIVE);
-        existingService=serviceRepository.save(existingService);
+        existingService = serviceRepository.save(existingService);
         return Service.toDTO(existingService);
     }
 
     public ServiceDTO restore(BigInteger id, BigInteger cid) {
-        Optional<Service> serviceOptional = serviceRepository.findByIdAndCompanyId(id,cid);
+        Optional<Service> serviceOptional = serviceRepository.findByIdAndCompanyId(id, cid);
         if (!serviceOptional.isPresent()) {
             throw new IllegalArgumentException("Service not found");
         }
         Service existingService = serviceOptional.get();
         existingService.setStatus(Utils.ACTIVE);
-        existingService=serviceRepository.save(existingService);
+        existingService = serviceRepository.save(existingService);
         return Service.toDTO(existingService);
     }
 
@@ -132,11 +129,11 @@ public class ServiceService {
                 String column4 = Excel.getCellValue(row.getCell(3));
 
                 // Tạo chuỗi đại diện cho hàng dữ liệu
-                String rowData = column1 ;
+                String rowData = column1;
 
                 // Kiểm tra xem hàng dữ liệu đã tồn tại chưa
                 boolean isDuplicate = !uniqueRows.add(rowData) || existingServices.stream()
-                        .anyMatch(r -> r.getServiceName().equals(column1) );
+                        .anyMatch(r -> r.getServiceName().equals(column1));
 
                 if (isDuplicate) {
                     duplicateRows.add(rowData);
@@ -157,14 +154,16 @@ public class ServiceService {
                 }
                 service.setStartDate(startDate);
 
-                LocalDate endDate = null;
-                try {
-                    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-                    endDate = LocalDate.parse(column4, formatter);
-                } catch (DateTimeParseException e) {
-                    e.printStackTrace();
+                if (column4 != null || !column4.isEmpty()) {
+                    LocalDate endDate = null;
+                    try {
+                        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+                        endDate = LocalDate.parse(column4, formatter);
+                    } catch (DateTimeParseException e) {
+                        e.printStackTrace();
+                    }
+                    service.setEndDate(endDate);
                 }
-                service.setEndDate(endDate);
 
                 service.setCompanyId(cid);
                 service.setStatus(Utils.ACTIVE);
@@ -178,6 +177,10 @@ public class ServiceService {
                 throw new IllegalArgumentException("Tên dịch vụ bị trùng: " + duplicateRows);
             }
             return saveService.stream().map(Service::toDTO).collect(Collectors.toList());
+        } catch (IllegalArgumentException e) {
+            throw e;
+        } catch (Exception e) {
+            throw new IllegalArgumentException("Dữ liệu không đúng định dạng!", e);
         }
     }
 

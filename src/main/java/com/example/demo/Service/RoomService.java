@@ -176,6 +176,10 @@ public class RoomService {
             return result.stream()
                     .map(Room::toDTO)
                     .collect(Collectors.toList());
+        } catch (IllegalArgumentException e) {
+            throw e;
+        } catch (Exception e) {
+            throw new IllegalArgumentException("Dữ liệu không đúng định dạng!", e);
         }
     }
 
