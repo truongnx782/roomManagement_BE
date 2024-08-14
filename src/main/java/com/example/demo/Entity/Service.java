@@ -10,9 +10,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
-import java.math.BigInteger;
+
 import java.time.LocalDate;
-import java.util.Date;
 
 
 @Data
@@ -20,35 +19,34 @@ import java.util.Date;
 @AllArgsConstructor
 @Entity
 @Builder
-@Table(name = "Service")
 public class Service {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "Id")
-    private BigInteger id;
+    private Long id;
 
-    @Column(name = "ServiceName")
+    @Column(name = "ServiceName",nullable = false)
     @JsonFormat(pattern = "yyyy-MM-dd")
     private String serviceName;
 
-    @Column(name = "StartDate")
+    @Column(name = "StartDate",nullable = false)
     @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDate startDate;
 
     @Column(name = "EndDate")
     private LocalDate endDate;
 
-    @Column(name = "Status")
+    @Column(name = "Status",nullable = false)
     private int status;
 
-    @Column(name = "ServicePrice")
+    @Column(name = "ServicePrice",nullable = false)
     private BigDecimal servicePrice;
 
-    @Column(name = "ServiceCode")
+    @Column(name = "ServiceCode",nullable = false)
     private String serviceCode;
 
-    @Column(name = "CompanyId")
-    private BigInteger companyId;
+    @Column(name = "CompanyId",nullable = false)
+    private Long companyId;
 
     public static ServiceDTO toDTO(Service service) {
         return ServiceDTO.builder()

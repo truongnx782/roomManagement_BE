@@ -8,42 +8,40 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.math.BigInteger;
+
 import java.time.LocalDate;
-import java.util.Date;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
 @Builder
-@Table(name = "Customer")
 public class Customer {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "Id")
-    private BigInteger id;
+    private Long id;
 
-    @Column(name = "CustomerCode")
+    @Column(name = "CustomerCode", nullable = false)
     private String customerCode;
 
-    @Column(name = "CustomerName")
+    @Column(name = "CustomerName", nullable = false)
     private String customerName;
 
-    @Column(name = "IdentityNumber")
+    @Column(name = "IdentityNumber", nullable = false)
     private String identityNumber;
 
-    @Column(name = "PhoneNumber")
+    @Column(name = "PhoneNumber", nullable = false)
     private String phoneNumber;
 
-    @Column(name = "Birthdate")
+    @Column(name = "Birthdate", nullable = false)
     @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDate birthdate;
 
-    @Column(name = "CompanyId")
-    private BigInteger companyId;
+    @Column(name = "CompanyId", nullable = false)
+    private Long companyId;
 
-    @Column(name = "Status")
+    @Column(name = "Status", nullable = false)
     private int status;
 
     public static CustomerDTO toDTO(Customer customer) {
@@ -70,5 +68,5 @@ public class Customer {
                 .companyId(customerDTO.getCompanyId())
                 .build();
     }
-
 }
+

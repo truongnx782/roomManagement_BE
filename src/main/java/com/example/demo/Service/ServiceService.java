@@ -16,7 +16,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.math.BigDecimal;
-import java.math.BigInteger;
+
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
@@ -31,7 +31,7 @@ public class ServiceService {
         this.serviceRepository = serviceRepository;
     }
 
-    public Page<ServiceDTO> search(Map<String, Object> payload, BigInteger cid) {
+    public Page<ServiceDTO> search(Map<String, Object> payload, Long cid) {
         int page = (int) payload.getOrDefault("page", 0);
         int size = (int) payload.getOrDefault("size", 5);
         String search = (String) payload.getOrDefault("search", "");
@@ -41,7 +41,7 @@ public class ServiceService {
         return data.map(Service::toDTO);
     }
 
-    public Optional<ServiceDTO> findById(BigInteger id, BigInteger cid) throws Exception {
+    public Optional<ServiceDTO> findById(Long id, Long cid) throws Exception {
         Optional<Service> serviceOptional = serviceRepository.findByIdAndCompanyId(id, cid);
         if (!serviceOptional.isPresent()) {
             throw new Exception("Service not found");
@@ -49,10 +49,10 @@ public class ServiceService {
         return serviceOptional.map(Service::toDTO);
     }
 
-    public ServiceDTO create(ServiceDTO serviceDTO, BigInteger cid) {
+    public ServiceDTO create(ServiceDTO serviceDTO, Long cid) {
         serviceDTO.validateServiceDTO(serviceDTO);
         Optional<Service> maxIdSP = serviceRepository.findMaxIdByCompanyId(cid);
-        BigInteger maxId = maxIdSP.isPresent() ? maxIdSP.get().getId().add(BigInteger.ONE) : BigInteger.ONE;
+        Long maxId = maxIdSP.isPresent() ? maxIdSP.get().getId()+1 : 1;
 
         Service service = Service.toEntity(serviceDTO);
         service.setServiceCode("S" + maxId);
@@ -62,7 +62,7 @@ public class ServiceService {
         return Service.toDTO(newService);
     }
 
-    public ServiceDTO update(BigInteger id, ServiceDTO updatedServiceDTO, BigInteger cid) {
+    public ServiceDTO update(Long id, ServiceDTO updatedServiceDTO, Long cid) {
         updatedServiceDTO.validateServiceDTO(updatedServiceDTO);
 
         Optional<Service> serviceOptional = serviceRepository.findByIdAndCompanyId(id, cid);
@@ -78,7 +78,7 @@ public class ServiceService {
         return Service.toDTO(existingService);
     }
 
-    public ServiceDTO delete(BigInteger id, BigInteger cid) throws Exception {
+    public ServiceDTO delete(Long id, Long cid) throws Exception {
         Optional<Service> serviceOptional = serviceRepository.findByIdAndCompanyId(id, cid);
         if (!serviceOptional.isPresent()) {
             throw new Exception("Service not found");
@@ -89,7 +89,7 @@ public class ServiceService {
         return Service.toDTO(existingService);
     }
 
-    public ServiceDTO restore(BigInteger id, BigInteger cid) {
+    public ServiceDTO restore(Long id, Long cid) {
         Optional<Service> serviceOptional = serviceRepository.findByIdAndCompanyId(id, cid);
         if (!serviceOptional.isPresent()) {
             throw new IllegalArgumentException("Service not found");
@@ -100,16 +100,16 @@ public class ServiceService {
         return Service.toDTO(existingService);
     }
 
-    public List<ServiceDTO> getAll(BigInteger cid) {
+    public List<ServiceDTO> getAll(Long cid) {
         List<Service> serviceList = serviceRepository.findAllByCompanyIdOrderByIdDesc(cid);
         return serviceList.stream().map(Service::toDTO).collect(Collectors.toList());
     }
 
 
-    public Object importExcel(MultipartFile file, BigInteger cid) throws IOException {
+    public Object importExcel(MultipartFile file, Long cid) throws IOException {
         Optional<Service> maxIdOpt = serviceRepository.findMaxIdByCompanyId(cid);
         List<Service> existingServices = serviceRepository.findAllByCompanyIdOrderByIdDesc(cid);
-        BigInteger maxId = maxIdOpt.map(utility -> utility.getId().add(BigInteger.ONE)).orElse(BigInteger.ONE);
+        Long maxId = maxIdOpt.map(utility -> utility.getId()+1).orElse(Long.valueOf(1));
 
         Set<String> uniqueRows = new HashSet<>();
         List<String> duplicateRows = new ArrayList<>();
@@ -169,7 +169,7 @@ public class ServiceService {
                 service.setStatus(Utils.ACTIVE);
                 services.add(service);
                 System.out.println(service);
-                maxId = maxId.add(BigInteger.ONE);
+                maxId = maxId+1;;
             }
 
             List<Service> saveService = serviceRepository.saveAll(services);
@@ -214,15 +214,16 @@ public class ServiceService {
         }
     }
 
-    public byte[] exportData(Map<String, Object> payload, BigInteger cid) {
+    public byte[] exportData(Map<String, Object> payload, Long cid) {
         try (ByteArrayOutputStream baos = new ByteArrayOutputStream(); Workbook workbook = new XSSFWorkbook()) {
             Sheet sheet = workbook.createSheet("Data");
             // Create header row
             Row headerRow = sheet.createRow(0);
-            headerRow.createCell(0).setCellValue("Service name");
-            headerRow.createCell(1).setCellValue("Service price");
-            headerRow.createCell(2).setCellValue("Start date");
-            headerRow.createCell(3).setCellValue("End date");
+            headerRow.createCell(0).setCellValue("Service code");
+            headerRow.createCell(1).setCellValue("Service name");
+            headerRow.createCell(2).setCellValue("Service price");
+            headerRow.createCell(3).setCellValue("Start date");
+            headerRow.createCell(4).setCellValue("End date");
 
             // Fetch data
             Page<ServiceDTO> serviceDTOS = search(payload, cid);
@@ -237,8 +238,8 @@ public class ServiceService {
                 row.createCell(0).setCellValue(s.getServiceCode());
                 row.createCell(1).setCellValue(s.getServiceName());
                 row.createCell(2).setCellValue(s.getServicePrice().toString());
-                row.createCell(3).setCellValue(s.getStartDate());
-                row.createCell(4).setCellValue(s.getEndDate());
+                row.createCell(3).setCellValue(s.getStartDate().toString());
+                row.createCell(4).setCellValue(s.getEndDate() != null ? s.getEndDate().toString() : "");
                 row.createCell(5).setCellValue(s.getStatus());
             }
             workbook.write(baos);

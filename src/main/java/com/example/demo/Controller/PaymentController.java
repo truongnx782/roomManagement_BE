@@ -3,8 +3,6 @@ package com.example.demo.Controller;
 import com.example.demo.Service.PaymentService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.math.BigInteger;
 import java.util.Map;
 
 @RestController
@@ -17,13 +15,13 @@ public class PaymentController {
     }
 
     @PostMapping("/search")
-    public ResponseEntity<?> search(@RequestHeader("cid") BigInteger cid,
+    public ResponseEntity<?> search(@RequestHeader("cid") Long cid,
                                     @RequestBody Map<String, Object> payload) {
         return ResponseEntity.ok(paymentService.search(payload, cid));
     }
 
     @PostMapping("/payment-status")
-    public ResponseEntity<?> updatePaymentStatus(@RequestHeader("cid") BigInteger cid,
+    public ResponseEntity<?> updatePaymentStatus(@RequestHeader("cid") Long cid,
                                                  @RequestBody Map<String, Object> payload) {
         return ResponseEntity.ok(paymentService.updatePaymentStatus(payload, cid));
     }

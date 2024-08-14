@@ -6,7 +6,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.math.BigInteger;
 
 
 @RestController
@@ -19,19 +18,19 @@ public class Room_UtilityController {
     }
 
     @PostMapping("/create")
-    public ResponseEntity<?> create(@RequestHeader("cid")BigInteger cid,
+    public ResponseEntity<?> create(@RequestHeader("cid")Long cid,
                                     @RequestBody Room_UtilityReq createRoom_utilityDTO) {
             return ResponseEntity.ok(room_utilityService.create(createRoom_utilityDTO,cid));
     }
 
     @PostMapping("/update")
-    public ResponseEntity<?> update(@RequestHeader("cid")BigInteger cid,
+    public ResponseEntity<?> update(@RequestHeader("cid")Long cid,
                                     @RequestBody Room_UtilityReq createRoom_utilityDTO) {
             return ResponseEntity.ok(room_utilityService.update(createRoom_utilityDTO,cid));
     }
 
     @GetMapping("/get-utility-id-by-room-id/{id}")
-    public ResponseEntity<?> getUtilityIdByRoomId(@PathVariable("id") BigInteger RoomId) {
+    public ResponseEntity<?> getUtilityIdByRoomId(@PathVariable("id") Long RoomId) {
             return ResponseEntity.ok(room_utilityService.getUtilityIdByRoomId(RoomId));
     }
 }

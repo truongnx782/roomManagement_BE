@@ -1,42 +1,38 @@
 package com.example.demo.Entity;
 
 import com.example.demo.DTO.Room_UtilityDTO;
-import com.example.demo.DTO.ServiceDTO;
-import com.example.demo.DTO.UtilityDTO;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.math.BigInteger;
+
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "Room_Utility")
 @Builder
 public class Room_Utility {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "Id")
-    private BigInteger id;
+    private Long id;
 
-
-    @OneToOne
-    @JoinColumn(name = "RoomId")
+    @ManyToOne
+    @JoinColumn(name = "RoomId",nullable = false)
     private Room room;
 
     @ManyToOne
-    @JoinColumn(name = "UtilityId")
+    @JoinColumn(name = "UtilityId",nullable = false)
     private Utility utility;
 
-    @Column(name = "CompanyId")
-    private BigInteger companyId;
+    @Column(name = "CompanyId",nullable = false)
+    private Long companyId;
 
 
-    @Column(name = "Status")
+    @Column(name = "Status",nullable = false)
     private int status;
 
     public static Room_UtilityDTO toDTO(Room_Utility room_utility) {

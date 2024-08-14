@@ -6,33 +6,32 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
-import java.math.BigInteger;
+
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "PaymentDetail")
 public class PaymentDetail {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "Id")
-    private BigInteger id;
+    private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "ServiceId")
+    @JoinColumn(name = "ServiceId",nullable = false)
     private Service service;
 
-    @Column(name = "AmountToPay")
+    @Column(name = "AmountToPay",nullable = false)
     private BigDecimal amountToPay;
 
-    @Column(name = "CompanyId")
-    private BigInteger companyId;
+    @Column(name = "CompanyId",nullable = false)
+    private Long companyId;
 
-    @Column(name = "Status")
-    private Integer status;
+    @Column(name = "Status",nullable = false)
+    private int status;
 
     @ManyToOne
-    @JoinColumn(name = "PaymentId")
+    @JoinColumn(name = "PaymentId",nullable = false)
     private Payment payment;
 }

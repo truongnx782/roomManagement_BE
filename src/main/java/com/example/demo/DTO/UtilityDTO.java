@@ -6,20 +6,20 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.math.BigInteger;
+
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
 public class UtilityDTO {
-    private BigInteger id;
+    private Long id;
 
     private String utilityCode;
 
     private String utilityName;
 
-    private BigInteger companyId;
+    private Long companyId;
 
     private int status;
 

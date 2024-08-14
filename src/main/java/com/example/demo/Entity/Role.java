@@ -6,19 +6,18 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.math.BigInteger;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "Role")
 public class Role {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "Id")
-    private BigInteger id;
+    private Long id;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "Name")
+    @Column(name = "Name",nullable = false)
     private ERole name;
 }

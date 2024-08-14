@@ -7,38 +7,34 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.math.BigDecimal;
-import java.math.BigInteger;
-import java.util.Date;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
 @Builder
-@Table(name = "ContractDetail")
 public class ContractDetail {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "Id")
-    private BigInteger id;
+    private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "ContractId")
+    @JoinColumn(name = "ContractId", nullable = false)
     private Contract contract;
 
     @ManyToOne
-    @JoinColumn(name = "CustomerId")
+    @JoinColumn(name = "CustomerId", nullable = false)
     private Customer customer;
 
-    @Column(name = "CompanyId")
-    private BigInteger companyId;
+    @Column(name = "CompanyId", nullable = false)
+    private Long companyId;
 
-    @Column(name = "Status")
+    @Column(name = "Status", nullable = false)
     private int status;
 
     public static ContractDetail toEntity(ContractDetailDTO contractDetailDTO){
-       return ContractDetail.builder()
+        return ContractDetail.builder()
                 .id(contractDetailDTO.getId())
                 .contract(Contract.toEntity(contractDetailDTO.getContract()))
                 .customer(Customer.toEntity(contractDetailDTO.getCustomer()))
@@ -57,3 +53,4 @@ public class ContractDetail {
                 .build();
     }
 }
+

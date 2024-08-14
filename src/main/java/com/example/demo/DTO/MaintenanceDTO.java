@@ -10,17 +10,17 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.math.BigInteger;
+
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
 public class MaintenanceDTO {
-    private BigInteger id;
+    private Long id;
     private RoomDTO room;
     private String maintenanceRequest;
     private int maintenanceStatus;
-    private BigInteger companyId;
+    private Long companyId;
     private int status;
 }

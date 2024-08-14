@@ -14,14 +14,12 @@ import java.util.Date;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@FieldDefaults(level = AccessLevel.PRIVATE)
 @Entity
-@Table(name = "InvalidatedToken")
 public class InvalidatedToken {
     @Id
-    @Column(name = "Id")
-    String id;
+    @Column(name = "Id", nullable = false)
+    private String id;
 
-    @Column(name = "ExpiryTime")
-    Date expiryTime;
+    @Column(name = "ExpiryTime", nullable = false)
+    private Date expiryTime;
 }

@@ -5,7 +5,7 @@ import com.example.demo.Service.UtilityService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import java.math.BigInteger;
+
 import java.util.Map;
 import java.io.IOException;
 
@@ -19,49 +19,49 @@ public class UtilityController {
     }
 
     @PostMapping("/search")
-    public ResponseEntity<?> search(@RequestHeader("cid") BigInteger cid,
+    public ResponseEntity<?> search(@RequestHeader("cid") Long cid,
                                     @RequestBody Map<String, Object> payload) {
         return ResponseEntity.ok(utilityService.search(payload, cid));
     }
 
     @GetMapping("")
-    public ResponseEntity<?> getAll(@RequestHeader("cid") BigInteger cid) {
+    public ResponseEntity<?> getAll(@RequestHeader("cid") Long cid) {
         return ResponseEntity.ok(utilityService.getAll(cid));
     }
 
     @PostMapping()
-    public ResponseEntity<?> create(@RequestHeader("cid") BigInteger cid,
+    public ResponseEntity<?> create(@RequestHeader("cid") Long cid,
                                     @RequestBody UtilityDTO utilityDTO) {
         return ResponseEntity.ok(utilityService.create(utilityDTO, cid));
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<?> getById(@RequestHeader("cid") BigInteger cid,
-                                     @PathVariable("id") BigInteger id) {
+    public ResponseEntity<?> getById(@RequestHeader("cid") Long cid,
+                                     @PathVariable("id") Long id) {
         return ResponseEntity.ok(utilityService.findById(id, cid));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<?> Update(@RequestHeader("cid") BigInteger cid,
-                                    @PathVariable("id") BigInteger id,
+    public ResponseEntity<?> Update(@RequestHeader("cid") Long cid,
+                                    @PathVariable("id") Long id,
                                     @RequestBody UtilityDTO utilityDTO) {
         return ResponseEntity.ok(utilityService.update(id, utilityDTO, cid));
     }
 
     @PutMapping("/delete/{id}")
-    public ResponseEntity<?> delete(@RequestHeader("cid") BigInteger cid,
-                                    @PathVariable("id") BigInteger id) {
+    public ResponseEntity<?> delete(@RequestHeader("cid") Long cid,
+                                    @PathVariable("id") Long id) {
         return ResponseEntity.ok(utilityService.delete(id, cid));
     }
 
     @PutMapping("/restore/{id}")
-    public ResponseEntity<?> restore(@RequestHeader("cid") BigInteger cid,
-                                     @PathVariable("id") BigInteger id) {
+    public ResponseEntity<?> restore(@RequestHeader("cid") Long cid,
+                                     @PathVariable("id") Long id) {
         return ResponseEntity.ok(utilityService.restore(id, cid));
     }
 
     @PostMapping("/upload")
-    public ResponseEntity<?> uploadFile(@RequestHeader("cid")BigInteger cid,
+    public ResponseEntity<?> uploadFile(@RequestHeader("cid")Long cid,
                                         @RequestParam("file") MultipartFile file) throws IOException {
         return ResponseEntity.ok(utilityService.importExcel(file,cid));
     }
@@ -73,7 +73,7 @@ public class UtilityController {
     }
 
     @PostMapping("/export")
-    public ResponseEntity<?> export(@RequestHeader("cid") BigInteger cid,
+    public ResponseEntity<?> export(@RequestHeader("cid") Long cid,
                                     @RequestBody Map<String, Object> payload) {
         return ResponseEntity.ok(utilityService.exportData(payload, cid));
     }

@@ -10,7 +10,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
-import java.math.BigInteger;
+
 import java.time.LocalDate;
 
 @Data
@@ -18,7 +18,7 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @Builder
 public class PaymentDTO {
-    private BigInteger id;
+    private Long id;
 
     private String paymentCode;
 
@@ -28,15 +28,15 @@ public class PaymentDTO {
 
     private LocalDate paymentDate;
 
-    private BigInteger previousMonthElectricity;
+    private Long previousMonthElectricity;
 
-    private BigInteger previousMonthWater;
+    private Long previousMonthWater;
 
     private BigDecimal rentPrice;
 
     private Integer paymentStatus;
 
-    private BigInteger companyId;
+    private Long companyId;
 
     private Integer status;
 

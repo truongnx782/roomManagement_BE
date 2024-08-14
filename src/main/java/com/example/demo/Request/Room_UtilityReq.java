@@ -7,7 +7,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.math.BigInteger;
+
 import java.util.List;
 
 @Data
@@ -15,10 +15,10 @@ import java.util.List;
 @AllArgsConstructor
 @Builder
 public class Room_UtilityReq {
-    private BigInteger id;
-    private BigInteger room;
-    private List<BigInteger> utilitys;
-    private BigInteger companyId;
+    private Long id;
+    private Long room;
+    private List<Long> utilitys;
+    private Long companyId;
     private int status;
 
 }

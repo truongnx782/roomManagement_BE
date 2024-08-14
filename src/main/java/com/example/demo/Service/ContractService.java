@@ -9,7 +9,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.math.BigInteger;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -48,7 +47,7 @@ public class ContractService {
         return data.map(Contract::toDTO);
     }
 
-    public ContractDTO delete(BigInteger id,BigInteger cid) {
+    public ContractDTO delete(Long id,Long cid) {
         Optional<Contract> optionalContract = contractRepository.findByIdAndCompanyId(id,cid);
         if (!optionalContract.isPresent()) {
             throw new IllegalArgumentException("contract not found");
@@ -57,7 +56,7 @@ public class ContractService {
         contract.setStatus(Utils.IN_ACTIVE);
         List<ContractDetail> contractDetails = contractDetailRepository.findByContractIdAndCompanyId(id,cid);
         List<Payment> payments = paymentRepository.findAllByContractIdAndCompanyId(id,cid);
-        List<BigInteger> paymentIds = payments.stream().map(payment -> payment.getId()).collect(Collectors.toList());
+        List<Long> paymentIds = payments.stream().map(payment -> payment.getId()).collect(Collectors.toList());
         List<PaymentDetail> paymentDetails = paymentDetailRepository.findAllByPaymentIdsAndCompanyId(paymentIds,cid);
         contractDetails.forEach(x -> x.setStatus(Utils.IN_ACTIVE));
         paymentDetails.forEach(x -> x.setStatus(Utils.IN_ACTIVE));
@@ -70,7 +69,7 @@ public class ContractService {
         return Contract.toDTO(contract);
     }
 
-    public ContractDTO restore( BigInteger id,BigInteger cid) {
+    public ContractDTO restore( Long id,Long cid) {
         Optional<Contract> optionalContract = contractRepository.findById(id);
         if (!optionalContract.isPresent()) {
             throw new IllegalArgumentException("contract not found");
@@ -79,7 +78,7 @@ public class ContractService {
         contract.setStatus(Utils.ACTIVE);
         List<ContractDetail> contractDetails = contractDetailRepository.findByContractIdAndCompanyId(id,cid);
         List<Payment> payments = paymentRepository.findAllByContractIdAndCompanyId(id,cid);
-        List<BigInteger> paymentIds = payments.stream().map(payment -> payment.getId()).collect(Collectors.toList());
+        List<Long> paymentIds = payments.stream().map(payment -> payment.getId()).collect(Collectors.toList());
         List<PaymentDetail> paymentDetails = paymentDetailRepository.findAllByPaymentIdsAndCompanyId(paymentIds,cid);
         contractDetails.forEach(x -> x.setStatus(Utils.ACTIVE));
         paymentDetails.forEach(x -> x.setStatus(Utils.ACTIVE));
@@ -92,7 +91,7 @@ public class ContractService {
         return Contract.toDTO(contract);
     }
 
-    public ContractDTO create(ContractDTO contractDTO, BigInteger cid) {
+    public ContractDTO create(ContractDTO contractDTO, Long cid) {
         contractDTO.validateContractTO(contractDTO);
         ContractDTO result = new ContractDTO();
 
@@ -103,7 +102,7 @@ public class ContractService {
         }
 
         Optional<Contract> maxIdSP = contractRepository.findMaxIdAndCompanyId(cid);
-        BigInteger maxId = maxIdSP.isPresent() ? maxIdSP.get().getId().add(BigInteger.ONE) : BigInteger.ONE;
+        Long maxId = maxIdSP.isPresent() ? maxIdSP.get().getId()+1 : 1;
 
         Contract contract = Contract.toEntity(contractDTO);
         contract.setContractCode("C" + maxId);
@@ -117,7 +116,7 @@ public class ContractService {
 
         Customer customer = new Customer();
         ContractDetail contractDetail = new ContractDetail();
-        for (BigInteger customerId : contractDTO.getCustomerIds()) {
+        for (Long customerId : contractDTO.getCustomerIds()) {
             customer.setId(customerId);
             contractDetail.setContract(newContract);
             contractDetail.setCustomer(customer);
@@ -145,7 +144,7 @@ public class ContractService {
         return result;
     }
 
-    public Object update(BigInteger id, ContractDTO contractDTO, BigInteger cid) {
+    public Object update(Long id, ContractDTO contractDTO, Long cid) {
         contractDTO.validateContractTO(contractDTO);
         ContractDTO result = new ContractDTO();
 
@@ -196,7 +195,7 @@ public class ContractService {
 
         Customer customer = new Customer();
         ContractDetail contractDetail = new ContractDetail();
-        for (BigInteger customerId : contractDTO.getCustomerIds()) {
+        for (Long customerId : contractDTO.getCustomerIds()) {
             customer.setId(customerId);
             contractDetail.setContract(contract);
             contractDetail.setCustomer(customer);
@@ -209,7 +208,7 @@ public class ContractService {
         return result;
     }
 
-    public ContractDTO findById(BigInteger id,BigInteger cid) throws Exception {
+    public ContractDTO findById(Long id,Long cid) throws Exception {
         Optional<Contract> optionalContract = contractRepository.findByIdAndCompanyId(id,cid);
         if (!optionalContract.isPresent()) {
             throw new Exception("contract not found");

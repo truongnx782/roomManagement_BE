@@ -21,7 +21,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.math.BigDecimal;
-import java.math.BigInteger;
+
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -33,7 +33,7 @@ public class RoomService {
         this.roomRepository = roomRepository;
     }
 
-    public Page<RoomDTO> search(Map<String, Object> payload, BigInteger cid) {
+    public Page<RoomDTO> search(Map<String, Object> payload, Long cid) {
         int page = (int) payload.getOrDefault("page", 0);
         int size = (int) payload.getOrDefault("size", 5);
         String search = (String) payload.getOrDefault("search", "");
@@ -43,13 +43,13 @@ public class RoomService {
         return data.map(Room::toDTO);
     }
 
-    public List<RoomDTO> getAll(BigInteger cid) {
+    public List<RoomDTO> getAll(Long cid) {
         List<Room> rooms = roomRepository.findAllByCompanyIdOrderByIdDesc(cid);
         return rooms.stream().map(Room::toDTO).collect(Collectors.toList());
     }
 
 
-    public Optional<RoomDTO> findById(BigInteger id, BigInteger cid)  {
+    public Optional<RoomDTO> findById(Long id, Long cid)  {
         Optional<Room> roomOptional = roomRepository.findByIdAndCompanyId(id,cid);
         if (!roomOptional.isPresent()) {
             throw new IllegalArgumentException("Room not found");
@@ -57,7 +57,7 @@ public class RoomService {
         return roomOptional.map(Room::toDTO);
     }
 
-    public RoomDTO create(RoomDTO roomDTO, BigInteger cid) {
+    public RoomDTO create(RoomDTO roomDTO, Long cid) {
         roomDTO.validateRoomDTO(roomDTO);
         Optional<Room> roomOptional =
                 roomRepository.findByRoomNameAndCompanyId(roomDTO.getRoomName(), cid);
@@ -65,7 +65,7 @@ public class RoomService {
             throw new IllegalArgumentException("trùng tên");
         }
         Optional<Room> maxIdSP = roomRepository.findMaxIdByCompanyId(cid);
-        BigInteger maxId = maxIdSP.isPresent() ? maxIdSP.get().getId().add(BigInteger.ONE) : BigInteger.ONE;
+        Long maxId = maxIdSP.isPresent() ? maxIdSP.get().getId()+1 : 1;
 
         Room room = Room.toEntity(roomDTO);
         room.setRoomCode("R"+maxId);
@@ -75,7 +75,7 @@ public class RoomService {
         return Room.toDTO(newRoom);
     }
 
-    public RoomDTO update(BigInteger id, RoomDTO roomDTO, BigInteger cid)  {
+    public RoomDTO update(Long id, RoomDTO roomDTO, Long cid)  {
         roomDTO.validateRoomDTO(roomDTO);
 
         Optional<Room> optional =
@@ -97,7 +97,7 @@ public class RoomService {
         return Room.toDTO(existingRoom);
     }
 
-    public RoomDTO delete(BigInteger id, BigInteger cid)  {
+    public RoomDTO delete(Long id, Long cid)  {
         Optional<Room> roomOptional = roomRepository.findByIdAndCompanyId(id,cid);
         if (!roomOptional.isPresent()) {
             throw new IllegalArgumentException("Room not found");
@@ -108,7 +108,7 @@ public class RoomService {
         return Room.toDTO(existingRoom);
     }
 
-    public RoomDTO restore(BigInteger id, BigInteger cid) {
+    public RoomDTO restore(Long id, Long cid) {
         Optional<Room> roomOptional = roomRepository.findByIdAndCompanyId(id,cid);
         if (!roomOptional.isPresent()) {
             throw new IllegalArgumentException("Room not found");
@@ -120,10 +120,10 @@ public class RoomService {
     }
 
 
-    public Object importExcel(MultipartFile file, BigInteger cid) throws IOException {
+    public Object importExcel(MultipartFile file, Long cid) throws IOException {
         Optional<Room> maxIdSP = roomRepository.findMaxIdByCompanyId(cid);
         List<Room> existingRooms = roomRepository.findAllByCompanyIdOrderByIdDesc(cid);
-        BigInteger maxId = maxIdSP.isPresent() ? maxIdSP.get().getId().add(BigInteger.ONE) : BigInteger.ONE;
+        Long maxId = maxIdSP.isPresent() ? maxIdSP.get().getId()+1 : 1;
 
         List<Room> roomList = new ArrayList<>();
         Set<String> uniqueRows = new HashSet<>();
@@ -164,7 +164,7 @@ public class RoomService {
                 room.setCompanyId(cid);
                 room.setStatus(Utils.ACTIVE);
                 roomList.add(room);
-                maxId = maxId.add(BigInteger.ONE);
+                maxId = maxId+1;
             }
 
             List<Room> result=roomRepository.saveAll(roomList);
@@ -202,7 +202,7 @@ public class RoomService {
     }
 
 
-    public byte[] exportData(Map<String, Object> payload, BigInteger cid) {
+    public byte[] exportData(Map<String, Object> payload, Long cid) {
         try (ByteArrayOutputStream baos = new ByteArrayOutputStream(); Workbook workbook = new XSSFWorkbook()) {
             Sheet sheet = workbook.createSheet("Data");
             // Create header row

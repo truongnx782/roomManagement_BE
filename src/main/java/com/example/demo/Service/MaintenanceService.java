@@ -12,7 +12,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.math.BigInteger;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -26,7 +25,7 @@ public class MaintenanceService {
         this.maintenanceRepository = maintenanceRepository;
     }
 
-    public Page<MaintenanceDTO> search(Map<String, Object> payload, BigInteger cid) {
+    public Page<MaintenanceDTO> search(Map<String, Object> payload, Long cid) {
         int page = (int) payload.getOrDefault("page", 0);
         int size = (int) payload.getOrDefault("size", 5);
         String search = (String) payload.getOrDefault("search", "");
@@ -38,7 +37,7 @@ public class MaintenanceService {
 
 
 
-    public MaintenanceDTO create(MaintenanceDTO maintenanceDTO, BigInteger cid) {
+    public MaintenanceDTO create(MaintenanceDTO maintenanceDTO, Long cid) {
         if (maintenanceDTO.getRoom() == null ) {
             throw new IllegalArgumentException(" room cannot be empty.");
         }
@@ -50,7 +49,7 @@ public class MaintenanceService {
         return Maintenance.toDTO(newMaintenance);
     }
 
-    public MaintenanceDTO update(BigInteger id, MaintenanceDTO maintenanceDTO) {
+    public MaintenanceDTO update(Long id, MaintenanceDTO maintenanceDTO) {
         if (maintenanceDTO.getRoom() == null ) {
             throw new IllegalArgumentException(" room cannot be empty.");
         }
@@ -66,7 +65,7 @@ public class MaintenanceService {
         return Maintenance.toDTO(maintenance);
     }
 
-    public MaintenanceDTO delete(BigInteger id, BigInteger cid){
+    public MaintenanceDTO delete(Long id, Long cid){
         Optional<Maintenance> optionalMaintenance = maintenanceRepository.findByIdAndCompanyId(id,cid);
         if (!optionalMaintenance.isPresent()) {
             throw new IllegalArgumentException("Utility not found");
@@ -77,7 +76,7 @@ public class MaintenanceService {
         return Maintenance.toDTO(maintenance);
     }
 
-    public MaintenanceDTO restore(BigInteger id, BigInteger cid){
+    public MaintenanceDTO restore(Long id, Long cid){
         Optional<Maintenance> optionalMaintenance = maintenanceRepository.findByIdAndCompanyId(id,cid);
         if (!optionalMaintenance.isPresent()) {
             throw new IllegalArgumentException("Utility not found");
@@ -88,7 +87,7 @@ public class MaintenanceService {
         return Maintenance.toDTO(maintenance);
     }
 
-    public MaintenanceDTO findById(BigInteger id, BigInteger cid) {
+    public MaintenanceDTO findById(Long id, Long cid) {
         Optional<Maintenance> optionalMaintenance = maintenanceRepository.findByIdAndCompanyId(id,cid);
         if (!optionalMaintenance.isPresent()) {
             throw new IllegalArgumentException("Maintenance not found");

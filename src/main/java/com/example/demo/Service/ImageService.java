@@ -10,7 +10,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -31,7 +30,7 @@ public class ImageService {
         this.executorService = Executors.newFixedThreadPool(5);
     }
 
-    public List<ImageDTO> create(List<MultipartFile> files, List<BigInteger> images, BigInteger roomId, Integer status, BigInteger cid) throws IOException {
+    public List<ImageDTO> create(List<MultipartFile> files, List<Long> images, Long roomId, Integer status, Long cid) throws IOException {
         List<Image> listImage = new ArrayList<>();
         if (files != null) {
             List<Image> finalListImage = listImage;
@@ -53,7 +52,7 @@ public class ImageService {
         }
 
         List<Image> imagesRepo = imageRepositoty.findAllByRoomIdAndCompanyId(roomId,cid);
-        List<BigInteger> imageRemove;
+        List<Long> imageRemove;
 
         if (images == null) {
             imageRemove = imagesRepo.stream()
@@ -91,7 +90,7 @@ public class ImageService {
         cloudinary.uploader().destroy(publicId, ObjectUtils.emptyMap());
     }
 
-    public List<ImageDTO> getAllByRoomId( BigInteger roomId,BigInteger cid) {
+    public List<ImageDTO> getAllByRoomId( Long roomId,Long cid) {
         List<Image> images = imageRepositoty.findAllByRoomIdAndCompanyId(roomId,cid);
         return images.stream()
                 .map(Image::toDTO)

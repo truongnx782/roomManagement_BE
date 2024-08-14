@@ -6,31 +6,29 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.math.BigInteger;
-
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "User_Role")
 @Builder
 public class User_Role {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "Id")
-    private BigInteger id;
+    private Long id;
 
-    @OneToOne
-    @JoinColumn(name = "UserId")
+    @ManyToOne
+    @JoinColumn(name = "UserId", nullable = false)
     private User userId;
 
-    @OneToOne
-    @JoinColumn(name = "RoleId")
+    @ManyToOne
+    @JoinColumn(name = "RoleId", nullable = false)
     private Role roleId;
 
-    @Column(name = "Status")
-    private Integer status;
+    @Column(name = "Status", nullable = false)
+    private int status;
 
-    @Column(name = "CompanyId")
-    private BigInteger companyId;
+    @Column(name = "CompanyId", nullable = false)
+    private Long companyId;
 }

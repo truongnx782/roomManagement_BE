@@ -10,16 +10,16 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.math.BigInteger;
+
 
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
 @Builder
 public class ContractDetailDTO {
-    private BigInteger id;
+    private Long id;
     private ContractDTO contract;
     private CustomerDTO customer;
-    private BigInteger companyId;
+    private Long companyId;
     private int status;
 }

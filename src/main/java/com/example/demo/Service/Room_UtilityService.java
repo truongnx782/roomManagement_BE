@@ -9,7 +9,6 @@ import com.example.demo.Request.Room_UtilityReq;
 import com.example.demo.Util.Utils;
 import org.springframework.stereotype.Service;
 
-import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -22,7 +21,7 @@ public class Room_UtilityService {
         this.room_utilityRepository = room_utilityRepository;
     }
 
-    public List<Room_UtilityDTO> create(Room_UtilityReq createRoom_utilityDTO, BigInteger cid) {
+    public List<Room_UtilityDTO> create(Room_UtilityReq createRoom_utilityDTO, Long cid) {
         List<Room_Utility> room_utilitys = new ArrayList<>();
 
         for (int i = 0; i < createRoom_utilityDTO.getUtilitys().size(); i++) {
@@ -47,13 +46,13 @@ public class Room_UtilityService {
         return result;
     }
 
-    public List<BigInteger> getUtilityIdByRoomId(BigInteger roomId) {
-        List<BigInteger> utilityIdList = room_utilityRepository.findAllUtilityIdByRoomId(roomId);
+    public List<Long> getUtilityIdByRoomId(Long roomId) {
+        List<Long> utilityIdList = room_utilityRepository.findAllUtilityIdByRoomId(roomId);
         return utilityIdList;
 
     }
 
-    public List<Room_UtilityDTO>  update(Room_UtilityReq createRoom_utilityDTO, BigInteger cid) {
+    public List<Room_UtilityDTO>  update(Room_UtilityReq createRoom_utilityDTO, Long cid) {
         room_utilityRepository.deleteByRoomIdAndCompanyId(createRoom_utilityDTO.getRoom(),cid);
 
         List<Room_Utility> room_utilitys = new ArrayList<>();

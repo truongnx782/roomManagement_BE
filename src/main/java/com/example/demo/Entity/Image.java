@@ -1,38 +1,36 @@
 package com.example.demo.Entity;
 
 import com.example.demo.DTO.ImageDTO;
-import com.example.demo.DTO.RoomDTO;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.math.BigInteger;
+
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
 @Builder
-@Table(name = "Image")
 public class Image {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "Id")
-    private BigInteger id;
+    private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "RoomId")
+    @JoinColumn(name = "RoomId", nullable = false)
     private Room room;
 
-    @Column(name = "Status")
-    private int status;
+    @Column(name = "Status", nullable = false)
+    private Integer status;
 
-    @Column(name = "CompanyId")
-    private BigInteger companyId;
+    @Column(name = "CompanyId", nullable = false)
+    private Long companyId;
 
-    @Column(name = "Url")
+    @Column(name = "Url", nullable = false)
     private String url;
 
     public static ImageDTO toDTO(Image image) {

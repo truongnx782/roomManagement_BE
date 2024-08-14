@@ -5,7 +5,6 @@ import com.example.demo.Service.ContractService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.math.BigInteger;
 import java.util.Map;
 
 @RestController
@@ -26,33 +25,33 @@ public class ContractController {
 
 
     @PostMapping()
-    public ResponseEntity<?> create(@RequestHeader("cid") BigInteger cid,
+    public ResponseEntity<?> create(@RequestHeader("cid") Long cid,
                                     @RequestBody ContractDTO contractDTO) {
         return ResponseEntity.ok(contractService.create(contractDTO, cid));
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<?> getById(@RequestHeader("cid") BigInteger cid,
-                                     @PathVariable("id") BigInteger id) throws Exception {
+    public ResponseEntity<?> getById(@RequestHeader("cid") Long cid,
+                                     @PathVariable("id") Long id) throws Exception {
         return ResponseEntity.ok(contractService.findById(id, cid));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<?> update(@RequestHeader("cid") BigInteger cid,
-                                    @PathVariable("id") BigInteger id,
+    public ResponseEntity<?> update(@RequestHeader("cid") Long cid,
+                                    @PathVariable("id") Long id,
                                     @RequestBody ContractDTO contractDTO) {
         return ResponseEntity.ok(contractService.update(id, contractDTO, cid));
     }
 
     @PutMapping("/delete/{id}")
-    public ResponseEntity<?> delete(@RequestHeader("cid") BigInteger cid,
-                                    @PathVariable("id") BigInteger id) {
+    public ResponseEntity<?> delete(@RequestHeader("cid") Long cid,
+                                    @PathVariable("id") Long id) {
         return ResponseEntity.ok(contractService.delete(id, cid));
     }
 
     @PutMapping("/restore/{id}")
-    public ResponseEntity<?> restore(@RequestHeader("cid") BigInteger cid,
-                                     @PathVariable("id") BigInteger id) {
+    public ResponseEntity<?> restore(@RequestHeader("cid") Long cid,
+                                     @PathVariable("id") Long id) {
         return ResponseEntity.ok(contractService.restore(id, cid));
     }
 }

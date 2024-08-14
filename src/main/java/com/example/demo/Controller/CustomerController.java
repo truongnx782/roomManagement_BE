@@ -7,7 +7,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.math.BigInteger;
 import java.util.Map;
 
 @RestController
@@ -20,47 +19,47 @@ public class CustomerController {
     }
 
     @PostMapping("/search")
-    public ResponseEntity<?> search(@RequestHeader("cid") BigInteger cid,
+    public ResponseEntity<?> search(@RequestHeader("cid") Long cid,
                                     @RequestBody Map<String, Object> payload) {
         return ResponseEntity.ok(customerService.search(payload, cid));
     }
 
     @GetMapping("")
-    public ResponseEntity<?> getAll(@RequestHeader("cid") BigInteger cid) {
+    public ResponseEntity<?> getAll(@RequestHeader("cid") Long cid) {
         return ResponseEntity.ok(customerService.getAll(cid));
     }
 
     @PostMapping()
-    public ResponseEntity<?> create(@RequestHeader("cid") BigInteger cid,
+    public ResponseEntity<?> create(@RequestHeader("cid") Long cid,
                                     @RequestBody CustomerDTO customerDTO) {
         return ResponseEntity.ok(customerService.create(customerDTO, cid));
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<?> getById(@RequestHeader("cid") BigInteger cid,
-                                     @PathVariable("id") BigInteger id) {
+    public ResponseEntity<?> getById(@RequestHeader("cid") Long cid,
+                                     @PathVariable("id") Long id) {
         return ResponseEntity.ok(customerService.findById(id, cid));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<?> Update(@RequestHeader("cid") BigInteger cid,
-                                    @PathVariable("id") BigInteger id,
+    public ResponseEntity<?> Update(@RequestHeader("cid") Long cid,
+                                    @PathVariable("id") Long id,
                                     @RequestBody CustomerDTO customerDTO) {
         return ResponseEntity.ok(customerService.update(id, customerDTO, cid));
     }
 
     @PutMapping("/delete/{id}")
-    public ResponseEntity<?> delete(@PathVariable("id") BigInteger id) {
+    public ResponseEntity<?> delete(@PathVariable("id") Long id) {
         return ResponseEntity.ok(customerService.delete(id));
     }
 
     @PutMapping("/restore/{id}")
-    public ResponseEntity<?> restore(@PathVariable("id") BigInteger id) {
+    public ResponseEntity<?> restore(@PathVariable("id") Long id) {
         return ResponseEntity.ok(customerService.restore(id));
     }
 
     @PostMapping("/upload")
-    public ResponseEntity<?> uploadFile(@RequestHeader("cid")BigInteger cid,
+    public ResponseEntity<?> uploadFile(@RequestHeader("cid")Long cid,
                                         @RequestParam("file") MultipartFile file) throws IOException {
         return ResponseEntity.ok(customerService.importExcel(file,cid));
     }
@@ -72,7 +71,7 @@ public class CustomerController {
     }
 
     @PostMapping("/export")
-    public ResponseEntity<?> export(@RequestHeader("cid") BigInteger cid,
+    public ResponseEntity<?> export(@RequestHeader("cid") Long cid,
                                     @RequestBody Map<String, Object> payload) {
         return ResponseEntity.ok(customerService.exportData(payload, cid));
     }

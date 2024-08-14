@@ -8,7 +8,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
-import java.math.BigInteger;
+
 import java.time.LocalDate;
 import java.util.List;
 
@@ -17,16 +17,16 @@ import java.util.List;
 @Data
 @Builder
 public class ContractDTO {
-    private BigInteger id;
+    private Long id;
     private String contractCode;
     private RoomDTO room;
     private LocalDate startDate;
     private LocalDate endDate;
     private BigDecimal rentPrice;
     private String terms;
-    private BigInteger companyId;
+    private Long companyId;
     private int status;
-    private List<BigInteger> customerIds;
+    private List<Long> customerIds;
 
     public void validateContractTO(ContractDTO contractDTO) {
         if (contractDTO.getRoom() == null) {

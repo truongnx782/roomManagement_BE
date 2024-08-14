@@ -7,34 +7,33 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.math.BigInteger;
+
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
 @Builder
-@Table(name = "Maintenance")
 public class Maintenance {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "Id")
-    private BigInteger id;
+    private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "RoomId")
+    @JoinColumn(name = "RoomId", nullable = false)
     private Room room;
 
-    @Column(name = "MaintenanceRequest")
+    @Column(name = "MaintenanceRequest", nullable = false)
     private String maintenanceRequest;
 
-    @Column(name = "MaintenanceStatus")
+    @Column(name = "MaintenanceStatus",nullable = false)
     private int maintenanceStatus;
 
-    @Column(name = "CompanyId")
-    private BigInteger companyId;
+    @Column(name = "CompanyId",nullable = false)
+    private Long companyId;
 
-    @Column(name = "Status")
+    @Column(name = "Status",nullable = false)
     private int status;
 
     public static  Maintenance toEntity(MaintenanceDTO maintenanceDTO){

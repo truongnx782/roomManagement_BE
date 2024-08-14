@@ -9,50 +9,48 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
-import java.math.BigInteger;
+
 import java.time.LocalDate;
-import java.util.Date;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
 @Builder
-@Table(name = "Payment")
 public class Payment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "Id")
-    private BigInteger id;
+    private Long id;
 
-    @Column(name = "PaymentCode")
+    @Column(name = "PaymentCode",nullable = false)
     private String paymentCode;
 
     @ManyToOne
-    @JoinColumn(name = "ContractId")
+    @JoinColumn(name = "ContractId",nullable = false)
     private Contract contract;
 
     @Column(name = "Amount")
     private BigDecimal amount;
 
-    @Column(name = "PaymentDate")
+    @Column(name = "PaymentDate",nullable = false)
     @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDate paymentDate;
 
     @Column(name = "PreviousMonthElectricity")
-    private BigInteger previousMonthElectricity;
+    private Long previousMonthElectricity;
 
     @Column(name = "PreviousMonthWater")
-    private BigInteger previousMonthWater;
+    private Long previousMonthWater;
 
-    @Column(name = "PaymentStatus")
+    @Column(name = "PaymentStatus",nullable = false)
     private Integer paymentStatus;
 
-    @Column(name = "CompanyId")
-    private BigInteger companyId;
+    @Column(name = "CompanyId",nullable = false)
+    private Long companyId;
 
-    @Column(name = "Status")
-    private Integer status;
+    @Column(name = "Status",nullable = false)
+    private int status;
 
     public static Payment toEntity(PaymentDTO paymentDTO){
         return  Payment.builder()

@@ -11,18 +11,18 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
-import java.math.BigInteger;
+
 import java.util.List;
 import java.util.Optional;
 
-public interface Room_UtilityRepository  extends JpaRepository<Room_Utility, BigInteger> {
+public interface Room_UtilityRepository  extends JpaRepository<Room_Utility, Long> {
 
     @Query(value = "select r.utility.id from Room_Utility r where r.room.id=:roomId")
-    List<BigInteger> findAllUtilityIdByRoomId(@Param("roomId") BigInteger roomId);
+    List<Long> findAllUtilityIdByRoomId(@Param("roomId") Long roomId);
 
     @Modifying
     @Transactional
     @Query("DELETE FROM Room_Utility r WHERE r.room.id = :roomId AND r.companyId=:cid")
-    void deleteByRoomIdAndCompanyId(@Param("roomId") BigInteger roomId,
-                                    @Param("cid") BigInteger cid);
+    void deleteByRoomIdAndCompanyId(@Param("roomId") Long roomId,
+                                    @Param("cid") Long cid);
 }

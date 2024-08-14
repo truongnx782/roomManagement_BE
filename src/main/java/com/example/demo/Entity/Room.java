@@ -8,42 +8,41 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
-import java.math.BigInteger;
+
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "Room")
 @Builder
 public class Room {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "Id")
-    private BigInteger id;
+    private Long id;
 
-    @Column(name = "RoomCode")
+    @Column(name = "RoomCode",nullable = false)
     private String roomCode;
 
-    @Column(name = "RoomName")
+    @Column(name = "RoomName",nullable = false)
     private String roomName;
 
-    @Column(name = "Area")
+    @Column(name = "Area",nullable = false)
     private String area;
 
-    @Column(name = "RentPrice")
+    @Column(name = "RentPrice",nullable = false)
     private BigDecimal rentPrice;
 
-    @Column(name = "Address")
+    @Column(name = "Address",nullable = false)
     private String address;
 
-    @Column(name = "CompanyId")
-    private BigInteger companyId;
+    @Column(name = "CompanyId",nullable = false)
+    private Long companyId;
 
-    @Column(name = "Status")
+    @Column(name = "Status",nullable = false)
     private int status;
 
-    @Column(name = "RentStatus")
+    @Column(name = "RentStatus",nullable = false)
     private int rentStatus;
 
     public static RoomDTO toDTO(Room phong) {

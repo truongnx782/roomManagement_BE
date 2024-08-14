@@ -16,7 +16,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.math.BigInteger;
+
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
@@ -31,7 +31,7 @@ public class CustomerService {
         this.customerRepository = customerRepository;
     }
 
-    public Page<CustomerDTO> search(Map<String, Object> payload, BigInteger cid) {
+    public Page<CustomerDTO> search(Map<String, Object> payload, Long cid) {
         int page = (int) payload.getOrDefault("page", 0);
         int size = (int) payload.getOrDefault("size", 5);
         String search = (String) payload.getOrDefault("search", "");
@@ -41,15 +41,15 @@ public class CustomerService {
         return data.map(Customer::toDTO);
     }
 
-    public List<CustomerDTO> getAll(BigInteger cid) {
+    public List<CustomerDTO> getAll(Long cid) {
         List<Customer> customers = customerRepository.findAllByCompanyIdOrderByIdDesc(cid);
         return customers.stream().map(Customer::toDTO).collect(Collectors.toList());
     }
 
-    public CustomerDTO create(CustomerDTO customerDTO, BigInteger cid) {
+    public CustomerDTO create(CustomerDTO customerDTO, Long cid) {
         customerDTO.validate(customerDTO);
         Optional<Customer> maxIdSP = customerRepository.findMaxIdByCompanyId(cid);
-        BigInteger maxId = maxIdSP.isPresent() ? maxIdSP.get().getId().add(BigInteger.ONE) : BigInteger.ONE;
+        Long maxId = maxIdSP.isPresent() ? maxIdSP.get().getId()+1 : 1;
 
         Customer customer = Customer.toEntity(customerDTO);
         customer.setCustomerCode("C" + maxId);
@@ -59,7 +59,7 @@ public class CustomerService {
         return Customer.toDTO(newCustomer);
     }
 
-    public CustomerDTO update(BigInteger id, CustomerDTO customerDTO, BigInteger cid) {
+    public CustomerDTO update(Long id, CustomerDTO customerDTO, Long cid) {
         customerDTO.validate(customerDTO);
         Optional<Customer> optionalCustomer = customerRepository.findByIdAndCompanyId(id, cid);
         if (!optionalCustomer.isPresent()) {
@@ -75,7 +75,7 @@ public class CustomerService {
         return Customer.toDTO(customer);
     }
 
-    public CustomerDTO delete(BigInteger id) {
+    public CustomerDTO delete(Long id) {
         Optional<Customer> optionalCustomer = customerRepository.findById(id);
         if (!optionalCustomer.isPresent()) {
             throw new IllegalArgumentException("Customer not found");
@@ -86,7 +86,7 @@ public class CustomerService {
         return Customer.toDTO(customer);
     }
 
-    public CustomerDTO restore(BigInteger id) {
+    public CustomerDTO restore(Long id) {
         Optional<Customer> optionalCustomer = customerRepository.findById(id);
         if (!optionalCustomer.isPresent()) {
             throw new IllegalArgumentException("Customer not found");
@@ -97,7 +97,7 @@ public class CustomerService {
         return Customer.toDTO(customer);
     }
 
-    public CustomerDTO findById(BigInteger id, BigInteger cid) {
+    public CustomerDTO findById(Long id, Long cid) {
         Optional<Customer> optionalCustomer = customerRepository.findByIdAndCompanyId(id, cid);
         if (!optionalCustomer.isPresent()) {
             throw new IllegalArgumentException("Customer not found");
@@ -105,10 +105,10 @@ public class CustomerService {
         return Customer.toDTO(optionalCustomer.get());
     }
 
-    public Object importExcel(MultipartFile file, BigInteger cid) throws IOException {
+    public Object importExcel(MultipartFile file, Long cid) throws IOException {
         Optional<Customer> maxIdSP = customerRepository.findMaxIdByCompanyId(cid);
         List<Customer> existingCustomers = customerRepository.findAllByCompanyIdOrderByIdDesc(cid);
-        BigInteger maxId = maxIdSP.isPresent() ? maxIdSP.get().getId().add(BigInteger.ONE) : BigInteger.ONE;
+        Long maxId = maxIdSP.isPresent() ? maxIdSP.get().getId()+1 : 1;
 
         List<Customer> customerList = new ArrayList<>();
         Set<String> uniqueRows = new HashSet<>();
@@ -158,7 +158,7 @@ public class CustomerService {
                 customer.setCompanyId(cid);
                 customer.setStatus(Utils.ACTIVE);
                 customerList.add(customer);
-                maxId = maxId.add(BigInteger.ONE);
+                maxId = maxId+1;
             }
 
             List<Customer> result = customerRepository.saveAll(customerList);
@@ -208,7 +208,7 @@ public class CustomerService {
     }
 
 
-    public byte[] exportData(Map<String, Object> payload, BigInteger cid) {
+    public byte[] exportData(Map<String, Object> payload, Long cid) {
         try (ByteArrayOutputStream baos = new ByteArrayOutputStream(); Workbook workbook = new XSSFWorkbook()) {
             Sheet sheet = workbook.createSheet("Data");
             // Create header row
@@ -234,7 +234,7 @@ public class CustomerService {
                 row.createCell(1).setCellValue(r.getCustomerName());
                 row.createCell(2).setCellValue(r.getIdentityNumber());
                 row.createCell(3).setCellValue(r.getPhoneNumber());
-                row.createCell(4).setCellValue(r.getBirthdate());
+                row.createCell(4).setCellValue(r.getBirthdate().toString());
                 row.createCell(5).setCellValue(r.getStatus());
             }
 

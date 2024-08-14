@@ -9,10 +9,10 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
-import java.math.BigInteger;
+
 import java.util.Optional;
 
-public interface ContractRepository extends JpaRepository<Contract, BigInteger> {
+public interface ContractRepository extends JpaRepository<Contract, Long> {
     @Query(value = "SELECT u FROM Contract u WHERE " +
             "(u.contractCode LIKE %:search% OR u.room.roomName LIKE %:search% OR  u.room.roomCode LIKE %:search%  ) " +
             "AND (:status IS NULL OR u.status = :status) AND u.companyId=:cid " +
@@ -24,11 +24,12 @@ public interface ContractRepository extends JpaRepository<Contract, BigInteger> 
     @Query(value = "SELECT nv FROM Contract nv " +
             "WHERE nv.id = (SELECT MAX(nv2.id) FROM Contract nv2 WHERE nv2.companyId=:cid) " +
             "AND nv.companyId=:cid")
-    Optional<Contract> findMaxIdAndCompanyId(BigInteger cid);
+    Optional<Contract> findMaxIdAndCompanyId(Long cid);
 
     @Query(value = "select c.room from Contract  c where c.id=:id and c.companyId=:cid")
-    Optional<Room> findRoomByContractIdAndCompanyId(@Param("id") BigInteger id,
-                                                    @Param("cid")BigInteger cid);
+    Optional<Room> findRoomByContractIdAndCompanyId(@Param("id") Long id,
+                                                    @Param("cid")Long cid);
 
-    Optional<Contract> findByIdAndCompanyId(BigInteger id, BigInteger cid);
+    Optional<Contract> findByIdAndCompanyId(Long id, Long cid);
+
 }

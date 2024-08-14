@@ -6,7 +6,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.math.BigInteger;
+
 import java.util.HashSet;
 import java.util.Set;
 
@@ -14,21 +14,21 @@ import java.util.Set;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "Users")
 @Builder
+@Table(name = "Users")
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "Id")
-    private BigInteger id;
+    private Long id;
 
     @Column(name = "UserCode")
     private String userCode;
 
-    @Column(name = "Username")
+    @Column(name = "Username",nullable = false)
     private String username;
 
-    @Column(name = "Password")
+    @Column(name = "Password",nullable = false)
     private String password;
 
 
@@ -38,11 +38,11 @@ public class User {
     @Column(name = "PhoneNumber")
     private String phoneNumber;
 
-    @Column(name = "CompanyId")
-    private BigInteger companyId;
+    @Column(name = "CompanyId",nullable = false)
+    private Long companyId;
 
-    @Column(name = "Status")
-    private Integer status;
+    @Column(name = "Status",nullable = false)
+    private int status;
 
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "User_Role",

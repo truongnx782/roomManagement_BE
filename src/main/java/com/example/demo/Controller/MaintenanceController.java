@@ -5,7 +5,6 @@ import com.example.demo.Service.MaintenanceService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.math.BigInteger;
 import java.util.Map;
 
 @RestController
@@ -19,38 +18,38 @@ public class MaintenanceController {
 
 
     @PostMapping("/search")
-    public ResponseEntity<?> search(@RequestHeader("cid") BigInteger cid,
+    public ResponseEntity<?> search(@RequestHeader("cid") Long cid,
                                     @RequestBody Map<String, Object> payload) {
         return ResponseEntity.ok(maintenanceService.search(payload, cid));
     }
 
     @PostMapping()
-    public ResponseEntity<?> create(@RequestHeader("cid") BigInteger cid,
+    public ResponseEntity<?> create(@RequestHeader("cid") Long cid,
                                     @RequestBody MaintenanceDTO maintenanceDTO) {
         return ResponseEntity.ok(maintenanceService.create(maintenanceDTO, cid));
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<?> getById(@RequestHeader("cid") BigInteger cid,
-                                     @PathVariable("id") BigInteger id) {
+    public ResponseEntity<?> getById(@RequestHeader("cid") Long cid,
+                                     @PathVariable("id") Long id) {
         return ResponseEntity.ok(maintenanceService.findById(id, cid));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<?> Update(@PathVariable("id") BigInteger id,
+    public ResponseEntity<?> Update(@PathVariable("id") Long id,
                                     @RequestBody MaintenanceDTO maintenanceDTO) {
         return ResponseEntity.ok(maintenanceService.update(id, maintenanceDTO));
     }
 
     @PutMapping("/delete/{id}")
-    public ResponseEntity<?> delete(@RequestHeader("cid") BigInteger cid,
-                                    @PathVariable("id") BigInteger id) {
+    public ResponseEntity<?> delete(@RequestHeader("cid") Long cid,
+                                    @PathVariable("id") Long id) {
         return ResponseEntity.ok(maintenanceService.delete(id, cid));
     }
 
     @PutMapping("/restore/{id}")
-    public ResponseEntity<?> restore(@RequestHeader("cid") BigInteger cid,
-                                     @PathVariable("id") BigInteger id) {
+    public ResponseEntity<?> restore(@RequestHeader("cid") Long cid,
+                                     @PathVariable("id") Long id) {
         return ResponseEntity.ok(maintenanceService.restore(id, cid));
     }
 }

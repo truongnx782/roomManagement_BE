@@ -8,7 +8,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.math.BigInteger;
+
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
@@ -17,39 +17,37 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @Entity
 @Builder
-@Table(name = "Contract")
 public class Contract {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "Id")
-    private BigInteger id;
+    private Long id;
 
-    @Column(name = "ContractCode")
+    @Column(name = "ContractCode", nullable = false)
     private String contractCode;
 
     @ManyToOne
-    @JoinColumn(name = "RoomId")
+    @JoinColumn(name = "RoomId", nullable = false)
     private Room room;
 
-    @Column(name = "StartDate")
+    @Column(name = "StartDate", nullable = false)
     @JsonFormat(pattern = "dd-MM-yyyy")
     private LocalDate startDate;
 
     @Column(name = "EndDate")
     @JsonFormat(pattern = "yyyy-MM-dd")
-
     private LocalDate endDate;
 
-    @Column(name = "RentPrice")
+    @Column(name = "RentPrice", nullable = false)
     private BigDecimal rentPrice;
 
     @Column(name = "Terms")
     private String terms;
 
-    @Column(name = "CompanyId")
-    private BigInteger companyId;
+    @Column(name = "CompanyId", nullable = false)
+    private Long companyId;
 
-    @Column(name = "Status")
+    @Column(name = "Status", nullable = false)
     private int status;
 
     public static ContractDTO toDTO(Contract contract){

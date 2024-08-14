@@ -7,31 +7,30 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.math.BigInteger;
+
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
 @Builder
-@Table(name = "Utility")
 public class Utility {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "Id")
-    private BigInteger id;
+    private Long id;
 
-    @Column(name = "UtilityName")
+    @Column(name = "UtilityName",nullable = false)
     private String utilityName;
 
-    @Column(name = "Status")
+    @Column(name = "Status",nullable = false)
     private int status;
 
-    @Column(name = "UtilityCode")
+    @Column(name = "UtilityCode",nullable = false)
     private String utilityCode;
 
-    @Column(name = "CompanyId")
-    private BigInteger companyId;
+    @Column(name = "CompanyId",nullable = false)
+    private Long companyId;
 
     public static UtilityDTO toDTO(Utility tienIch) {
         return UtilityDTO.builder()

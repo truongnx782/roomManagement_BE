@@ -3,7 +3,7 @@ package com.example.demo.DTO.DtoSecurity;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
-import java.math.BigInteger;
+
 
 @Data
 @AllArgsConstructor
@@ -12,5 +12,5 @@ import java.math.BigInteger;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class AuthenticationResponse {
     String token;
-    BigInteger cid;
+    Long cid;
 }

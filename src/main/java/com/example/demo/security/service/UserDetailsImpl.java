@@ -9,7 +9,7 @@
 //import org.springframework.security.core.authority.SimpleGrantedAuthority;
 //import org.springframework.security.core.userdetails.UserDetails;
 //
-//import java.math.BigInteger;
+//
 //import java.util.Collection;
 //import java.util.List;
 //import java.util.Objects;
@@ -22,13 +22,13 @@
 //
 //    private static final long serialVersionUID = 1L;
 //
-//    private BigInteger id;
+//    private Long id;
 //    private String username;
 //    private String email;
 //
 //    @JsonIgnore
 //    private String password;
-//    private  BigInteger companyId;
+//    private  Long companyId;
 //
 //    private Collection<? extends GrantedAuthority> authorities;
 //

@@ -1,30 +1,34 @@
 package com.example.demo.Service;
 
 import com.example.demo.DTO.ServiceDTO;
+import com.example.demo.Entity.Contract;
 import com.example.demo.Entity.Payment;
 import com.example.demo.Entity.PaymentDetail;
+import com.example.demo.Repo.ContractRepository;
 import com.example.demo.Repo.PaymentDetailRepository;
+import com.example.demo.Repo.PaymentRepository;
 import com.example.demo.Util.Utils;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
-import java.math.BigInteger;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Service
 public class PaymentDetailService {
     private  final ServiceService serviceService;
     private final PaymentDetailRepository paymentDetailRepository;
+    private final PaymentRepository paymentRepository;
 
-    public PaymentDetailService(ServiceService serviceService, PaymentDetailRepository paymentDetailRepository) {
+
+    public PaymentDetailService(ServiceService serviceService, PaymentDetailRepository paymentDetailRepository,  PaymentRepository paymentRepository) {
         this.serviceService = serviceService;
         this.paymentDetailRepository = paymentDetailRepository;
+        this.paymentRepository = paymentRepository;
     }
 
-    public Object getByPaymentId(BigInteger id, BigInteger cid) {
+    public Object getByPaymentId(Long id, Long cid) {
+        Optional<Contract> optionalContract = paymentRepository.findContractByPaymentIdAndCompanyId(id,cid);
+
         List<Map<String,Object> >ids =  paymentDetailRepository.findByPaymentIdAndCpmpanyId(id,cid);
         Map<String,Object> objectMap = new HashMap<>();
         objectMap.put("ids",ids);
@@ -36,12 +40,15 @@ public class PaymentDetailService {
                 sum=sum.add((BigDecimal) map.get("value"));
             }
         }
-        objectMap.put("sum",sum);
+        objectMap.put("rentPrice",optionalContract.get().getRentPrice());
+        objectMap.put("sumService",sum);
+        objectMap.put("sum",optionalContract.get().getRentPrice().add(sum));
+
         return objectMap;
     }
 
-    public Object createList(Map<String, Object> payload, BigInteger cid) {
-        BigInteger paymentId = BigInteger.valueOf(((Number) payload.get("paymentId")).longValue());
+    public Object createList(Map<String, Object> payload, Long cid) {
+        Long paymentId = Long.valueOf(((Number) payload.get("paymentId")).longValue());
         List<Map<String,Object>> ids = (List<Map<String, Object>>) payload.get("ids");
         List<PaymentDetail> paymentDetails = new ArrayList<>();
         if (paymentId==null) {
@@ -58,8 +65,8 @@ public class PaymentDetailService {
                     payment.setId(paymentId);
                     paymentDetail.setPayment(payment);
                     com.example.demo.Entity.Service service = new com.example.demo.Entity.Service();
-                    service.setId(BigInteger.valueOf(((Number) objectMap.get("id")).longValue()));
-                    BigDecimal value = new BigDecimal((BigInteger.valueOf(((Number) objectMap.get("value")).longValue())));
+                    service.setId(Long.valueOf(((Number) objectMap.get("id")).longValue()));
+                    BigDecimal value = new BigDecimal((Long.valueOf(((Number) objectMap.get("value")).longValue())));
                     paymentDetail.setService(service);
                     paymentDetail.setAmountToPay(value);
                     paymentDetail.setStatus(Utils.ACTIVE);
@@ -79,8 +86,8 @@ public class PaymentDetailService {
                 payment.setId(paymentId);
                 paymentDetail.setPayment(payment);
                 com.example.demo.Entity.Service service = new com.example.demo.Entity.Service();
-                service.setId(BigInteger.valueOf(((Number) objectMap.get("id")).longValue()));
-                BigDecimal value = new BigDecimal((BigInteger.valueOf(((Number) objectMap.get("value")).longValue())));
+                service.setId(Long.valueOf(((Number) objectMap.get("id")).longValue()));
+                BigDecimal value = new BigDecimal((Long.valueOf(((Number) objectMap.get("value")).longValue())));
                 paymentDetail.setService(service);
                 BigDecimal heSo = serviceDTOS.stream()
                         .filter(x -> x.getId().equals(service.getId()))

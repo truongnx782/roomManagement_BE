@@ -15,7 +15,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.math.BigInteger;
+
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -27,7 +27,7 @@ public class UtilityService {
         this.utilityRepository = utilityRepository;
     }
 
-    public Page<UtilityDTO> search(Map<String, Object> payload, BigInteger cid) {
+    public Page<UtilityDTO> search(Map<String, Object> payload, Long cid) {
         int page = (int) payload.getOrDefault("page", 0);
         int size = (int) payload.getOrDefault("size", 5);
         String search = (String) payload.getOrDefault("search", "");
@@ -37,12 +37,12 @@ public class UtilityService {
         return data.map(Utility::toDTO);
     }
 
-    public List<UtilityDTO> getAll(BigInteger cid) {
+    public List<UtilityDTO> getAll(Long cid) {
         List<Utility> utilityList = utilityRepository.findAllByCompanyIdOrderByIdDesc(cid);
         return utilityList.stream().map(Utility::toDTO).collect(Collectors.toList());
     }
 
-    public UtilityDTO create(UtilityDTO utilityDTO, BigInteger cid) {
+    public UtilityDTO create(UtilityDTO utilityDTO, Long cid) {
         if (utilityDTO.getUtilityName() == null || utilityDTO.getUtilityName().isEmpty()) {
             throw new IllegalArgumentException(" name cannot be empty.");
         }
@@ -52,7 +52,7 @@ public class UtilityService {
             throw new IllegalArgumentException("trùng tên");
         }
         Optional<Utility> maxIdSP = utilityRepository.findMaxIdByCompanyId(cid);
-        BigInteger maxId = maxIdSP.isPresent() ? maxIdSP.get().getId().add(BigInteger.ONE) : BigInteger.ONE;
+        Long maxId = maxIdSP.isPresent() ? maxIdSP.get().getId()+1 : 1;
 
         Utility utility = Utility.toEntity(utilityDTO);
         utility.setUtilityCode("U" + maxId);
@@ -62,7 +62,7 @@ public class UtilityService {
         return Utility.toDTO(newUtility);
     }
 
-    public UtilityDTO update(BigInteger id, UtilityDTO utilityDTO, BigInteger cid) {
+    public UtilityDTO update(Long id, UtilityDTO utilityDTO, Long cid) {
         if (utilityDTO.getUtilityName() == null || utilityDTO.getUtilityName().isEmpty()) {
             throw new IllegalArgumentException(" name cannot be empty.");
         }
@@ -84,7 +84,7 @@ public class UtilityService {
         return Utility.toDTO(utility);
     }
 
-    public UtilityDTO delete(BigInteger id, BigInteger cid) {
+    public UtilityDTO delete(Long id, Long cid) {
         Optional<Utility> optionalUtility = utilityRepository.findByIdAndCompanyId(id, cid);
         if (optionalUtility.isEmpty()) {
             throw new IllegalArgumentException("Utility not found");
@@ -95,7 +95,7 @@ public class UtilityService {
         return Utility.toDTO(utility);
     }
 
-    public UtilityDTO restore(BigInteger id, BigInteger cid) {
+    public UtilityDTO restore(Long id, Long cid) {
         Optional<Utility> optionalUtility = utilityRepository.findByIdAndCompanyId(id, cid);
         if (optionalUtility.isEmpty()) {
             throw new IllegalArgumentException("Utility not found");
@@ -106,7 +106,7 @@ public class UtilityService {
         return Utility.toDTO(utility);
     }
 
-    public UtilityDTO findById(BigInteger id, BigInteger cid) {
+    public UtilityDTO findById(Long id, Long cid) {
         Optional<Utility> optionalUtility = utilityRepository.findByIdAndCompanyId(id, cid);
         if (optionalUtility.isEmpty()) {
             throw new IllegalArgumentException("Utility not found");
@@ -115,10 +115,10 @@ public class UtilityService {
     }
 
 
-    public Object importExcel(MultipartFile file, BigInteger cid) throws IOException {
+    public Object importExcel(MultipartFile file, Long cid) throws IOException {
         Optional<Utility> maxIdOpt = utilityRepository.findMaxIdByCompanyId(cid);
         List<Utility> existingUtilities = utilityRepository.findAllByCompanyIdOrderByIdDesc(cid);
-        BigInteger maxId = maxIdOpt.map(utility -> utility.getId().add(BigInteger.ONE)).orElse(BigInteger.ONE);
+        Long maxId = maxIdOpt.map(utility -> utility.getId()+1).orElse(Long.valueOf(1));
 
         Set<String> uniqueNames = new HashSet<>();
         List<String> duplicateNames = new ArrayList<>();
@@ -147,7 +147,7 @@ public class UtilityService {
                 }
 
                 utilities.add(utility);
-                maxId = maxId.add(BigInteger.ONE);
+                maxId = maxId+1;
             }
 
             List<Utility> savedUtilities = utilityRepository.saveAll(utilities);
@@ -175,7 +175,7 @@ public class UtilityService {
         }
     }
 
-    public byte[] exportData(Map<String, Object> payload, BigInteger cid) {
+    public byte[] exportData(Map<String, Object> payload, Long cid) {
         try (ByteArrayOutputStream baos = new ByteArrayOutputStream(); Workbook workbook = new XSSFWorkbook()) {
             Sheet sheet = workbook.createSheet("Data");
             // Create header row

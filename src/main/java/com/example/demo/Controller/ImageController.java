@@ -6,7 +6,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.math.BigInteger;
 import java.util.List;
 
 @RestController
@@ -20,17 +19,17 @@ public class ImageController {
 
     @PostMapping("/create")
     public ResponseEntity<?> create(
-            @RequestHeader("cid") BigInteger cid,
+            @RequestHeader("cid") Long cid,
             @RequestParam(value = "file", required = false) List<MultipartFile> file,
-            @RequestParam(value = "image", required = false) List<BigInteger> images,
-            @RequestParam("room") BigInteger roomId,
+            @RequestParam(value = "image", required = false) List<Long> images,
+            @RequestParam("room") Long roomId,
             @RequestParam("status") Integer status) throws IOException {
         return ResponseEntity.ok(imageService.create(file, images, roomId, status, cid));
     }
 
     @GetMapping("/get-by-room-id/{id}")
-    public ResponseEntity<?> getAllByRoomId(@RequestHeader("cid") BigInteger cid,
-                                            @PathVariable("id") BigInteger RoomId) {
+    public ResponseEntity<?> getAllByRoomId(@RequestHeader("cid") Long cid,
+                                            @PathVariable("id") Long RoomId) {
         return ResponseEntity.ok(imageService.getAllByRoomId(RoomId, cid));
     }
 }

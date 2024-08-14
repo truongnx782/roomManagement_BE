@@ -9,14 +9,14 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
-import java.math.BigInteger;
+
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
 public class RoomDTO {
-    private BigInteger id;
+    private Long id;
 
     private String roomCode;
 
@@ -28,7 +28,7 @@ public class RoomDTO {
 
     private String address;
 
-    private BigInteger companyId;
+    private Long companyId;
 
     private int status;
 

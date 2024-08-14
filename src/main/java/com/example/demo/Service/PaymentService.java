@@ -13,7 +13,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
-import java.math.BigInteger;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -28,7 +27,7 @@ public class PaymentService {
         this.paymentRepository = paymentRepository;
     }
 
-    public Page<PaymentDTO> search(Map<String, Object> payload, BigInteger cid) {
+    public Page<PaymentDTO> search(Map<String, Object> payload, Long cid) {
         int page = (int) payload.getOrDefault("page", 0);
         int size = (int) payload.getOrDefault("size", 5);
         String search = (String) payload.getOrDefault("search", "");
@@ -39,9 +38,9 @@ public class PaymentService {
         return data.map(Payment::toDTO);
     }
 
-    public PaymentDTO updatePaymentStatus(Map<String, Object> payload, BigInteger cid) {
+    public PaymentDTO updatePaymentStatus(Map<String, Object> payload, Long cid) {
         Integer paymentStatus = (Integer) payload.get("checked");
-        BigInteger paymentId = BigInteger.valueOf(((Number) payload.get("id")).longValue());
+        Long paymentId = Long.valueOf(((Number) payload.get("id")).longValue());
         Optional<Payment> optionalPayment = paymentRepository.findByIdAndCompanyId(paymentId,cid);
         if (!optionalPayment.isPresent()) {
             throw new IllegalArgumentException("contract not found");
@@ -53,7 +52,7 @@ public class PaymentService {
     }
 
     @Scheduled(fixedDelay = 300000)
-    public static void autoCreatePayment(BigInteger cid){
+    public static void autoCreatePayment(Long cid){
         List<Payment> paymentList = paymentRepository.findPaymentsWithMaxDatePerContractByCpmpanyId(cid);
         List<Payment> paymentSave= new ArrayList<>();
         LocalDate localDate = LocalDate.now();

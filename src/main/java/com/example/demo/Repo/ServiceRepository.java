@@ -7,11 +7,11 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
-import java.math.BigInteger;
+
 import java.util.List;
 import java.util.Optional;
 
-public interface ServiceRepository extends JpaRepository<Service, BigInteger> {
+public interface ServiceRepository extends JpaRepository<Service, Long> {
 
     @Query(value = "SELECT s FROM Service s WHERE " +
             "(s.serviceName LIKE %:search% OR s.serviceCode LIKE %:search% ) " +
@@ -20,15 +20,15 @@ public interface ServiceRepository extends JpaRepository<Service, BigInteger> {
             "ORDER BY s.id DESC")
     Page<Service> search(@Param("search") String search,
                          @Param("status") Integer status,
-                         @Param("cid") BigInteger cid, Pageable pageable);
+                         @Param("cid") Long cid, Pageable pageable);
 
     @Query(value = "SELECT nv FROM Service nv WHERE " +
             " nv.id = (SELECT MAX(nv2.id) FROM Service nv2 where " +
             " nv2.companyId=:cid) AND nv.companyId=:cid")
-    Optional<Service> findMaxIdByCompanyId(@Param("cid") BigInteger cid);
+    Optional<Service> findMaxIdByCompanyId(@Param("cid") Long cid);
 
-    List<Service> findAllByCompanyIdOrderByIdDesc(BigInteger cid);
+    List<Service> findAllByCompanyIdOrderByIdDesc(Long cid);
 
-    Optional<Service> findByIdAndCompanyId(BigInteger id, BigInteger cid);
+    Optional<Service> findByIdAndCompanyId(Long id, Long cid);
 }
 

@@ -6,17 +6,17 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.math.BigInteger;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
 public class ImageDTO {
-    private BigInteger id;
+    private Long id;
 
     private RoomDTO room;
 
-    private BigInteger companyId;
+    private Long companyId;
 
     private String url;
 

@@ -9,17 +9,17 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.math.BigInteger;
+
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
 public class Room_UtilityDTO {
-    private BigInteger id;
+    private Long id;
     private RoomDTO room;
     private UtilityDTO utility;
-    private BigInteger companyId;
+    private Long companyId;
     private int status;
 
 }
