@@ -1,7 +1,7 @@
 package com.example.demo.configuration;
 
 import com.example.demo.DTO.DtoSecurity.IntrospectRequest;
-import com.example.demo.Service.AuthenticationService;
+import com.example.demo.service.AuthenticationService;
 import com.nimbusds.jose.JOSEException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.oauth2.jose.jws.MacAlgorithm;
@@ -13,7 +13,6 @@ import org.springframework.stereotype.Component;
 
 import javax.crypto.spec.SecretKeySpec;
 import java.text.ParseException;
-import java.util.Objects;
 
 @Component
 public class CustomJwtDecoder implements JwtDecoder {

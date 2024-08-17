@@ -1,15 +1,15 @@
 package com.example.demo.configuration;
 
-import com.example.demo.Entity.Company;
-import com.example.demo.Entity.Role;
-import com.example.demo.Entity.User;
-import com.example.demo.Entity.User_Role;
-import com.example.demo.Repo.CompanyRepository;
-import com.example.demo.Repo.RoleRepository;
-import com.example.demo.Repo.UserRepository;
-import com.example.demo.Repo.User_RoleRepository;
-import com.example.demo.Util.ERole;
-import com.example.demo.Util.Utils;
+import com.example.demo.entity.Company;
+import com.example.demo.entity.Role;
+import com.example.demo.entity.User;
+import com.example.demo.entity.User_Role;
+import com.example.demo.repository.CompanyRepository;
+import com.example.demo.repository.RoleRepository;
+import com.example.demo.repository.UserRepository;
+import com.example.demo.repository.User_RoleRepository;
+import com.example.demo.util.ERole;
+import com.example.demo.util.Utils;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;

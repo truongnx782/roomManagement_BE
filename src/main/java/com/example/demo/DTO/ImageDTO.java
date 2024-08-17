@@ -1,6 +1,5 @@
 package com.example.demo.DTO;
 
-import com.example.demo.Entity.Room;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

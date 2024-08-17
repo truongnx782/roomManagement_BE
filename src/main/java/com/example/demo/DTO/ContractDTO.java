@@ -1,7 +1,5 @@
 package com.example.demo.DTO;
 
-import com.example.demo.Entity.Room;
-import jakarta.persistence.Column;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
