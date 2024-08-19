@@ -29,7 +29,7 @@ public interface PaymentRepository extends JpaRepository<Payment, Long> {
     List<Payment> findAllByContractIdAndCompanyId(@Param("id") Long id,@Param("cid")Long cid);
 
     @Query("SELECT p FROM Payment p WHERE p.paymentDate = (SELECT MAX(p2.paymentDate) FROM Payment p2 " +
-            "WHERE p2.contract.id = p.contract.id AND p2.status = 1 AND p2.companyId=:cid)" +
+            "WHERE p2.contract.id = p.contract.id AND p2.status = 1 AND p2.companyId=:cid AND p2.contract.status= 1)" +
             "AND p.status = 1 AND p.companyId=:cid order by p.id asc ")
     List<Payment> findPaymentsWithMaxDatePerContractByCpmpanyId(@Param("cid") Long cid);
 
@@ -37,4 +37,7 @@ public interface PaymentRepository extends JpaRepository<Payment, Long> {
 
     @Query(value = "select p.contract from Payment p where p.id=:id and p.companyId=:cid")
     Optional<Contract> findContractByPaymentIdAndCompanyId(@Param("id") Long id,@Param("cid") Long cid);
+
+    List<Payment> findAllByContractIdInAndCompanyId(List<Long> contractIds, Long cid);
+
 }

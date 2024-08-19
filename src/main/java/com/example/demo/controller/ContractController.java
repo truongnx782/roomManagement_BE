@@ -18,7 +18,7 @@ public class ContractController {
     }
 
     @PostMapping("/search")
-    public ResponseEntity<?> search(@RequestHeader("cid") String cid,
+    public ResponseEntity<?> search(@RequestHeader("cid") Long cid,
                                     @RequestBody Map<String, Object> payload) {
         return ResponseEntity.ok(contractService.search(payload, cid));
     }

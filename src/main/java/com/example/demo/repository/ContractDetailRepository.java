@@ -24,4 +24,6 @@ public interface ContractDetailRepository extends JpaRepository<ContractDetail, 
     @Query("DELETE FROM ContractDetail c WHERE c.contract.id = :id AND c.companyId=:cid")
     void deleteAllByContactIdAndCompanyId(@Param("id") Long id,
                                           @Param("cid") Long cid);
+
+    List<ContractDetail> findByContractIdInAndCompanyId(List<Long> contractIds, Long cid);
 }

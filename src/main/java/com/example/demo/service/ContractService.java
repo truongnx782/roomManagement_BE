@@ -36,14 +36,13 @@ public class ContractService {
         this.roomRepository = roomRepository;
     }
 
-    public Page<ContractDTO> search(Map<String, Object> payload, String cid) {
+    public Page<ContractDTO> search(Map<String, Object> payload, Long cid) {
         int page = (int) payload.getOrDefault("page", 0);
         int size = (int) payload.getOrDefault("size", 5);
         String search = (String) payload.getOrDefault("search", "");
         Integer status = (Integer) payload.getOrDefault("status", null);
         Pageable pageable = PageRequest.of(page, size);
         Page<Contract> data = contractRepository.search(search, status,cid, pageable);
-        System.out.println(data);
         return data.map(Contract::toDTO);
     }
 
@@ -114,9 +113,9 @@ public class ContractService {
 
         List<ContractDetail> contractDetails = new ArrayList<>();
 
-        Customer customer = new Customer();
-        ContractDetail contractDetail = new ContractDetail();
         for (Long customerId : contractDTO.getCustomerIds()) {
+            Customer customer = new Customer();
+            ContractDetail contractDetail = new ContractDetail();
             customer.setId(customerId);
             contractDetail.setContract(newContract);
             contractDetail.setCustomer(customer);
@@ -125,7 +124,6 @@ public class ContractService {
             contractDetails.add(contractDetail);
         }
         contractDetailRepository.saveAll(contractDetails);
-//        result.setCustomerIds(contractDTO.getCustomerIds());
 
         //tạo payment
         Payment payment = new Payment();
@@ -149,20 +147,20 @@ public class ContractService {
         ContractDTO result = new ContractDTO();
 
         List<Payment> paymentList = paymentRepository.findAllByContractIdAndCompanyId(id,cid);
-        if (paymentList.isEmpty()) {
-            throw new IllegalArgumentException("Payment not found");
+        System.out.println("aaaaaaaaaaaaaaaaaa");
+        System.out.println(paymentList.get(0).getPaymentDate()+""+contractDTO.getEndDate());
+        if (paymentList.get(0).getPaymentDate().isAfter(contractDTO.getEndDate())) {
+            throw new IllegalArgumentException("Ngày kết thúc không được nhỏ hơn: "+paymentList.get(0).getPaymentDate());
         }
-        if (paymentList.size() > 1) {
-            return false;
+        else {
+            Payment payment = paymentRepository.findAllByContractIdAndCompanyId(id,cid).get(0);
+            LocalDate startDate = contractDTO.getStartDate();
+            LocalDate nextMonthDate = startDate.plusMonths(1);
+            payment.setPaymentCode("TT-" + startDate);
+            payment.setPaymentDate(nextMonthDate);
+            paymentRepository.save(payment);
         }
 
-        Payment payment = paymentList.get(0);
-        LocalDate startDate = contractDTO.getStartDate();
-        LocalDate nextMonthDate = startDate.plusMonths(1);
-        payment.setPaymentCode("TT-" + startDate);
-        payment.setPaymentDate(nextMonthDate);
-        paymentRepository.save(payment);
-        result.setCustomerIds(contractDTO.getCustomerIds());
 
         Optional<Room> optionalRoom = contractRepository.findRoomByContractIdAndCompanyId(id,cid);
         if (optionalRoom.get().getId() != contractDTO.getRoom().getId()) {
@@ -187,24 +185,27 @@ public class ContractService {
         contract.setEndDate(contractDTO.getEndDate());
         contract.setRoom(Room.toEntity(contractDTO.getRoom()));
         contract.setTerms(contractDTO.getTerms());
+        contract.setStatus(Utils.ACTIVE);
         contract = contractRepository.save(contract);
 
         contractDetailRepository.deleteAllByContactIdAndCompanyId(id,cid);
 
-        List<ContractDetail> contractDetails = new ArrayList<>();
+        LocalDate today = LocalDate.now();
 
-        Customer customer = new Customer();
-        ContractDetail contractDetail = new ContractDetail();
+        List<ContractDetail> contractDetails = new ArrayList<>();
         for (Long customerId : contractDTO.getCustomerIds()) {
+            Customer customer = new Customer();
+            ContractDetail contractDetail = new ContractDetail();
             customer.setId(customerId);
             contractDetail.setContract(contract);
             contractDetail.setCustomer(customer);
-            contractDetail.setStatus(Utils.ACTIVE);
+            contractDetail.setStatus(contractDTO.getEndDate() == null ||contractDTO.getEndDate().isAfter(today) ? Utils.ACTIVE : Utils.EXPIRED);
             contractDetail.setCompanyId(cid);
             contractDetails.add(contractDetail);
         }
         contractDetailRepository.saveAll(contractDetails);
 
+        result.setCustomerIds(contractDTO.getCustomerIds());
         return result;
     }
 

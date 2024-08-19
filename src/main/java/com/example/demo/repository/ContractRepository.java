@@ -9,6 +9,8 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 
+import java.time.LocalDate;
+import java.util.List;
 import java.util.Optional;
 
 public interface ContractRepository extends JpaRepository<Contract, Long> {
@@ -18,7 +20,7 @@ public interface ContractRepository extends JpaRepository<Contract, Long> {
             "ORDER BY u.id DESC")
     Page<Contract> search(@Param("search") String search,
                           @Param("status") Integer status,
-                          @Param("cid") String cid, Pageable pageable);
+                          @Param("cid") Long cid, Pageable pageable);
 
     @Query(value = "SELECT nv FROM Contract nv " +
             "WHERE nv.id = (SELECT MAX(nv2.id) FROM Contract nv2 WHERE nv2.companyId=:cid) " +
@@ -30,5 +32,8 @@ public interface ContractRepository extends JpaRepository<Contract, Long> {
                                                     @Param("cid")Long cid);
 
     Optional<Contract> findByIdAndCompanyId(Long id, Long cid);
+
+    @Query("SELECT c FROM Contract c WHERE c.endDate <= :today AND c.companyId = :cid AND c.status=1 ")
+    List<Contract> updateStatusByCompanyId(@Param("cid") Long cid, @Param("today") LocalDate today);
 
 }
