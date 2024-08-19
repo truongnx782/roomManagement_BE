@@ -102,7 +102,6 @@ public class ServiceService {
 
     public List<ServiceDTO> getAll(Long cid) {
         List<Service> serviceList = serviceRepository.findAllByCompanyIdOrderByIdDesc(cid);
-        PaymentService.autoCreatePayment(cid);
         return serviceList.stream().map(Service::toDTO).collect(Collectors.toList());
     }
 

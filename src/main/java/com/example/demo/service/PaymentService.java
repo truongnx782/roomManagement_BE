@@ -41,12 +41,16 @@ public class PaymentService {
     }
 
     public Page<PaymentDTO> search(Map<String, Object> payload, Long cid) {
+        PaymentService.autoCreatePayment(cid);
+
         int page = (int) payload.getOrDefault("page", 0);
         int size = (int) payload.getOrDefault("size", 5);
         String search = (String) payload.getOrDefault("search", "");
         Integer paymentStatus = (Integer) payload.getOrDefault("paymentStatus",null);
+        Long roomId = payload.get("roomId") != null ? Long.valueOf(payload.get("roomId").toString()) : null;
         Pageable pageable = PageRequest.of(page, size);
-        Page<Payment> data = paymentRepository.search(search, paymentStatus,cid, pageable);
+        Page<Payment> data = paymentRepository.search(search, paymentStatus,roomId,cid, pageable);
+        PaymentService.autoCreatePayment(cid);
         return data.map(Payment::toDTO);
     }
 

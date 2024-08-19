@@ -18,11 +18,13 @@ public interface PaymentRepository extends JpaRepository<Payment, Long> {
             " u.contract.room.roomCode LIKE %:search% or" +
             " cd.customer.phoneNumber LIKE %:search% or " +
             " cd.customer.customerName LIKE %:search% ) " +
+            "AND (:roomId IS NULL OR u.contract.room.id = :roomId)  " +
             "AND (:paymentStatus IS NULL OR u.paymentStatus = :paymentStatus)  " +
             "AND u.status=1 and u.companyId=:cid AND cd.companyId=:cid " +
             "ORDER BY u.id DESC")
     Page<Payment> search(@Param("search") String search,
                          @Param("paymentStatus") Integer paymentStatus,
+                         @Param(("roomId")) Long roomId,
                          @Param("cid") Long cid, Pageable pageable);
 
     @Query(value = "select  p from Payment  p where p.contract.id=:id and p.companyId=:cid")
