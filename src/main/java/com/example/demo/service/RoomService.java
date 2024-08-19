@@ -1,7 +1,8 @@
 package com.example.demo.service;
 
-import com.example.demo.DTO.RoomDTO;
+import com.example.demo.DTO.DtoSecurity.RoomDTO;
 import com.example.demo.entity.Room;
+import com.example.demo.repository.PaymentRepository;
 import com.example.demo.repository.RoomRepository;
 import com.example.demo.util.Excel;
 import com.example.demo.util.Utils;
@@ -24,9 +25,11 @@ import java.util.stream.Collectors;
 @Service
 public class RoomService {
     private final RoomRepository roomRepository;
+    private final PaymentRepository paymentRepository;
 
-    public RoomService(RoomRepository roomRepository) {
+    public RoomService(RoomRepository roomRepository, PaymentRepository paymentRepository) {
         this.roomRepository = roomRepository;
+        this.paymentRepository = paymentRepository;
     }
 
     public Page<RoomDTO> search(Map<String, Object> payload, Long cid) {
@@ -44,6 +47,10 @@ public class RoomService {
         return rooms.stream().map(Room::toDTO).collect(Collectors.toList());
     }
 
+    public List<RoomDTO> getByPaymentExist(Long cid) {
+        List<Room> rooms = paymentRepository.findAllRoomByCompanyIdOrderByIdDesc(cid);
+        return rooms.stream().map(Room::toDTO).collect(Collectors.toList());
+    }
 
     public Optional<RoomDTO> findById(Long id, Long cid)  {
         Optional<Room> roomOptional = roomRepository.findByIdAndCompanyId(id,cid);

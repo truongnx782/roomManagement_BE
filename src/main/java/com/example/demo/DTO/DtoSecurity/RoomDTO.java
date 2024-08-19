@@ -1,4 +1,4 @@
-package com.example.demo.DTO;
+package com.example.demo.DTO.DtoSecurity;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

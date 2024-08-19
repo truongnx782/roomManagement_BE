@@ -1,6 +1,6 @@
 package com.example.demo.controller;
 
-import com.example.demo.DTO.RoomDTO;
+import com.example.demo.DTO.DtoSecurity.RoomDTO;
 import com.example.demo.service.RoomService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -27,6 +27,11 @@ public class RoomController {
     @GetMapping("")
     public ResponseEntity<?> getAll(@RequestHeader("cid") Long cid) {
         return ResponseEntity.ok(roomService.getAll(cid));
+    }
+
+    @GetMapping("/getByPaymentExist")
+    public ResponseEntity<?> getByPaymentExist(@RequestHeader("cid") Long cid) {
+        return ResponseEntity.ok(roomService.getByPaymentExist(cid));
     }
 
     @GetMapping("/{id}")

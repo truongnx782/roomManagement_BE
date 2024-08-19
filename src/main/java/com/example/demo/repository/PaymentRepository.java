@@ -2,6 +2,7 @@ package com.example.demo.repository;
 
 import com.example.demo.entity.Contract;
 import com.example.demo.entity.Payment;
+import com.example.demo.entity.Room;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -17,7 +18,8 @@ public interface PaymentRepository extends JpaRepository<Payment, Long> {
             "( u.contract.room.roomName LIKE %:search% OR" +
             " u.contract.room.roomCode LIKE %:search% or" +
             " cd.customer.phoneNumber LIKE %:search% or " +
-            " cd.customer.customerName LIKE %:search% ) " +
+            " cd.customer.customerName LIKE %:search% or " +
+            " u.contract.contractCode  LIKE %:search% ) " +
             "AND (:roomId IS NULL OR u.contract.room.id = :roomId)  " +
             "AND (:paymentStatus IS NULL OR u.paymentStatus = :paymentStatus)  " +
             "AND u.status=1 and u.companyId=:cid AND cd.companyId=:cid " +
@@ -42,4 +44,6 @@ public interface PaymentRepository extends JpaRepository<Payment, Long> {
 
     List<Payment> findAllByContractIdInAndCompanyId(List<Long> contractIds, Long cid);
 
+    @Query(value = "select p.contract.room from Payment p where p.companyId=:cid")
+    List<Room> findAllRoomByCompanyIdOrderByIdDesc(Long cid);
 }

@@ -1,6 +1,6 @@
 package com.example.demo.entity;
 
-import com.example.demo.DTO.RoomDTO;
+import com.example.demo.DTO.DtoSecurity.RoomDTO;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
