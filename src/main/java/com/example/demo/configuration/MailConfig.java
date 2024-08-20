@@ -13,7 +13,7 @@ public class MailConfig {
     @Bean
     public JavaMailSender javaMailSender() {
         JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
-        mailSender.setHost("smtp.gmail.com"); // Thay đổi từ smtp.example.com thành smtp.gmail.com
+        mailSender.setHost("smtp.gmail.com");
         mailSender.setPort(587);
 
         mailSender.setUsername("nguyenxuantruongtest1@gmail.com");

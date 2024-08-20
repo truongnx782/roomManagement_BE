@@ -26,7 +26,6 @@ public class AuthenticationController {
 
     AuthenticationService authenticationService;
 
-    // Endpoint để đăng nhập và lấy JWT
     @PostMapping("/login")
     public ResponseEntity<String> authenticate(@RequestBody AuthenticationRequest request) {
         var result = authenticationService.authenticate(request);
@@ -55,19 +54,14 @@ public class AuthenticationController {
     @PostMapping("/introspect")
     public ApiResponse<IntrospectResponse> introspect(@RequestBody IntrospectRequest request)
             throws ParseException, JOSEException {
-        // Gọi service để kiểm tra tính hợp lệ của token
         var result = authenticationService.introspect(request);
-
-        // Trả về phản hồi với kết quả kiểm tra token
         return ApiResponse.<IntrospectResponse>builder().result(result).build();
     }
 
 
-    // Endpoint để đăng xuất và thu hồi token
     @PostMapping("/logout")
     public ApiResponse<Void> logout(@RequestBody Map<String, Object> objectMap) throws ParseException, JOSEException {
         String request = (String) objectMap.get("token");
-        // Gọi service để thực hiện đăng xuất
         authenticationService.logout(request);
         return ApiResponse.<Void>builder().build();
     }
@@ -141,10 +135,6 @@ public class AuthenticationController {
         }
 
         try {
-            if (token.startsWith("Bearer ")) {
-                token = token.substring(7);
-            }
-
             var result = authenticationService.refreshToken(token);
 
             return ResponseEntity.ok()

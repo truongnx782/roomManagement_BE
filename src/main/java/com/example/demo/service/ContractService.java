@@ -147,7 +147,6 @@ public class ContractService {
         ContractDTO result = new ContractDTO();
 
         List<Payment> paymentList = paymentRepository.findAllByContractIdAndCompanyId(id,cid);
-        System.out.println("aaaaaaaaaaaaaaaaaa");
         System.out.println(paymentList.get(0).getPaymentDate()+""+contractDTO.getEndDate());
         if (paymentList.get(0).getPaymentDate().isAfter(contractDTO.getEndDate())) {
             throw new IllegalArgumentException("Ngày kết thúc không được nhỏ hơn: "+paymentList.get(0).getPaymentDate());

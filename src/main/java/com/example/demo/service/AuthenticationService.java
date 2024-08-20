@@ -106,8 +106,6 @@ public class AuthenticationService {
                 .map(role -> role.getName())
                 .collect(Collectors.toList());
 
-//        ERole role = roles.get(0);
-
         JWTClaimsSet jwtClaimsSet = new JWTClaimsSet.Builder()
                 .subject(user.getUsername())
                 .issuer(user.getPassword())
@@ -335,7 +333,6 @@ public class AuthenticationService {
         if (token == null || token.isEmpty()) {
             throw new IllegalArgumentException("Invalid token");
         }
-        // Remove the "Bearer " prefix if present
         if (token.startsWith("Bearer ")) {
             token = token.substring(7);
         }
@@ -424,17 +421,4 @@ public AuthenticationResponse refreshToken(String token) throws ParseException, 
         otpCache.clear();
     }
 
-
-//    private String buildScope(TaiKhoan taiKhoan) {
-//        StringJoiner stringJoiner = new StringJoiner(" ");
-//
-//        if (!CollectionUtils.isEmpty(taiKhoan.getChucVus()))
-//            taiKhoan.getChucVus().forEach(role -> {
-//                stringJoiner.add("ROLE_" + role.getName());
-//                if (!CollectionUtils.isEmpty(role.getPermissions()))
-//                    role.getPermissions().forEach(permission -> stringJoiner.add(permission.getName()));
-//            });
-//
-//        return stringJoiner.toString();
-//    }
 }

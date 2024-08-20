@@ -50,30 +50,28 @@ public class ApplicationInitConfig {
                 companyRepository.save(company);
             }
 
-            // Kiểm tra xem người dùng admin đã tồn tại trong cơ sở dữ liệu chưa
             if (userRepository.findByUsername(ADMIN_USER_NAME).isEmpty()) {
 
-                // Kiểm tra và tạo vai trò ADMIN nếu chưa tồn tại
                 if (roleRepository.findByName(ERole.ROLE_ADMIN).isEmpty()){
                     Role role = new  Role();
                     role.setName(ERole.ROLE_ADMIN);
-                    roleRepository.save(role); // Lưu vai trò vào cơ sở dữ liệu
-                    log.warn("ADMIN Role has been created!"); // Ghi log thông báo vai trò ADMIN đã được tạo
+                    roleRepository.save(role);
+                    log.warn("ADMIN Role has been created!");
                 }
                 if (roleRepository.findByName(ERole.ROLE_USER).isEmpty()){
                     Role role = new  Role();
                     role.setName(ERole.ROLE_USER);
-                    roleRepository.save(role); // Lưu vai trò vào cơ sở dữ liệu
-                    log.warn("ADMIN Role has been created!"); // Ghi log thông báo vai trò ADMIN đã được tạo
+                    roleRepository.save(role);
+                    log.warn("ADMIN Role has been created!");
                 }
 
               Optional<Company> company =companyRepository.findByCompanyCode("ADMIN");
 
                 Optional<Role> role = roleRepository.findByName(ERole.ROLE_ADMIN);
                 User user = User.builder()
-                        .username(ADMIN_USER_NAME) // Tên đăng nhập của người dùng
-                        .password(passwordEncoder.encode(ADMIN_PASSWORD)) // Mã hóa mật khẩu
-                        .status(Utils.ACTIVE) // Trạng thái người dùng
+                        .username(ADMIN_USER_NAME)
+                        .password(passwordEncoder.encode(ADMIN_PASSWORD))
+                        .status(Utils.ACTIVE)
                         .companyId(company.get().getId())
                         .build();
                user= userRepository.save(user);
@@ -85,7 +83,7 @@ public class ApplicationInitConfig {
                 user_role.setStatus(Utils.ACTIVE);
                 user_roleRepository.save(user_role);
 
-                log.warn("admin user has been created with default password: admin, please change it"); // Ghi log thông báo người dùng admin đã được tạo với mật khẩu mặc định
+                log.warn("admin user has been created with default password: admin, please change it");
             }
 
             log.info("Application initialization completed ....."); // Ghi log thông báo khởi tạo ứng dụng hoàn tất
