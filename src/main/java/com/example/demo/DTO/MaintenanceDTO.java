@@ -1,6 +1,6 @@
 package com.example.demo.DTO;
 
-import jakarta.persistence.Column;
+import com.example.demo.DTO.DtoSecurity.RoomDTO;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -12,16 +12,11 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class UtilityDTO {
+public class MaintenanceDTO {
     private Long id;
-
-    private String utilityCode;
-
-    private String utilityName;
-
+    private RoomDTO room;
+    private String maintenanceRequest;
+    private int maintenanceStatus;
     private Long companyId;
-
     private int status;
-
-
 }

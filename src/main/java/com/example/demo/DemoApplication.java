@@ -5,13 +5,22 @@ import com.cloudinary.utils.ObjectUtils;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
+import org.springframework.scheduling.annotation.EnableScheduling;
 
 @SpringBootApplication
+//@EnableScheduling
 public class DemoApplication {
+//    @Autowired
+//    private PaymentService paymentService;
 
     public static void main(String[] args) {
         SpringApplication.run(DemoApplication.class, args);
     }
+
+//        @PostConstruct
+//        public void init() {
+//            paymentService.autoCreatePayment();
+//        }
 
     @Bean
     public Cloudinary cloudinary(){
