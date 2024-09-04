@@ -168,6 +168,11 @@ public class UtilityService {
             Sheet sheet = workbook.createSheet("Template");
             sheet.createRow(0).createCell(0).setCellValue("Name");
 
+            // Tạo CellStyle với định dạng text
+            DataFormat format = workbook.createDataFormat();
+            CellStyle textStyle = workbook.createCellStyle();
+            textStyle.setDataFormat(format.getFormat("@")); // "@" là định dạng cho text
+
             workbook.write(baos);
             return baos.toByteArray();
         } catch (IOException e) {

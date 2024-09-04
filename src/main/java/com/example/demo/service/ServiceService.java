@@ -242,6 +242,19 @@ public class ServiceService {
                 row.createCell(4).setCellValue(s.getEndDate() != null ? s.getEndDate().toString() : "");
                 row.createCell(5).setCellValue(s.getStatus());
             }
+
+
+            // Tạo CellStyle với định dạng text
+            DataFormat format = workbook.createDataFormat();
+            CellStyle textStyle = workbook.createCellStyle();
+            textStyle.setDataFormat(format.getFormat("@")); // "@" là định dạng cho text
+
+            // Áp dụng định dạng text cho tất cả các cột
+            for (int i = 0; i < 6; i++) {
+                sheet.setDefaultColumnStyle(i, textStyle);
+            }
+
+
             workbook.write(baos);
             return baos.toByteArray();
         } catch (IOException e) {

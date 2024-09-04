@@ -61,8 +61,7 @@ public class SecurityConfig {
         corsConfiguration.addAllowedHeader("*");
         corsConfiguration.setAllowCredentials(true); // Cho phép gửi cookie
 
-        corsConfiguration.addExposedHeader("token");
-        corsConfiguration.addExposedHeader("cid");
+        corsConfiguration.addExposedHeader("*");
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", corsConfiguration);
@@ -70,21 +69,6 @@ public class SecurityConfig {
         return source;
     }
 
-//
-//    @Bean
-//    public CorsConfigurationSource corsConfigurationSource() {
-//        CorsConfiguration corsConfiguration = new CorsConfiguration();
-//        corsConfiguration.setAllowedOrigins(Collections.singletonList("http://localhost:3000")); // Hoặc danh sách các origin bạn muốn cho phép
-//        corsConfiguration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS", "HEAD"));
-//        corsConfiguration.setAllowedHeaders(Arrays.asList("*"));
-//        corsConfiguration.setAllowCredentials(true); // Cho phép gửi cookie
-//        corsConfiguration.setExposedHeaders(Arrays.asList("token", "cid")); // Các header được phép expose ra
-//
-//        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-//        source.registerCorsConfiguration("/**", corsConfiguration);
-//
-//        return source;
-//    }
 
     @Bean
     public JwtAuthenticationConverter jwtAuthenticationConverter() {
